@@ -35,6 +35,14 @@ class LdapUserCreationListener
         $this->roles = $roles;
     }
 
+    /**
+     * On Ldap User Creation
+     *
+     * Fired when a new Doctrine User entity is created by the EgzaktLdapBundle.
+     * Default roles are added to this User.
+     *
+     * @param LdapUserCreationEvent $event
+     */
     public function onLdapUserCreation(LdapUserCreationEvent $event)
     {
         $user = $event->getUser();
