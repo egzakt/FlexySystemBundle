@@ -40,6 +40,8 @@ class LdapUserCreationListener
         $user = $event->getUser();
         $roles = array();
 
+        $user->setActive(true);
+
         foreach($this->roles as $role) {
             $userRole = $this->em->getRepository('EgzaktSystemBundle:Role')->findOneBy(array('roleName' => $role));
 
