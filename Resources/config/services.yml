@@ -1,20 +1,24 @@
 parameters:
 
-    egzakt_system.kernel_controller_listener.class: Egzakt\SystemBundle\Listener\ControllerListener
-    egzakt_system.kernel_response_listener.class:   Egzakt\SystemBundle\Listener\ResponseListener
-    egzakt_system.post_load_listener.class:         Egzakt\SystemBundle\Listener\PostLoadListener
-    egzakt_system.kernel_exception_listener.class:  Egzakt\SystemBundle\Listener\ExceptionListener
-    egzakt_system.core.class:                       Egzakt\SystemBundle\Lib\Core
-    egzakt_system.helper.class:                     Egzakt\SystemBundle\Lib\Helper
-    egzakt_system.twig_extension.class:             Egzakt\SystemBundle\Extensions\TwigExtension
-    egzakt_system.inspect_extension.class:          Egzakt\SystemBundle\Extensions\InspectExtension
-    egzakt_system.navigation_builder.class:         Egzakt\SystemBundle\Lib\NavigationBuilder
-    egzakt_system.section_hooks.class:              Egzakt\SystemBundle\Lib\SectionHooks
-    egzakt_system.navigation_item.class:            Egzakt\SystemBundle\Lib\NavigationItem
-    egzakt_system.breadcrumbs.class:                Egzakt\SystemBundle\Lib\Breadcrumbs
-    egzakt_system.page_title.class:                 Egzakt\SystemBundle\Lib\PageTitle
+    egzakt_system.kernel_controller_listener.class:  Egzakt\SystemBundle\Listener\ControllerListener
+    egzakt_system.kernel_response_listener.class:    Egzakt\SystemBundle\Listener\ResponseListener
+    egzakt_system.post_load_listener.class:          Egzakt\SystemBundle\Listener\PostLoadListener
+    egzakt_system.kernel_exception_listener.class:   Egzakt\SystemBundle\Listener\ExceptionListener
 
-    egzakt_backend.core.class:                      Egzakt\SystemBundle\Lib\Backend\Core
+    egzakt_system.ldap_user_creation_listener.class: Egzakt\SystemBundle\Listener\LdapUserCreationListener
+    egzakt_system.default_user_roles:                [ROLE_ADMIN]
+
+    egzakt_system.core.class:                        Egzakt\SystemBundle\Lib\Core
+    egzakt_system.helper.class:                      Egzakt\SystemBundle\Lib\Helper
+    egzakt_system.twig_extension.class:              Egzakt\SystemBundle\Extensions\TwigExtension
+    egzakt_system.inspect_extension.class:           Egzakt\SystemBundle\Extensions\InspectExtension
+    egzakt_system.navigation_builder.class:          Egzakt\SystemBundle\Lib\NavigationBuilder
+    egzakt_system.section_hooks.class:               Egzakt\SystemBundle\Lib\SectionHooks
+    egzakt_system.navigation_item.class:             Egzakt\SystemBundle\Lib\NavigationItem
+    egzakt_system.breadcrumbs.class:                 Egzakt\SystemBundle\Lib\Breadcrumbs
+    egzakt_system.page_title.class:                  Egzakt\SystemBundle\Lib\PageTitle
+
+    egzakt_backend.core.class:                       Egzakt\SystemBundle\Lib\Backend\Core
 
 services:
 
@@ -49,6 +53,12 @@ services:
             - { name: kernel.event_listener, event: kernel.exception }
         calls:
             - [ setKernel, [ @kernel ] ]
+
+    egzakt_system.ldap_user_creation_listener:
+        class: %egzakt_system.ldap_user_creation_listener.class%
+        arguments: [@doctrine.orm.entity_manager, %egzakt_system.default_user_roles%]
+        tags:
+            - { name: kernel.event_listener, event: egzakt_ldap.user_creation, method: onLdapUserCreation }
 
     egzakt_system.core:
         class: %egzakt_system.core.class%
