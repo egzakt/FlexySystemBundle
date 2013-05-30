@@ -1,0 +1,62 @@
+{% set fileProperty = fieldName ~ 'File' %}
+{% set deleteProperty = fieldName ~ 'Delete' %}
+
+{% block image_field %}
+    {% block image_field_row %}
+    <tr>
+        {% block image_field_label %}
+        <th{% if form_errors(attribute(form, fileProperty)) %} class="error"{% endif %}>
+            {{ form_label(attribute(form, fileProperty), label|default(null)) }}
+        </th>
+        {% endblock image_field_label %}
+        {% block image_field_widget %}
+        <td>
+            {% if (
+                (translatable is defined and translatable and attribute(entity.translation, fieldName))
+                or
+                ((translatable is not defined or translatable == false) and (attribute(entity, fieldName)))
+            ) %}
+
+                {% if entity.fileExists(fieldName) %}
+                    {% if cropTool is defined and cropTool and false %}{# The CropToolBundle is not imported yet #}
+                        {% render 'EgzaktBackendCropToolBundle:CropTool:index' with {
+                            'entity': entity,
+                            'fieldName': fieldName
+                        } %}
+                    {% else %}
+                        <div class="uploaded_file">
+                            {# TODO: put sizes into parameters #}
+                            <a href="{{ image(entity.absolutePath(fieldName)).max(800) }}" class="fancybox">
+                                <img src="{{ image(entity.absolutePath(fieldName)).max(150) }}" alt="{{ entity }}" />
+                            </a>
+                        </div>
+                    {% endif %}
+
+                {% else %}
+                    <div class="uploaded_file">
+                        <div class="error file_not_found">Unable to find "{{ entity.webPath(fieldName) }}"</div>
+                    </div>
+                {% endif %}
+
+                {% if not required %}
+                    <div class="delete_uploaded_file">
+                        {{ form_label(attribute(form, deleteProperty), label|default(null)) }}
+                        {{ form_widget(attribute(form, deleteProperty)) }}
+                    </div>
+                {% endif %}
+
+                {% trans %}Replace:{% endtrans %}
+            {% endif %}
+
+            {{ form_widget(attribute(form, fileProperty)) }}
+
+            {% if form_errors(attribute(form, fileProperty)) %}
+                <div class="error">
+                    {{ form_errors(attribute(form, fileProperty)) }}
+                </div>
+            {% endif %}
+        </td>
+        {% endblock image_field_widget %}
+    </tr>
+    {% endblock image_field_row %}
+{% endblock image_field %}
