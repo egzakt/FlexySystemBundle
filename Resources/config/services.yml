@@ -132,6 +132,11 @@ services:
           - [ setPageTitle, [ @egzakt_system.page_title ] ]
           - [ setLocale, [ %locale% ] ]
 
+
+    egzakt_system_bundle.image_field_type_extension:
+        class: Egzakt\SystemBundle\Form\Backend\Extension\ImageTypeExtension
+        tags:
+            - { name: form.type_extension, alias: file }
     twig.extension.text:
         class: Twig_Extensions_Extension_Text
         tags:
