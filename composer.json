@@ -21,7 +21,7 @@
     ],
     "require": {
         "symfony/symfony": "2.2.*",
-        "avalanche123/imagine-bundle": "dev-master"
+        "avalanche123/imagine-bundle": "v2.1"
     },
     "autoload": {
         "psr-0": { "Egzakt\\SystemBundle": "" }
