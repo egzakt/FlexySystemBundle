@@ -116,3 +116,14 @@
         <label{% for attrname,attrvalue in attr %} {{attrname}}="{{attrvalue}}"{% endfor %}>{{ label|trans|raw }}</label>
     {% endspaceless %}
 {% endblock %}
+
+{% block file_widget %}
+    {% spaceless %}
+
+        <input type="file" {{ block('widget_attributes') }} />
+        {% if image_path is not null and image_filter is not null %}
+            <img src="{{ image_path | apply_filter(image_filter) }}" />
+        {% endif %}
+
+    {% endspaceless %}
+{% endblock %}
