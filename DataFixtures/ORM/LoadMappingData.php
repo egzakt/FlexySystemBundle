@@ -44,6 +44,13 @@ class LoadMappingData extends AbstractFixture implements OrderedFixtureInterface
 
         $mapping = new Mapping();
         $mapping->setNavigation($manager->merge($this->getReference('navigation-global-module-bar')));
+        $mapping->setTarget('EgzaktSystemBundle:Backend/Role/Navigation:GlobalModuleBar');
+        $mapping->setType('render');
+
+        $manager->persist($mapping);
+
+        $mapping = new Mapping();
+        $mapping->setNavigation($manager->merge($this->getReference('navigation-global-module-bar')));
         $mapping->setTarget('EgzaktSystemBundle:Backend/Section/Navigation:GlobalModuleBar');
         $mapping->setType('render');
 
