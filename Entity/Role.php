@@ -53,7 +53,7 @@ class Role extends BaseEntity
             return 'New role';
         }
 
-        if ($name = $this->roleName) {
+        if ($name = $this->name) {
             return $name;
         }
 
@@ -208,5 +208,67 @@ class Role extends BaseEntity
     public function removeUser(\Egzakt\SystemBundle\Entity\User $users)
     {
         $this->users->removeElement($users);
+    }
+
+    /**
+     * Get the backend route
+     *
+     * @param string $suffix
+     *
+     * @return string
+     */
+    public function getRouteBackend($suffix = 'edit')
+    {
+        return 'egzakt_system_backend_role_' . $suffix;
+    }
+
+    /**
+     * Get params for the backend route
+     *
+     * @param array $params Additional parameters
+     *
+     * @return array
+     */
+    public function getRouteBackendParams($params = array())
+    {
+        $defaults = array(
+            'id' => $this->id ? $this->id : 0
+        );
+
+        $params = array_merge($defaults, $params);
+
+        return $params;
+    }
+
+    /**
+     * Is Deletable
+     *
+     * @return bool
+     */
+    public function isDeletable()
+    {
+        return !in_array($this->getRoleName(), array('ROLE_DEVELOPER', 'ROLE_BACKEND_ADMIN', 'ROLE_ADMIN'));
+    }
+
+    /**
+     * Not Deletable
+     *
+     * @return bool
+     *
+     * @TODO Remove this and refactor the getDeleteRestrictions functionnality
+     */
+    public function notDeletable()
+    {
+        return !$this->isDeletable();
+    }
+
+    /**
+     * List of methods to check before allowing deletion
+     *
+     * @return array
+     */
+    public function getDeleteRestrictions()
+    {
+        return array('notDeletable');
     }
 }
