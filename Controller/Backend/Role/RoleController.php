@@ -80,7 +80,7 @@ class RoleController extends BaseController
      */
     public function editAction($id, Request $request)
     {
-        $entity = $this->getEm()->getRepository($this->getBundleName() . ':Role')->find($id);
+        $entity = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->find($id);
 
         if (!$entity) {
             $entity = new Role();
