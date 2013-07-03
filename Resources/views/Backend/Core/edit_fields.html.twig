@@ -71,6 +71,97 @@
     {% endspaceless %}
 {% endblock choice_widget %}
 
+{% block tree_choice_widget_options %}
+{% spaceless %}
+    {% for group_label, choice in options %}
+        {% if choice is iterable %}
+            <optgroup label="{{ group_label|trans({}, translation_domain) }}">
+                {% set options = choice %}
+                {{ block('tree_choice_widget_options') }}
+            </optgroup>
+        {% else %}
+            <option value="{{ choice.value }}"{% if choice is selectedchoice(value) %} selected="selected"{% endif %}>{% if levels is defined and levels['level_id_' ~ choice.value] is defined %}{{ tree_indentation(levels['level_id_' ~ choice.value])|raw }}{% endif %}{{ choice.label|trans({}, translation_domain) }}</option>
+        {% endif %}
+    {% endfor %}
+{% endspaceless %}
+{% endblock tree_choice_widget_options %}
+
+{% block tree_choice_widget %}
+{% spaceless %}
+    {% if expanded %}
+        <ul {{ block('widget_container_attributes') }}>
+            {% if add_select_all is defined %}
+                {% block select_all %}
+                <li>
+                    <div class="select_all_wrapper">
+                        <input type="checkbox" name="select_all_{{ id }}" id="select_all_{{ id }}" value="" class="select_all" /> &nbsp;<label for="select_all_{{ id }}">{% trans %}Select All{% endtrans %}</label>
+                    </div>
+                </li>
+                {% endblock %}
+                {% block select_all_js %}
+                    <script type="text/javascript">
+                        $(function(){
+                            var checkbox_select_all{{ id }} = $('#select_all_{{ id }}');
+                            var checkboxes_select_all{{ id }} = $('#{{ id }}').find('input:checkbox').not('.select_all');
+
+                            function toggleSelectAllCheckbox{{ id }}() {
+                                if (checkboxes_select_all{{ id }}.length == checkboxes_select_all{{ id }}.filter(':checked').length) {
+                                    checkbox_select_all{{ id }}.attr('checked', 'checked').nextAll('label:first').html('{% trans %}Unselect All{% endtrans %}');
+                                } else {
+                                    checkbox_select_all{{ id }}.removeAttr('checked').nextAll('label:first').html('{% trans %}Select All{% endtrans %}');
+                                }
+                            }
+
+                            toggleSelectAllCheckbox{{ id }}(checkbox_select_all{{ id }});
+
+                            checkbox_select_all{{ id }}.click(function(){
+                                if (checkbox_select_all{{ id }}.is(':checked')) {
+                                    checkboxes_select_all{{ id }}.attr('checked', 'checked');
+                                    checkbox_select_all{{ id }}.nextAll('label:first').html('{% trans %}Unselect All{% endtrans %}');
+                                } else {
+                                    checkboxes_select_all{{ id }}.removeAttr('checked');
+                                    checkbox_select_all{{ id }}.nextAll('label:first').html('{% trans %}Select All{% endtrans %}');
+                                }
+                            });
+
+                            checkboxes_select_all{{ id }}.change(function(){
+                                toggleSelectAllCheckbox{{ id }}(checkbox_select_all{{ id }});
+                            });
+                        });
+                    </script>
+                {% endblock %}
+            {% endif %}
+        {% for child in form %}
+            <li>
+                {{ form_widget(child) }}&nbsp;{{ form_label(child, null, {'withoutColon': true}) }}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        {% if empty_value is not none %}
+            <option value="">{{ empty_value|trans }}</option>
+        {% endif %}
+        {% if preferred_choices|length > 0 %}
+            {% set options = preferred_choices %}
+            {{ block('tree_choice_widget_options') }}
+            {% if choices|length > 0 and separator is not none %}
+                <option disabled="disabled">{{ separator }}</option>
+            {% endif %}
+        {% endif %}
+        {% set options = choices %}
+        {{ block('tree_choice_widget_options') }}
+    </select>
+    {% endif %}
+{% endspaceless %}
+{% endblock tree_choice_widget %}
+
+{% block checkbox_widget %}
+{% spaceless %}
+    {% if level is defined %}{{ tree_indentation(level)|raw }}{% endif %}<input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+{% endspaceless %}
+{% endblock checkbox_widget %}
+
 {% block form_label %}
     {% if required and checked is not defined %}
         <span class="required" title="{% trans %}This field is required{% endtrans %}">* </span>

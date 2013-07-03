@@ -24,7 +24,7 @@ class RoleType extends AbstractType
             $builder->add('sections', 'tree_choice', array(
                     'multiple' => true,
                     'expanded' => true,
-                    'property' => 'i18nTitle',
+                    'property' => 'name',
                     'class'    => 'Egzakt\SystemBundle\Entity\Section',
                     'required' => false
             ));

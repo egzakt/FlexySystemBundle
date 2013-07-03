@@ -1384,6 +1384,10 @@ span.cke_skin_kama {
     z-index: 1;
 }
 
+.select_all_wrapper {
+    padding-bottom: 10px;
+}
+
 /* Delete dialog */
 .ui-widget {
     font-size: 1em;

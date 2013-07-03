@@ -45,6 +45,11 @@ class Role extends BaseEntity
     protected $users;
 
     /**
+     * @var ArrayCollection
+     */
+    protected $sections;
+
+    /**
      * @return string
      */
     public function __toString()
@@ -64,6 +69,7 @@ class Role extends BaseEntity
     public function __construct()
     {
         $this->users = new ArrayCollection();
+        $this->sections = new ArrayCollection();
         $this->translations = new ArrayCollection();
     }
 
@@ -155,6 +161,49 @@ class Role extends BaseEntity
     public function getUsers()
     {
         return $this->users;
+    }
+
+    /**
+     * Add sections
+     *
+     * @param \Egzakt\SystemBundle\Entity\Section $sections
+     * @return Role
+     */
+    public function addSection(\Egzakt\SystemBundle\Entity\Section $sections)
+    {
+        $this->sections[] = $sections;
+
+        return $this;
+    }
+
+    /**
+     * Set Sections
+     *
+     * @param ArrayCollection $sections
+     */
+    public function setSections(ArrayCollection $sections)
+    {
+        $this->sections = $sections;
+    }
+
+    /**
+     * Remove sections
+     *
+     * @param \Egzakt\SystemBundle\Entity\Section $sections
+     */
+    public function removeSection(\Egzakt\SystemBundle\Entity\Section $sections)
+    {
+        $this->sections->removeElement($sections);
+    }
+
+    /**
+     * Get sections
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getSections()
+    {
+        return $this->sections;
     }
 
     /**
@@ -271,4 +320,5 @@ class Role extends BaseEntity
     {
         return array('notDeletable');
     }
+
 }

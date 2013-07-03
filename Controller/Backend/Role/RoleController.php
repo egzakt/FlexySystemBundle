@@ -98,7 +98,7 @@ class RoleController extends BaseController
 
         if ($request->getMethod() == 'POST') {
 
-            $form->bindRequest($request);
+            $form->submit($request);
 
             if ($form->isValid()) {
 
