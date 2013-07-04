@@ -32,9 +32,10 @@ class RoleRepository extends BaseEntityRepository
     public function findAll()
     {
         $queryBuilder = $this->createQueryBuilder('r')
-            ->select('r', 'u')
+            ->select('r', 'rt', 'u')
+            ->leftJoin('r.translations', 'rt')
             ->leftJoin('r.users', 'u')
-            ->orderBy('r.roleName');
+            ->orderBy('rt.name');
 
         return $this->processQuery($queryBuilder);
     }
@@ -53,11 +54,12 @@ class RoleRepository extends BaseEntityRepository
         }
 
         $queryBuilder = $this->createQueryBuilder('r')
-            ->select('r', 'u')
+            ->select('r', 'rt', 'u')
+            ->leftJoin('r.translations', 'rt')
             ->leftJoin('r.users', 'u')
             ->where('r.roleName NOT IN (:roles)')
             ->setParameter('roles', $roles)
-            ->orderBy('r.roleName');
+            ->orderBy('rt.name');
 
         return $this->processQuery($queryBuilder);
     }
