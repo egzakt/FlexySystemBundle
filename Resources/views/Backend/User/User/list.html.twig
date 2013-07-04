@@ -8,7 +8,7 @@
 
     {% for role in roles %}
         <div class="list_box">
-            <h2>{{ role.name }}</h2>
+            <h2>{% include 'EgzaktSystemBundle:Backend/Core:entity_title.html.twig' with { 'entity': role } %}</h2>
             <table cellspacing="0" class="table-autosort">
                 <thead>
                 <tr>

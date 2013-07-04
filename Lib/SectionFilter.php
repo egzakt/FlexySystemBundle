@@ -143,7 +143,7 @@ class SectionFilter {
             }
 
             // Find the Sections for the User's Roles
-            $this->allowedSectionIds = $this->entityManager->getRepository('EgzaktBackendSectionBundle:Section')->findHavingRoles($roles);
+            $this->allowedSectionIds = $this->entityManager->getRepository('EgzaktSystemBundle:Section')->findHavingRoles($roles);
         }
 
         return $this->allowedSectionIds;
