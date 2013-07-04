@@ -46,6 +46,8 @@ class RoleController extends BaseController
             throw new AccessDeniedHttpException();
         }
 
+        $this->createAndPushNavigationElement('Roles', 'egzakt_system_backend_role');
+
         // Add/remove some behaviors if Admin
         $this->isAdmin = $this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN');
         $this->isDeveloper = $this->get('security.context')->isGranted('ROLE_DEVELOPER');
@@ -92,7 +94,7 @@ class RoleController extends BaseController
             throw new NotFoundHttpException();
         }
 
-        $this->getCore()->addNavigationElement($entity);
+        $this->pushNavigationElement($entity);
 
         $form = $this->createForm(new RoleType(), $entity, array('admin' => in_array($entity->getRoleName(), $this->rolesAdmin)));
 

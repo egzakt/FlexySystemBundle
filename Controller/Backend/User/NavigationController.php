@@ -19,6 +19,10 @@ class NavigationController extends BaseController
      */
     public function globalModuleBarAction($masterRoute)
     {
+        if (false === $this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN')) {
+            return new Response();
+        }
+
         $selected = (0 === strpos($masterRoute, 'egzakt_system_backend_user'));
 
         return $this->render('EgzaktSystemBundle:Backend/User/Navigation:global_bundle_bar.html.twig', array(

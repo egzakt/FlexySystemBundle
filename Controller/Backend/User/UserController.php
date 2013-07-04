@@ -35,6 +35,13 @@ class UserController extends BaseController
             throw new AccessDeniedHttpException();
         }
 
+        $this->createAndPushNavigationElement('Users', 'egzakt_system_backend_user');
+
+        // Check if the current User has the privileges
+        if (!$this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN')) {
+            throw new AccessDeniedHttpException();
+        }
+
         $this->isDeveloper = $this->get('security.context')->isGranted('ROLE_DEVELOPER');
     }
 
@@ -70,6 +77,8 @@ class UserController extends BaseController
             $user = new User();
             $user->setContainer($this->container);
         }
+
+        $this->pushNavigationElement($user);
 
         $form = $this->createForm(new UserType(), $user, array(
             'validation_groups' => $user->getId() ? 'edit' : 'new',
