@@ -1,4 +1,5 @@
 <div class="form_actions_bar">
+    {% if ajax is not defined or not ajax %}
     <ul>
         <li>
             <a href="{% if cancel_route is defined %}{{ cancel_route }}{% else %}{{ path( bundle, { 'section_id': section.id }) }}{% endif %}">{% trans %}Cancel{% endtrans %}</a>
@@ -12,6 +13,9 @@
             {% endif %}
         </li>
     </ul>
+    {% endif %}
     <input class="save" type="submit" value="{% trans %}Save{% endtrans %}" name="save" />
-    <input class="save_continue" type="submit" value="{% trans %}Save and continue{% endtrans %}" name="save_continue" />
+    {% if ajax is not defined or not ajax %}
+        <input class="save_continue" type="submit" value="{% trans %}Save and continue{% endtrans %}" name="save_continue" />
+    {% endif %}
 </div>

@@ -1,0 +1,27 @@
+<div id="ajax">
+    {% block content '' %}
+</div>
+
+<script>
+    $().ready(function(){
+        $('#ajax form').submit(function(){
+            $(this).ajaxSubmit({
+                success: showResponse
+            });
+
+            return false;
+        });
+    });
+
+    function showResponse(data)
+    {
+        console.log(data);
+        if (!data.error){
+            console.log(data);
+            console.log(data.entity);
+            var option = '<option selected="selected"  value="' + data.entity.id + '">'+data.entity.name+'</option>';
+            $('#news_newsCategory').append(option);
+            $.fancybox.close();
+        }
+    }
+</script>

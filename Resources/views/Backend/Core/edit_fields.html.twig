@@ -113,3 +113,10 @@
         <input type="file" {{ block('widget_attributes') }} />
     {% endspaceless %}
 {% endblock %}
+
+{% block advanced_entity_widget %}
+    {% spaceless %}
+        {{ block('choice_widget') }}
+        <a href="{{ path(create_route) }}" class="add-ajax">Add</a>
+    {% endspaceless %}
+{% endblock %}
