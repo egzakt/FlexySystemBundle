@@ -116,10 +116,10 @@
 
                             checkbox_select_all{{ id }}.click(function(){
                                 if (checkbox_select_all{{ id }}.is(':checked')) {
-                                    checkboxes_select_all{{ id }}.attr('checked', 'checked');
+                                    checkboxes_select_all{{ id }}.prop('checked', true);
                                     checkbox_select_all{{ id }}.nextAll('label:first').html('{% trans %}Unselect All{% endtrans %}');
                                 } else {
-                                    checkboxes_select_all{{ id }}.removeAttr('checked');
+                                    checkboxes_select_all{{ id }}.prop('checked', false);
                                     checkbox_select_all{{ id }}.nextAll('label:first').html('{% trans %}Select All{% endtrans %}');
                                 }
                             });
