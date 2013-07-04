@@ -106,9 +106,23 @@
 
                             function toggleSelectAllCheckbox{{ id }}() {
                                 if (checkboxes_select_all{{ id }}.length == checkboxes_select_all{{ id }}.filter(':checked').length) {
-                                    checkbox_select_all{{ id }}.attr('checked', 'checked').nextAll('label:first').html('{% trans %}Unselect All{% endtrans %}');
+                                    checkbox_select_all{{ id }}.prop('checked', true).nextAll('label:first').html('{% trans %}Unselect All{% endtrans %}');
                                 } else {
-                                    checkbox_select_all{{ id }}.removeAttr('checked').nextAll('label:first').html('{% trans %}Select All{% endtrans %}');
+                                    checkbox_select_all{{ id }}.prop('checked', false).nextAll('label:first').html('{% trans %}Select All{% endtrans %}');
+                                }
+                            }
+
+                            function toggleChildrens(checkbox) {
+                                if (checkbox.is(':checked')) {
+                                    level = checkbox.data('level');
+                                    checkbox.parent().nextAll('li').each(function(i){
+                                        children = $(this).children('input:checkbox');
+                                        if (children.data('level') > level) {
+                                            children.prop('checked', true);
+                                        } else {
+                                            return false;
+                                        }
+                                    });
                                 }
                             }
 
@@ -126,6 +140,7 @@
 
                             checkboxes_select_all{{ id }}.change(function(){
                                 toggleSelectAllCheckbox{{ id }}(checkbox_select_all{{ id }});
+                                toggleChildrens($(this));
                             });
                         });
                     </script>
@@ -158,9 +173,15 @@
 
 {% block checkbox_widget %}
 {% spaceless %}
-    {% if level is defined %}{{ tree_indentation(level)|raw }}{% endif %}<input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+    {% if level is defined %}{{ tree_indentation(level)|raw }}{% endif %}<input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}{% if level is defined %} data-level="{{ level }}{% endif %}" />
 {% endspaceless %}
 {% endblock checkbox_widget %}
+
+{% block radio_widget %}
+{% spaceless %}
+    {% if level is defined %}{{ tree_indentation(level)|raw }}{% endif %}<input type="radio" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %}{% if level is defined %} data-level="{{ level }}{% endif %}" />
+{% endspaceless %}
+{% endblock radio_widget %}
 
 {% block form_label %}
     {% if required and checked is not defined %}
