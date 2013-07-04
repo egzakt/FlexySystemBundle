@@ -19,6 +19,7 @@ class NavigationController extends BaseController
      */
     public function globalModuleBarAction($masterRoute)
     {
+        // Access restricted to ROLE_BACKEND_ADMIN
         if (false === $this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN')) {
             return new Response();
         }
