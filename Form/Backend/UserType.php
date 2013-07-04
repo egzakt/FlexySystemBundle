@@ -69,7 +69,8 @@ class UserType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => 'Egzakt\SystemBundle\Entity\User',
             'self_edit' => false,
-            'developer' => false
+            'developer' => false,
+            'error_mapping' => array('userRoles' => 'userroles')
         ));
     }
 }
