@@ -44,6 +44,7 @@ class RoleType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
+            'cascade_validation' => true,
             'data_class' => 'Egzakt\SystemBundle\Entity\Role',
             'admin' => false
         ));
