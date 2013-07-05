@@ -36,7 +36,7 @@ class NavigationController extends BaseController
     /**
      * Impersonating Bar
      *
-     * Allows you to swith back to the Original Token
+     * Allows you to switch back to the Original Token
      *
      * @return Response
      */
