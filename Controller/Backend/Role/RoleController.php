@@ -90,13 +90,13 @@ class RoleController extends BaseController
         }
 
         // Not editable
-        if ($entity->getRoleName() == 'ROLE_DEVELOPER' && !$this->isDeveloper) {
+        if ($entity->getRole() == 'ROLE_DEVELOPER' && !$this->isDeveloper) {
             throw new NotFoundHttpException();
         }
 
         $this->pushNavigationElement($entity);
 
-        $form = $this->createForm(new RoleType(), $entity, array('admin' => in_array($entity->getRoleName(), $this->rolesAdmin)));
+        $form = $this->createForm(new RoleType(), $entity, array('admin' => in_array($entity->getRole(), $this->rolesAdmin)));
 
         if ($request->getMethod() == 'POST') {
 
@@ -105,9 +105,9 @@ class RoleController extends BaseController
             if ($form->isValid()) {
 
                 // Set a Rolename for this Role
-                if (!in_array($entity->getRoleName(), $this->rolesAdmin)) {
+                if (!in_array($entity->getRole(), $this->rolesAdmin)) {
                     $roleName = 'ROLE_BACKEND_' . strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $entity->getName()));
-                    $entity->setRoleName($roleName);
+                    $entity->setRole($roleName);
                 }
 
                 $this->getEm()->persist($entity);

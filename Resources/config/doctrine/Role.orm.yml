@@ -7,7 +7,7 @@ Egzakt\SystemBundle\Entity\Role:
       id: true
       generator:
         strategy: AUTO
-    roleName:
+    role:
       type: string
       length: 30
     createdAt:
@@ -30,7 +30,7 @@ Egzakt\SystemBundle\Entity\Role:
   manyToMany:
     users:
       targetEntity: Egzakt\SystemBundle\Entity\User
-      mappedBy: userRoles
+      mappedBy: roles
       orderBy:
         username: ASC
     sections:

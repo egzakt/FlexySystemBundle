@@ -95,10 +95,10 @@ class UserController extends BaseController
             if ($form->isValid()) {
 
                 // All Users are automatically granted the ROLE_BACKEND_ACCESS Role
-                $backendAccessRole = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findOneBy(array('roleName' => 'ROLE_BACKEND_ACCESS'));
+                $backendAccessRole = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findOneBy(array('role' => 'ROLE_BACKEND_ACCESS'));
                 if (!$backendAccessRole) {
                     $backendAccessRole = new Role();
-                    $backendAccessRole->setRoleName('ROLE_BACKEND_ACCESS');
+                    $backendAccessRole->setRole('ROLE_BACKEND_ACCESS');
                     $this->getEm()->persist($backendAccessRole);
                 }
 

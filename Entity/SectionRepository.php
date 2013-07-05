@@ -214,7 +214,7 @@ class SectionRepository extends BaseEntityRepository
         $queryBuilder = $this->createQueryBuilder('s')
             ->select('s.id')
             ->innerJoin('s.roles', 'r')
-            ->where('r.roleName IN (:roles)')
+            ->where('r.role IN (:roles)')
             ->setParameter('roles', $roles);
 
         // Array of array('id' => 1)

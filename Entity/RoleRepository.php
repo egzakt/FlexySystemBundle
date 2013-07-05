@@ -57,7 +57,7 @@ class RoleRepository extends BaseEntityRepository
             ->select('r', 'rt', 'u')
             ->leftJoin('r.translations', 'rt')
             ->leftJoin('r.users', 'u')
-            ->where('r.roleName NOT IN (:roles)')
+            ->where('r.role NOT IN (:roles)')
             ->setParameter('roles', $roles)
             ->orderBy('rt.name');
 

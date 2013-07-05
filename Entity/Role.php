@@ -4,6 +4,7 @@ namespace Egzakt\SystemBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Security\Core\Role\RoleInterface;
 
 use Egzakt\SystemBundle\Entity\User;
 use Egzakt\SystemBundle\Entity\RoleTranslation;
@@ -12,7 +13,7 @@ use Egzakt\SystemBundle\Lib\BaseEntity;
 /**
  * Role
  */
-class Role extends BaseEntity
+class Role extends BaseEntity implements RoleInterface, \Serializable
 {
     /**
      * @var integer $id
@@ -20,9 +21,9 @@ class Role extends BaseEntity
     protected $id;
 
     /**
-     * @var string $roleName
+     * @var string $role
      */
-    protected $roleName;
+    protected $role;
 
     /**
      * @var \DateTime $createdAt
@@ -84,23 +85,21 @@ class Role extends BaseEntity
     }
 
     /**
-     * Set roleName
+     * Get Role
      *
-     * @param string $roleName
+     * @return null|string
      */
-    public function setRoleName($roleName)
+    public function getRole()
     {
-        $this->roleName = $roleName;
+        return $this->role;
     }
 
     /**
-     * Get roleName
-     *
-     * @return string
+     * @param string $role
      */
-    public function getRoleName()
+    public function setRole($role)
     {
-        return $this->roleName;
+        $this->role = $role;
     }
 
     /**
@@ -296,7 +295,7 @@ class Role extends BaseEntity
      */
     public function isDeletable()
     {
-        return !in_array($this->getRoleName(), array('ROLE_DEVELOPER', 'ROLE_BACKEND_ADMIN', 'ROLE_ADMIN'));
+        return !in_array($this->getRole(), array('ROLE_DEVELOPER', 'ROLE_BACKEND_ADMIN', 'ROLE_ADMIN'));
     }
 
     /**
@@ -319,6 +318,22 @@ class Role extends BaseEntity
     public function getDeleteRestrictions()
     {
         return array('notDeletable');
+    }
+
+    public function serialize()
+    {
+        return serialize(array(
+            $this->id,
+            $this->role
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list(
+            $this->id,
+            $this->role
+        ) = unserialize($serialized);
     }
 
 }
