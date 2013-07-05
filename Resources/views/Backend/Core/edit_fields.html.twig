@@ -151,25 +151,29 @@
 {% endblock radio_widget %}
 
 {% block form_label %}
+{% spaceless %}
     {% if required and checked is not defined %}
         <span class="required" title="{% trans %}This field is required{% endtrans %}">* </span>
     {% endif %}
 
-    {{ parent() }}{% if withoutColon is not defined %}{% trans %}:{% endtrans %}{% endif %}
-
-    {% if attr.alt is defined %}
-        <div class="note">{{ attr.alt|trans|raw }}</div>
-    {% endif %}
-{% endblock %}
-
-{% block generic_label %}
-    {% spaceless %}
-        {% if required %}
-            {% set attr = attr|merge({'class': attr.class|default('') ~ ' required'}) %}
+    {% if label is not sameas(false) %}
+        {% if not compound %}
+            {% set label_attr = label_attr|merge({'for': id}) %}
         {% endif %}
-        <label{% for attrname,attrvalue in attr %} {{attrname}}="{{attrvalue}}"{% endfor %}>{{ label|trans|raw }}</label>
-    {% endspaceless %}
-{% endblock %}
+        {% if required %}
+            {% set label_attr = label_attr|merge({'class': (label_attr.class|default('') ~ ' required')|trim}) %}
+        {% endif %}
+        {% if label is empty %}
+            {% set label = name|humanize %}
+        {% endif %}
+        <label{% for attrname, attrvalue in label_attr %} {{ attrname }}="{{ attrvalue }}"{% endfor %}>{{ label|trans|raw }}</label>{% if withoutColon is not defined %}{% trans %}:{% endtrans %}{% endif %}
+
+        {% if attr.alt is defined %}
+            <div class="note">{{ attr.alt|trans|raw }}</div>
+        {% endif %}
+    {% endif %}
+{% endspaceless %}
+{% endblock form_label %}
 
 {% block advanced_file_widget %}
     {% spaceless %}
