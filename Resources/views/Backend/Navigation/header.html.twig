@@ -1,9 +1,7 @@
 <div id="welcome">
     <div id="login_name">
         <span>{% trans %}Welcome{% endtrans %},</span> <strong>{{ app.user.username }}</strong>
-        {% if is_granted('ROLE_PREVIOUS_ADMIN') %}
-            &nbsp;<a href="{{ path('egzakt_system_backend_dashboard', { _want_to_be_this_user: '_exit' }) }}" style="color: #fff;">{% trans %}Exit impersonation{% endtrans %}</a>
-        {% endif %}
+        {{ render(controller('EgzaktSystemBundle:Backend/Role/Navigation:impersonatingBar')) }}
     </div>
     <form action="{{ path('egzakt_system_backend_logout') }}">
         <input type="submit" name="btn_deconnexion" class="btn_deconnexion" value="{% trans %}Logout{% endtrans %}"/>

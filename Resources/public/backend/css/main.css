@@ -156,6 +156,16 @@ form {
     color: #A6A6A6;
 }
 
+#login_bar .exit_impersonating {
+    color: #fff;
+    margin-left: 10px;
+    text-decoration: none;
+}
+
+#login_bar .exit_impersonating:hover {
+    text-decoration: underline;
+}
+
 #login_bar input {
     position: absolute;
     top: 5px;
@@ -826,6 +836,11 @@ ul#bundles a.db.selected {
 
 .list_box thead th.update {
     width: 110px;
+}
+
+.list_box .impersonate {
+    width: 15px;
+    padding-top: 8px;
 }
 
 .list_box .edit {

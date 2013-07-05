@@ -1,1 +1,1 @@
-<td><a href='{{ path('egzakt_system_backend_dashboard', { _want_to_be_this_user: user.username }) }}'>Impersonate this User</a></td>
+<td class="impersonate"><a href='{{ path('egzakt_system_backend_dashboard', { _want_to_be_this_user: user.username }) }}'><img src="{{ asset('bundles/egzaktsystem/backend/images/icons/users.gif') }}" width="13" height="12" alt="{% trans %}Impersonate{% endtrans %} {{ user.username }}" title="{% trans %}Impersonate{% endtrans %} {{ user.username }}" /></a></td>
