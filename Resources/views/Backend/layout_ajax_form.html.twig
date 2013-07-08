@@ -15,10 +15,7 @@
 
     function showResponse(data)
     {
-        console.log(data);
         if (!data.error){
-            console.log(data);
-            console.log(data.entity);
             var option = '<option selected="selected"  value="' + data.entity.id + '">'+data.entity.name+'</option>';
             $('#news_newsCategory').append(option);
             $.fancybox.close();
