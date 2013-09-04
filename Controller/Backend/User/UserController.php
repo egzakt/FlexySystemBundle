@@ -53,12 +53,14 @@ class UserController extends BaseController
     public function indexAction()
     {
 
+        $repository = $this->getRepository('EgzaktSystemBundle:Role');
+
         $excludedRoles = array(Role::ROLE_BACKEND_ACCESS);
         if ( !$this->isDeveloper ) {
             $excludedRoles[] = Role::ROLE_DEVELOPER;
         }
 
-        $roles = $this->getRepository('EgzaktSystemBundle:Role')->findAllExcept($excludedRoles) ;
+        $roles = $repository->findAllExcept($excludedRoles) ;
 
         return $this->render('EgzaktSystemBundle:Backend/User/User:list.html.twig', array('roles' => $roles));
     }
@@ -73,7 +75,8 @@ class UserController extends BaseController
      */
     public function editAction($id, Request $request)
     {
-        $user = $this->getRepository('EgzaktSystemBundle:User')->findOrCreate($id);
+        $repository = $this->getRepository('EgzaktSystemBundle:User');
+        $user = $repository->findOrCreate($id);
 
         $this->pushNavigationElement($user);
 
@@ -92,7 +95,7 @@ class UserController extends BaseController
             if ($form->isValid()) {
 
                 // All Users are automatically granted the ROLE_BACKEND_ACCESS Role
-                $backendAccessRole = $this->getRepository('EgzaktSystemBundle:Role')->findRoleOrCreate(Role::ROLE_BACKEND_ACCESS);
+                $backendAccessRole = $repository->findRoleOrCreate(Role::ROLE_BACKEND_ACCESS);
                 $user->addRole($backendAccessRole);
 
                 // New password set
@@ -105,7 +108,7 @@ class UserController extends BaseController
 
                 $user->setPassword($encodedPassword);
 
-                $this->getRepository('EgzaktSystemBundle:User')->persistAndFlush($user);
+                $repository->persistAndFlush($user);
 
                 $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
                     '%entity% has been updated.',
@@ -140,7 +143,8 @@ class UserController extends BaseController
      */
     public function deleteAction(Request $request, $id)
     {
-        $user = $this->getRepository('EgzaktSystemBundle:User')->findOr404($id);
+        $repository = $this->getRepository('EgzaktSystemBundle:User');
+        $user = $repository->findOr404($id);
         $connectedUser = $this->getUser();
 
         if ($request->get('message')) {
@@ -169,7 +173,7 @@ class UserController extends BaseController
                 array('%entity%' => $user != '' ? $user : $user->getEntityName()))
             );
 
-            $this->getRepository('EgzaktSystemBundle:User')->removeAndFlush($user);
+            $repository->removeAndFlush($user);
         }
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_user'));
