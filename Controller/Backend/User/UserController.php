@@ -75,8 +75,8 @@ class UserController extends BaseController
      */
     public function editAction($id, Request $request)
     {
-        $repository = $this->getRepository('EgzaktSystemBundle:User');
-        $user = $repository->findOrCreate($id);
+        $repositoryUser = $this->getRepository('EgzaktSystemBundle:User');
+        $user = $repositoryUser->findOrCreate($id);
 
         $this->pushNavigationElement($user);
 
@@ -95,20 +95,18 @@ class UserController extends BaseController
             if ($form->isValid()) {
 
                 // All Users are automatically granted the ROLE_BACKEND_ACCESS Role
-                $backendAccessRole = $repository->findRoleOrCreate(Role::ROLE_BACKEND_ACCESS);
+                $repositoryRole = $this->getRepository('EgzaktSystemBundle:Role');
+                $backendAccessRole = $repositoryRole->findRoleOrCreate(Role::ROLE_BACKEND_ACCESS);
                 $user->addRole($backendAccessRole);
 
                 // New password set
+                $encoder = null;
                 if ($form->get('password')->getData()) {
                     $encoder = $this->get('security.encoder_factory')->getEncoder($user);
-                    $encodedPassword = $encoder->encodePassword($user->getPassword(), $user->getSalt());
-                } else {
-                    $encodedPassword = $previousEncodedPassword;
                 }
+                $user->encodePassword($encoder, $previousEncodedPassword);
 
-                $user->setPassword($encodedPassword);
-
-                $repository->persistAndFlush($user);
+                $repositoryUser->persistAndFlush($user);
 
                 $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
                     '%entity% has been updated.',

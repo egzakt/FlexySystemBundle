@@ -142,6 +142,19 @@ class User extends BaseEntity implements AdvancedUserInterface, \Serializable
     }
 
     /**
+     * @param $encoder
+     */
+    public function encodePassword($encoder, $previousEncodedPassword)
+    {
+        if ( null == $encoder ) {
+            $this->setPassword( $previousEncodedPassword );
+        } else {
+            $encodedPassword = $encoder->encodePassword($this->getPassword(), $this->getSalt());
+            $this->setPassword($encodedPassword);
+        }
+    }
+
+    /**
      * Get password
      *
      * @return string
