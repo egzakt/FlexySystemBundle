@@ -411,7 +411,7 @@ abstract class BaseEntityRepository extends EntityRepository implements Containe
 
     /**
      * @param $id
-     * @return object
+     * @return \Egzakt\SystemBundle\Lib\BaseEntity
      * @throws \Doctrine\ORM\EntityNotFoundException
      */
     public function findOr404($id)

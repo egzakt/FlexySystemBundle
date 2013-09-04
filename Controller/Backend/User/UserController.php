@@ -147,7 +147,7 @@ class UserController extends BaseController
 
         if ($request->get('message')) {
 
-            if ($connectedUser instanceof User && $connectedUser->getId() == $user->getId()) {
+            if ($connectedUser instanceof User && $connectedUser->equals($user) ) {
                 $isDeletable = false;
                 $template = $this->get('translator')->trans('You can\'t delete yourself.');
             } else {
@@ -163,7 +163,7 @@ class UserController extends BaseController
             )));
         }
 
-        if ($connectedUser instanceof User && $connectedUser->getId() != $user->getId()) {
+        if ($connectedUser instanceof User && !$connectedUser->equals($user) ) {
 
             // Call the translator before we flush the entity so we can have the real __toString()
             $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
