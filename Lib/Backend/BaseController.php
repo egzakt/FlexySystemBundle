@@ -186,4 +186,13 @@ abstract class BaseController extends Controller implements BaseControllerInterf
     protected function addFlash($type, $message) {
         $this->get('session')->getFlashBag()->add($type, $message);
     }
+
+    /**
+     * @param $classname
+     * @return \Egzakt\SystemBundle\Lib\BaseEntityRepository
+     */
+    protected function getRepository($classname)
+    {
+        return $this->getDoctrine()->getRepository($classname);
+    }
 }

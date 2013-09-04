@@ -2,6 +2,7 @@
 
 namespace Egzakt\SystemBundle\Lib;
 
+use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\Exception\BadMethodCallException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -398,5 +399,46 @@ abstract class BaseEntityRepository extends EntityRepository implements Containe
             throw ORMException::invalidFindByCall($this->_entityName, $fieldName, $method.$by);
         }
     }
+
+    /**
+     * @param $object
+     */
+    public function persistAndFlush($object)
+    {
+        $this->getEntityManager()->persist($object);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param $id
+     * @return object
+     * @throws \Doctrine\ORM\EntityNotFoundException
+     */
+    public function findOr404($id)
+    {
+        $object = $this->find($id);
+        if ( null == $object ) {
+            throw new EntityNotFoundException('Entity of "'.get_class($this).'" not found.');
+        }
+        return $object;
+    }
+
+    /**
+     * @param $object
+     */
+    public function removeAndFlush($object)
+    {
+        $this->getEntityManager()->remove($object);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param $object
+     */
+    public function updateAndFlush($object)
+    {
+        $this->getEntityManager()->flush();
+    }
+
 }
 

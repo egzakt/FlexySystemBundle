@@ -63,4 +63,14 @@ class RoleRepository extends BaseEntityRepository
 
         return $this->processQuery($queryBuilder);
     }
+
+    public function findRoleOrCreate($roleName)
+    {
+        $role = $this->findOneBy(array('role' => $roleName));
+        if ( null == $role ) {
+            $role = new Role();
+            $role->setRole($roleName);
+        }
+        return $role;
+    }
 }
