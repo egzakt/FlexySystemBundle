@@ -31,18 +31,18 @@ class UserController extends BaseController
         parent::init();
 
         // Check if the current User has the privileges
-        if (!$this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN')) {
+        if (!$this->get('security.context')->isGranted(Role::ROLE_BACKEND_ADMIN)) {
             throw new AccessDeniedHttpException();
         }
 
         $this->createAndPushNavigationElement('Users', 'egzakt_system_backend_user');
 
         // Check if the current User has the privileges
-        if (!$this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN')) {
+        if (!$this->get('security.context')->isGranted(Role::ROLE_BACKEND_ADMIN)) {
             throw new AccessDeniedHttpException();
         }
 
-        $this->isDeveloper = $this->get('security.context')->isGranted('ROLE_DEVELOPER');
+        $this->isDeveloper = $this->get('security.context')->isGranted(Role::ROLE_DEVELOPER);
     }
 
     /**
@@ -52,11 +52,13 @@ class UserController extends BaseController
      */
     public function indexAction()
     {
-        if (!$this->isDeveloper) {
-            $roles = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findAllExcept(array('ROLE_DEVELOPER', 'ROLE_BACKEND_ACCESS'));
-        } else {
-            $roles = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findAllExcept('ROLE_BACKEND_ACCESS');
+
+        $excludedRoles = array(Role::ROLE_BACKEND_ACCESS);
+        if ( !$this->isDeveloper ) {
+            $excludedRoles[] = Role::ROLE_DEVELOPER;
         }
+
+        $roles = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findAllExcept($excludedRoles) ;
 
         return $this->render('EgzaktSystemBundle:Backend/User/User:list.html.twig', array('roles' => $roles));
     }
@@ -95,10 +97,10 @@ class UserController extends BaseController
             if ($form->isValid()) {
 
                 // All Users are automatically granted the ROLE_BACKEND_ACCESS Role
-                $backendAccessRole = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findOneBy(array('role' => 'ROLE_BACKEND_ACCESS'));
+                $backendAccessRole = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findOneBy(array('role' => Role::ROLE_BACKEND_ACCESS));
                 if (!$backendAccessRole) {
                     $backendAccessRole = new Role();
-                    $backendAccessRole->setRole('ROLE_BACKEND_ACCESS');
+                    $backendAccessRole->setRole(Role::ROLE_BACKEND_ACCESS);
                     $this->getEm()->persist($backendAccessRole);
                 }
 

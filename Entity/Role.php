@@ -15,6 +15,11 @@ use Egzakt\SystemBundle\Lib\BaseEntity;
  */
 class Role extends BaseEntity implements RoleInterface, \Serializable
 {
+
+    const ROLE_BACKEND_ACCESS = 'ROLE_BACKEND_ACCESS';
+    const ROLE_DEVELOPER = 'ROLE_DEVELOPER';
+    const ROLE_BACKEND_ADMIN = 'ROLE_BACKEND_ADMIN';
+
     /**
      * @var string $role
      */
