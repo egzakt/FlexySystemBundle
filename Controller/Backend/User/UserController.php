@@ -58,7 +58,7 @@ class UserController extends BaseController
             $excludedRoles[] = Role::ROLE_DEVELOPER;
         }
 
-        $roles = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findAllExcept($excludedRoles) ;
+        $roles = $this->getRepository('EgzaktSystemBundle:Role')->findAllExcept($excludedRoles) ;
 
         return $this->render('EgzaktSystemBundle:Backend/User/User:list.html.twig', array('roles' => $roles));
     }
@@ -73,12 +73,7 @@ class UserController extends BaseController
      */
     public function editAction($id, Request $request)
     {
-        $user = $this->getEm()->getRepository('EgzaktSystemBundle:User')->find($id);
-
-        if (!$user) {
-            $user = new User();
-            $user->setContainer($this->container);
-        }
+        $user = $this->getRepository('EgzaktSystemBundle:User')->findOrCreate($id);
 
         $this->pushNavigationElement($user);
 
@@ -97,13 +92,7 @@ class UserController extends BaseController
             if ($form->isValid()) {
 
                 // All Users are automatically granted the ROLE_BACKEND_ACCESS Role
-                $backendAccessRole = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findOneBy(array('role' => Role::ROLE_BACKEND_ACCESS));
-                if (!$backendAccessRole) {
-                    $backendAccessRole = new Role();
-                    $backendAccessRole->setRole(Role::ROLE_BACKEND_ACCESS);
-                    $this->getEm()->persist($backendAccessRole);
-                }
-
+                $backendAccessRole = $this->getRepository('EgzaktSystemBundle:Role')->findRoleOrCreate(Role::ROLE_BACKEND_ACCESS);
                 $user->addRole($backendAccessRole);
 
                 // New password set
@@ -116,8 +105,7 @@ class UserController extends BaseController
 
                 $user->setPassword($encodedPassword);
 
-                $this->getEm()->persist($user);
-                $this->getEm()->flush();
+                $this->getRepository('EgzaktSystemBundle:User')->persistAndFlush($user);
 
                 $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
                     '%entity% has been updated.',
@@ -152,12 +140,8 @@ class UserController extends BaseController
      */
     public function deleteAction(Request $request, $id)
     {
-        $user = $this->getEm()->getRepository('EgzaktSystemBundle:User')->find($id);
+        $user = $this->getRepository('EgzaktSystemBundle:User')->findOr404($id);
         $connectedUser = $this->getUser();
-
-        if (!$user) {
-            throw $this->createNotFoundException('Unable to find User entity.');
-        }
 
         if ($request->get('message')) {
 
@@ -185,8 +169,7 @@ class UserController extends BaseController
                 array('%entity%' => $user != '' ? $user : $user->getEntityName()))
             );
 
-            $this->getEm()->remove($user);
-            $this->getEm()->flush();
+            $this->getRepository('EgzaktSystemBundle:User')->removeAndFlush($user);
         }
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_user'));
