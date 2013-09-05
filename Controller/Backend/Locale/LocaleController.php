@@ -2,13 +2,14 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\Locale;
 
+use Egzakt\SystemBundle\Entity\LocaleRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Egzakt\SystemBundle\Lib\Backend\BaseController;
-use Egzakt\SystemBundle\Entity\Locale;
 use Egzakt\SystemBundle\Form\Backend\LocaleType;
 
 /**
@@ -16,12 +17,22 @@ use Egzakt\SystemBundle\Form\Backend\LocaleType;
  */
 class LocaleController extends BaseController
 {
+
+    /**
+     * @var LocaleRepository
+     */
+    private $localeRepository;
+
+
+
     /**
      * Init
      */
     public function init()
     {
         parent::init();
+
+        $this->setLocaleRepository( $this->getRepository('EgzaktSystemBundle:Locale') );
     }
 
     /**
@@ -31,7 +42,7 @@ class LocaleController extends BaseController
      */
     public function listAction()
     {
-        $locales = $this->getEm()->getRepository('EgzaktSystemBundle:Locale')->findAll();
+        $locales = $this->getLocaleRepository()->findAll();
 
         return $this->render('EgzaktSystemBundle:Backend/Locale/Locale:list.html.twig', array(
             'locales' => $locales
@@ -48,16 +59,8 @@ class LocaleController extends BaseController
      */
     public function editAction($id, Request $request)
     {
-        /**
-         * @var $locale Locale
-         */
-        $locale = $this->getEm()->getRepository('EgzaktSystemBundle:Locale')->find($id);
 
-        if (false == $locale) {
-            $locale = new Locale();
-            $locale->setContainer($this->container);
-        }
-
+        $locale = $this->getLocaleRepository()->findOrCreate($id);
         $form = $this->createForm(new LocaleType(), $locale);
 
         if ('POST' == $request->getMethod()) {
@@ -66,21 +69,17 @@ class LocaleController extends BaseController
 
             if ($form->isValid()) {
 
-                $this->getEm()->persist($locale);
-                $this->getEm()->flush();
+                $this->getLocaleRepository()->persistAndFlush($locale);
 
-                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-                    '%entity% has been updated.',
-                    array('%entity%' => $locale))
+                $this->setSuccessFlash(
+                    $this->translate('%entity% has been updated.', array('%entity%' => $locale) )
                 );
 
-                if ($request->request->has('save')) {
-                    return $this->redirect($this->generateUrl('egzakt_system_backend_locale'));
-                }
+                return $this->redirectIf( $request->request->has('save'),
+                    $this->generateUrl('egzakt_system_backend_locale'),
+                    $this->generateUrl($locale->getRoute(), $locale->getRouteParams())
+                );
 
-                return $this->redirect($this->generateUrl($locale->getRoute(), $locale->getRouteParams()));
-            } else {
-                $this->get('session')->getFlashBag()->add('error', 'Some fields are invalid.');
             }
         }
 
@@ -102,33 +101,46 @@ class LocaleController extends BaseController
      */
     public function deleteAction(Request $request, $id)
     {
-        $locale = $this->getEm()->getRepository('EgzaktSystemBundle:Locale')->find($id);
-
-        if (!$locale) {
-            throw $this->createNotFoundException('Unable to find a locale entity using id "' . $id . '".');
-        }
+        $locale = $this->getLocaleRepository()->findOrThrow($id);
 
         if ($request->get('message')) {
             $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
                 'entity' => $locale
             ));
 
-            return new Response(json_encode(array(
+            return new JsonResponse(array(
                 'template' => $template,
                 'isDeletable' => $locale->isDeletable()
-            )));
+                )
+            );
         }
 
+        $this->getLocaleRepository()->removeAndFlush($locale);
+
         // Call the translator before we flush the entity so we can have the real __toString()
-        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-            '%entity% has been deleted.',
-            array('%entity%' => $locale != '' ? $locale : $locale->getEntityName()))
+        $this->setSuccessFlash(
+            $this->translate('%entity% has been deleted.',
+                array('%entity%' => $locale != '' ? $locale : $locale->getEntityName())
+            )
         );
 
-        $this->getEm()->remove($locale);
-        $this->getEm()->flush();
-
         return $this->redirect($this->generateUrl('egzakt_system_backend_locale'));
+    }
+
+    /**
+     * @return LocaleRepository
+     */
+    protected function getLocaleRepository()
+    {
+        return $this->localeRepository;
+    }
+
+    /**
+     * @param LocaleRepository $repository
+     */
+    protected function setLocaleRepository(LocaleRepository $repository)
+    {
+        $this->localeRepository = $repository;
     }
 
 }

@@ -193,14 +193,10 @@ abstract class BaseController extends Controller implements BaseControllerInterf
     {
         $this->addFlash('success', $message);
     }
-    protected function setErrorFlash($message)
-    {
-        $this->addFlash('error', $message);
-    }
 
     /**
      * @param $classname
-     * @return \Egzakt\SystemBundle\Lib\BaseEntityRepository
+     * @return BaseEntityRepository
      */
     protected function getRepository($classname)
     {
@@ -214,7 +210,7 @@ abstract class BaseController extends Controller implements BaseControllerInterf
 
     protected function redirectIf($condition, $ifTrue, $ifFalse)
     {
-        $this->redirect( $condition ? $ifTrue : $ifFalse );
+        return $this->redirect( $condition ? $ifTrue : $ifFalse );
     }
 
     protected function translate($text, $args = array())

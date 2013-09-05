@@ -37,4 +37,16 @@ class LocaleRepository extends BaseEntityRepository
         return $query->getResult();
     }
 
+    public function findOrCreate($id)
+    {
+
+        $locale = $this->find($id);
+        if ( null === $locale ) {
+            $locale = new Locale();
+            $locale->setContainer($this->container);
+        }
+
+        return $locale;
+    }
+
 }
