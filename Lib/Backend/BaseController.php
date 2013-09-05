@@ -4,7 +4,6 @@ namespace Egzakt\SystemBundle\Lib\Backend;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -223,4 +222,8 @@ abstract class BaseController extends Controller implements BaseControllerInterf
         return $this->get('translator')->trans($text, $args);
     }
 
+    protected function getSecurity()
+    {
+        return $this->get('security.context');
+    }
 }

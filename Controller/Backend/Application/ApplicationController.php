@@ -29,7 +29,7 @@ class ApplicationController extends BaseController
      */
     public function init()
     {
-        if (false === $this->get('security.context')->isGranted('ROLE_DEVELOPER')) {
+        if (false === $this->getSecurity()->isGranted('ROLE_DEVELOPER')) {
             throw new AccessDeniedHttpException();
         }
 
