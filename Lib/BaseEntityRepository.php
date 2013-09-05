@@ -441,5 +441,10 @@ abstract class BaseEntityRepository extends EntityRepository implements Containe
         $this->getEntityManager()->flush();
     }
 
+    public function getReference($id)
+    {
+        return $this->getEntityManager()->getReference($this->getClassName(), $id);
+    }
+
 }
 
