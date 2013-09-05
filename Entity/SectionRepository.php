@@ -233,4 +233,5 @@ class SectionRepository extends BaseEntityRepository
         // Return the list of IDs in a single array
         return $ids;
     }
+
 }
