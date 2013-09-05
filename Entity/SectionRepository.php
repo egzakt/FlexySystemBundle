@@ -234,4 +234,74 @@ class SectionRepository extends BaseEntityRepository
         return $ids;
     }
 
+    public function findByParent(Section $parent)
+    {
+        return $this->findBy(
+            array(
+                'parent' => $parent->getId(),
+            ),
+            array('ordering' => 'ASC')
+        );
+
+    }
+
+
+    public function findOrCreate($id, Section $parent, App $app)
+    {
+        $section = $this->find($id);
+        if ( null === $section ) {
+            $section = new Section();
+            $section->setContainer($this->container);
+            $section->setParent($parent);
+            $section->setApp($app);
+        }
+        return $section;
+    }
+
+
+    public function mergeAndFlush(Section $section, App $currentApp, Navigation $navBar, App $backendApp)
+    {
+
+        if (false == $section->getId()) {
+
+            $mapping = new Mapping();
+            $mapping->setSection($section);
+            $mapping->setApp($backendApp);
+            $mapping->setType('route');
+            $mapping->setTarget('egzakt_system_backend_text');
+
+            $section->addMapping($mapping);
+
+            $mapping = new Mapping();
+            $mapping->setSection($section);
+            $mapping->setApp($backendApp);
+            $mapping->setNavigation($navBar);
+            $mapping->setType('render');
+            $mapping->setTarget('EgzaktSystemBundle:Backend/Text/Navigation:SectionModuleBar');
+
+            $section->addMapping($mapping);
+
+            $mapping = new Mapping();
+            $mapping->setSection($section);
+            $mapping->setApp($backendApp);
+            $mapping->setNavigation($navBar);
+            $mapping->setType('render');
+            $mapping->setTarget('EgzaktSystemBundle:Backend/Section/Navigation:SectionModuleBar');
+
+            $section->addMapping($mapping);
+
+            // Frontend mapping
+            $mapping = new Mapping();
+            $mapping->setSection($section);
+            $mapping->setApp($currentApp);
+            $mapping->setType('route');
+            $mapping->setTarget('egzakt_system_frontend_text');
+
+            $section->addMapping($mapping);
+
+        }
+
+        $this->persistAndFlush($section);
+
+    }
 }

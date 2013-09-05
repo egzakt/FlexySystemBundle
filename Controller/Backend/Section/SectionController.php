@@ -2,6 +2,7 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\Section;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -10,9 +11,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Egzakt\SystemBundle\Lib\Backend\BaseController;
 use Egzakt\SystemBundle\Entity\Mapping;
-use Egzakt\SystemBundle\Entity\NavigationRepository;
-use Egzakt\SystemBundle\Entity\Section;
-use Egzakt\SystemBundle\Entity\SectionRepository;
 use Egzakt\SystemBundle\Form\Backend\SectionType;
 
 /**
@@ -22,14 +20,19 @@ use Egzakt\SystemBundle\Form\Backend\SectionType;
 class SectionController extends BaseController
 {
     /**
-     * @var SectionRepository
+     * @var \Egzakt\SystemBundle\Entity\SectionRepository
      */
-    protected $sectionRepository;
+    private $sectionRepository;
 
     /**
-     * @var NavigationRepository
+     * @var \Egzakt\SystemBundle\Entity\NavigationRepository
      */
-    protected $navigationRepository;
+    private $navigationRepository;
+
+    /**
+     * @var \Egzakt\SystemBundle\Entity\AppRepository
+     */
+    private $appRepository;
 
     /**
      * Init
@@ -38,9 +41,11 @@ class SectionController extends BaseController
     {
         parent::init();
 
-        $this->sectionRepository = $this->getEm()->getRepository('EgzaktSystemBundle:Section');
-        $this->navigationRepository = $this->getEm()->getRepository('EgzaktSystemBundle:Navigation');
+        $this->sectionRepository = $this->getRepository('EgzaktSystemBundle:Section');
+        $this->navigationRepository = $this->getRepository('EgzaktSystemBundle:Navigation');
+        $this->appRepository = $this->getRepository('EgzaktSystemBundle:App');
     }
+
 
     /**
      * Lists all Section entities.
@@ -49,10 +54,7 @@ class SectionController extends BaseController
      */
     public function indexAction()
     {
-        $entities = $this->sectionRepository->findBy(
-            array('parent' => $this->getSection()->getId()),
-            array('ordering' => 'ASC')
-        );
+        $entities = $this->getSectionRepository()->findByParent($this->getSection());
 
         return $this->render('EgzaktSystemBundle:Backend/Section/Section:list.html.twig', array(
             'entities' => $entities,
@@ -72,17 +74,8 @@ class SectionController extends BaseController
         $section = $this->getSection();
         $app = $this->getApp();
 
-        $entity = $this->sectionRepository->find($id);
-
-        if (!$entity) {
-            $entity = new Section();
-            $entity->setContainer($this->container);
-            $entity->setParent($section);
-            $entity->setApp($app);
-        }
-
+        $entity = $this->getSectionRepository()->findOrCreate($id, $section, $app);
         $this->getCore()->addNavigationElement($entity);
-
         $form = $this->createForm(new SectionType(), $entity, array('current_section' => $entity, 'managed_app' => $this->getApp()));
 
         if ('POST' === $request->getMethod()) {
@@ -91,69 +84,30 @@ class SectionController extends BaseController
 
             if ($form->isValid()) {
 
-                $this->getEm()->persist($entity);
+                $appBackend = $this->getAppRepository()->findOneByName('backend');
+                $currentApp = $this->getApp();
+                $navBar = $this->getNavigationRepository()->find(NavigationRepository::SECTION_MODULE_BAR_ID);
+                $this->getSectionRepository()->mergeAndFlush($entity, $currentApp, $navBar, $appBackend);
 
-                // On insert
-                if (false == $id) {
-
-                    $sectionModuleBar = $this->navigationRepository->find(NavigationRepository::SECTION_MODULE_BAR_ID);
-
-                    $app = $this->getEm()->getRepository('EgzaktSystemBundle:App')->findOneByName('backend');
-
-                    $mapping = new Mapping();
-                    $mapping->setSection($entity);
-                    $mapping->setApp($app);
-                    $mapping->setType('route');
-                    $mapping->setTarget('egzakt_system_backend_text');
-
-                    $entity->addMapping($mapping);
-
-                    $mapping = new Mapping();
-                    $mapping->setSection($entity);
-                    $mapping->setApp($app);
-                    $mapping->setNavigation($sectionModuleBar);
-                    $mapping->setType('render');
-                    $mapping->setTarget('EgzaktSystemBundle:Backend/Text/Navigation:SectionModuleBar');
-
-                    $entity->addMapping($mapping);
-
-                    $mapping = new Mapping();
-                    $mapping->setSection($entity);
-                    $mapping->setApp($app);
-                    $mapping->setNavigation($sectionModuleBar);
-                    $mapping->setType('render');
-                    $mapping->setTarget('EgzaktSystemBundle:Backend/Section/Navigation:SectionModuleBar');
-
-                    $entity->addMapping($mapping);
-
-                    // Frontend mapping
-                    $mapping = new Mapping();
-                    $mapping->setSection($entity);
-                    $mapping->setApp($this->getApp());
-                    $mapping->setType('route');
-                    $mapping->setTarget('egzakt_system_frontend_text');
-
-                    $entity->addMapping($mapping);
-                }
-
-                $this->getEm()->flush();
-
-                $this->get('egzakt_system.router_invalidator')->invalidate();
-
-                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-                    '%entity% has been updated.',
-                    array('%entity%' => $entity))
+                $this->invalidateRouter();
+                $this->setSuccessFlash(
+                    $this->translate(
+                        '%entity% has been updated.',
+                        array('%entity%' => $entity)
+                    )
                 );
 
-                if ($request->get('save')) {
-                    return $this->redirect($this->generateUrl('egzakt_system_backend_section'));
-                }
+                $this->redirectIf(
+                    $request->get('save'),
+                    $this->generateUrl('egzakt_system_backend_section'),
+                    $this->generateUrl('egzakt_system_backend_section_edit', array(
+                            'id' => $entity->getId() ?: 0
+                        )
+                    )
+                );
 
-                return $this->redirect($this->generateUrl('egzakt_system_backend_section_edit', array(
-                    'id' => $entity->getId() ?: 0
-                )));
             } else {
-                $this->get('session')->getFlashBag()->add('error', 'Some fields are invalid.');
+                $this->setErrorFlash('Some fields are invalid.');
             }
         }
 
@@ -175,33 +129,31 @@ class SectionController extends BaseController
      */
     public function deleteAction(Request $request, $id)
     {
-        $section = $this->sectionRepository->find($id);
-
-        if (!$section) {
-            throw $this->createNotFoundException('Unable to find Section entity.');
-        }
+        $section = $this->getSectionRepository()->findOrThrow($id);
 
         if ($request->get('message')) {
             $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
                 'entity' => $section
             ));
 
-            return new Response(json_encode(array(
-                'template' => $template,
-                'isDeletable' => $section->isDeletable()
-            )));
+            return new JsonResponse(
+                array(
+                    'template' => $template,
+                    'isDeletable' => $section->isDeletable()
+                )
+            );
         }
 
         // Call the translator before we flush the entity so we can have the real __toString()
-        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-            '%entity% has been deleted.',
-            array('%entity%' => $section->getName() != '' ? $section->getName() : $section->getEntityName()))
+        $this->setSuccessFlash(
+            $this->translate('%entity% has been deleted.', array(
+                '%entity%' => $section->getName() != '' ? $section->getName() : $section->getEntityName()
+                )
+            )
         );
 
-        $this->getEm()->remove($section);
-        $this->getEm()->flush();
-
-        $this->get('egzakt_system.router_invalidator')->invalidate();
+        $this->getSectionRepository()->removeAndFlush($section);
+        $this->invalidateRoute();
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_section'));
     }
@@ -224,20 +176,43 @@ class SectionController extends BaseController
             foreach ($elements as $element) {
 
                 $element = explode('_', $element);
-                $entity = $this->sectionRepository->find($element[1]);
+                $entity = $this->getSectionRepository()->find($element[1]);
 
                 if ($entity) {
                     $entity->setOrdering(++$i);
-                    $this->getEm()->persist($entity);
+                    $this->getSectionRepository->persistAndFlush($entity);
                 }
 
-                $this->getEm()->flush();
             }
 
-            $this->get('egzakt_system.router_invalidator')->invalidate();
+            $this->invalidateRouter();
         }
 
         return new Response('');
+    }
+
+    /**
+     * @return \Egzakt\SystemBundle\Entity\SectionRepository
+     */
+    protected function getSectionRepository()
+    {
+        return $this->sectionRepository;
+    }
+
+    /**
+     * @return \Egzakt\SystemBundle\Entity\NavigationRepository
+     */
+    protected function getNavigationRepository()
+    {
+        return $this->navigationRepository;
+    }
+
+    /**
+     * @return \Egzakt\SystemBundle\Entity\AppRepository
+     */
+    protected function getAppRepository()
+    {
+        return $this->appRepository;
     }
 
 }

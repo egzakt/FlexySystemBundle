@@ -4,6 +4,8 @@ namespace Egzakt\SystemBundle\Lib\Backend;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Egzakt\SystemBundle\Entity\App;
@@ -183,8 +185,18 @@ abstract class BaseController extends Controller implements BaseControllerInterf
      * @param string $type
      * @param string $message
      */
-    protected function addFlash($type, $message) {
+    protected function addFlash($type, $message)
+    {
         $this->get('session')->getFlashBag()->add($type, $message);
+    }
+
+    protected function setSuccessFlash($message)
+    {
+        $this->addFlash('success', $message);
+    }
+    protected function setErrorFlash($message)
+    {
+        $this->addFlash('error', $message);
     }
 
     /**
