@@ -206,4 +206,9 @@ abstract class BaseController extends Controller implements BaseControllerInterf
         $this->redirect( $condition ? $ifTrue : $ifFalse );
     }
 
+    protected function translate($text, $args = array())
+    {
+        return $this->get('translator')->trans($text, $args);
+    }
+
 }

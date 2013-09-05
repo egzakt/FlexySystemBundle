@@ -23,6 +23,11 @@ class UserController extends BaseController
      */
     protected $isDeveloper;
 
+    protected function isDeveloper()
+    {
+        return $this->isDeveloper;
+    }
+
     /**
      * Init
      */
@@ -56,7 +61,7 @@ class UserController extends BaseController
         $repository = $this->getRepository('EgzaktSystemBundle:Role');
 
         $excludedRoles = array(Role::ROLE_BACKEND_ACCESS);
-        if ( !$this->isDeveloper ) {
+        if ( !$this->isDeveloper() ) {
             $excludedRoles[] = Role::ROLE_DEVELOPER;
         }
 
@@ -108,20 +113,16 @@ class UserController extends BaseController
 
                 $repositoryUser->persistAndFlush($user);
 
-                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-                    '%entity% has been updated.',
-                    array('%entity%' => $user))
+                $this->addFlash('success', $this->translate('%entity% has been updated.', array('%entity' => $user)) );
+
+                $this->redirectIf(
+                    $request->request->has('save'),
+                    $this->generateUrl('egzakt_system_backend_user'),
+                    $this->generateUrl('egzakt_system_backend_user_edit', array( 'id' => $user->getId() ?: 0 ) )
                 );
 
-                if ($request->request->has('save')) {
-                    return $this->redirect($this->generateUrl('egzakt_system_backend_user'));
-                }
-
-                return $this->redirect($this->generateUrl('egzakt_system_backend_user_edit', array(
-                    'id' => $user->getId()
-                )));
             } else {
-                $this->get('session')->getFlashBag()->add('error', 'Some fields are invalid.');
+                $this->addFlash('error', 'Some fields are invalid.');
             }
         }
 
