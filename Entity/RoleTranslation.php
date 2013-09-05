@@ -4,13 +4,12 @@ namespace Egzakt\SystemBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
-use Egzakt\SystemBundle\Lib\BaseTranslationEntity;
 use Egzakt\SystemBundle\Entity\Role;
 
 /**
  * RoleTranslation
  */
-class RoleTranslation extends BaseTranslationEntity
+class RoleTranslation
 {
     /**
      * @var integer $id
