@@ -143,7 +143,7 @@ class UserController extends BaseController
     public function deleteAction(Request $request, $id)
     {
         $repository = $this->getRepository('EgzaktSystemBundle:User');
-        $user = $repository->findOr404($id);
+        $user = $repository->findOrThrow($id);
         $connectedUser = $this->getUser();
 
         if ($request->get('message')) {

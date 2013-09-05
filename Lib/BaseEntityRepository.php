@@ -414,8 +414,9 @@ abstract class BaseEntityRepository extends EntityRepository implements Containe
      * @return \Egzakt\SystemBundle\Lib\BaseEntity
      * @throws \Doctrine\ORM\EntityNotFoundException
      */
-    public function findOr404($id)
+    public function findOrThrow($id)
     {
+
         $object = $this->find($id);
         if ( null == $object ) {
             throw new EntityNotFoundException('Entity of "'.get_class($this).'" not found.');

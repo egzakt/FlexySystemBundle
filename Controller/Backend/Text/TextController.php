@@ -115,7 +115,7 @@ class TextController extends BaseController
     public function deleteAction(Request $request, $id)
     {
         $repository = $this->getRepository('EgzaktSystemBundle:Text');
-        $text = $repository->findOr404($id);
+        $text = $repository->findOrThrow($id);
 
         if ($request->get('message')) {
             $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
