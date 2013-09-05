@@ -89,7 +89,7 @@ class TextController extends BaseController
                 $this->invalidateRouter();
                 $this->setSuccessFlash('The text has been updated.');
 
-                $this->redirectIf(
+                return $this->redirectIf(
                     $request->request->has('save'),
                     $this->generateUrl('egzakt_system_backend_text'),
                     $this->generateUrl('egzakt_system_backend_text_edit', array( 'id' => $text->getId() ?: 0 ) )

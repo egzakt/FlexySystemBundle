@@ -108,7 +108,7 @@ class RootController extends BaseController
                     $this->translate('%entity% has been updated.', array('%entity%' => $entity) )
                 );
 
-                $this->redirectIf( $request->request->has('save'),
+                return $this->redirectIf( $request->request->has('save'),
                     $this->generateUrl('egzakt_system_backend_section_root', array('appSlug' => $this->getApp()->getSlug()) ),
                     $this->generateUrl('egzakt_system_backend_section_root_edit', array(
                         'id' => $entity->getId() ? : 0,

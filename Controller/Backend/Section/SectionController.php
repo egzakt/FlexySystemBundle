@@ -100,7 +100,7 @@ class SectionController extends BaseController
                     )
                 );
 
-                $this->redirectIf(
+                return $this->redirectIf(
                     $request->get('save'),
                     $this->generateUrl('egzakt_system_backend_section'),
                     $this->generateUrl('egzakt_system_backend_section_edit', array(

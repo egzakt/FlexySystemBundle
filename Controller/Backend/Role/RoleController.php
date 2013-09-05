@@ -144,7 +144,7 @@ class RoleController extends BaseController
                     $this->translate('%entity% has been updated.', array('%entity%' => $entity) )
                 );
 
-                $this->redirectIf(
+                return $this->redirectIf(
                     $request->request->has('save'),
                     $this->generateUrl('egzakt_system_backend_role'),
                     $this->generateUrl('egzakt_system_backend_role_edit', array(

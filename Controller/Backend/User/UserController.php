@@ -120,7 +120,7 @@ class UserController extends BaseController
                 $this->getUserRepository()->persistAndFlush($user);
                 $this->setSuccessFlash($this->translate('%entity% has been updated.', array('%entity%' => $user)) );
 
-                $this->redirectIf(
+                return $this->redirectIf(
                     $request->request->has('save'),
                     $this->generateUrl('egzakt_system_backend_user'),
                     $this->generateUrl('egzakt_system_backend_user_edit', array( 'id' => $user->getId() ?: 0 ) )
