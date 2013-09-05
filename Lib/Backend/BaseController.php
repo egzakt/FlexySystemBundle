@@ -101,7 +101,7 @@ abstract class BaseController extends Controller implements BaseControllerInterf
 
     /**
      * Get the Entity Manager
-     *
+     * @deprecated
      * @return EntityManager
      */
     public function getEm()
