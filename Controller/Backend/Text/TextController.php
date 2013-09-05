@@ -65,11 +65,8 @@ class TextController extends BaseController
      */
     public function editAction(Request $request, $id)
     {
-        $section = $this->getSection();
-
-        $text = $this->getTextRepository()->findOrCreate($id, $section);
-
-        $this->getCore()->addNavigationElement($text);
+        $text = $this->getTextRepository()->findOrCreate($id, $this->getSection());
+        $this->pushNavigationElement($text);
 
         if ($text->isStatic()) {
             $formType = new TextStaticType();
