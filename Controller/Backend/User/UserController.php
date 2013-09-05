@@ -124,8 +124,6 @@ class UserController extends BaseController
                     $this->generateUrl('egzakt_system_backend_user_edit', array( 'id' => $user->getId() ?: 0 ) )
                 );
 
-            } else {
-                $this->setErrorFlash('Some fields are invalid.');
             }
         }
 

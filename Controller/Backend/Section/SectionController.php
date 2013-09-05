@@ -106,8 +106,6 @@ class SectionController extends BaseController
                     )
                 );
 
-            } else {
-                $this->setErrorFlash('Some fields are invalid.');
             }
         }
 
@@ -180,7 +178,7 @@ class SectionController extends BaseController
 
                 if ($entity) {
                     $entity->setOrdering(++$i);
-                    $this->getSectionRepository->persistAndFlush($entity);
+                    $this->getSectionRepository()->persistAndFlush($entity);
                 }
 
             }

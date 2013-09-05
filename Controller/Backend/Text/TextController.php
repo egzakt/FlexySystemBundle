@@ -95,8 +95,6 @@ class TextController extends BaseController
                     $this->generateUrl('egzakt_system_backend_text_edit', array( 'id' => $text->getId() ?: 0 ) )
                 );
 
-            } else {
-                $this->setErrorFlash('Some fields are invalid.');
             }
         }
 

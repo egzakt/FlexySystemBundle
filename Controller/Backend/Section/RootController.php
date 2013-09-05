@@ -3,6 +3,7 @@
 namespace Egzakt\SystemBundle\Controller\Backend\Section;
 
 
+use Egzakt\SystemBundle\Entity\NavigationRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -113,8 +114,6 @@ class RootController extends BaseController
                     )
                 );
 
-            } else {
-                $this->setErrorFlash('Some fields are invalid.');
             }
         }
 
