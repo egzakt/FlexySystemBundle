@@ -39,14 +39,14 @@ class TextController extends BaseController
     {
         $section = $this->getSection();
 
-        $mainEntities = $this->getEm()->getRepository('EgzaktSystemBundle:Text')->findBy(array(
+        $mainEntities = $this->getRepository('EgzaktSystemBundle:Text')->findBy(array(
             'section' => $section->getId(),
             'static' => false
         ), array(
             'ordering' => 'ASC'
         ));
 
-        $staticEntities = $this->getEm()->getRepository('EgzaktSystemBundle:Text')->findBy(array(
+        $staticEntities = $this->getRepository('EgzaktSystemBundle:Text')->findBy(array(
             'section' => $section->getId(),
             'static' => true
         ), array(
@@ -70,15 +70,10 @@ class TextController extends BaseController
      */
     public function editAction(Request $request, $id)
     {
+        $repository = $this->getRepository('EgzaktSystemBundle:Text');
         $section = $this->getSection();
 
-        $text = $this->getEm()->getRepository('EgzaktSystemBundle:Text')->find($id);
-
-        if (false == $text) {
-            $text = new Text();
-            $text->setContainer($this->container);
-            $text->setSection($section);
-        }
+        $text = $repository->findOrCreate($id, $section);
 
         $this->getCore()->addNavigationElement($text);
 
@@ -96,9 +91,7 @@ class TextController extends BaseController
 
             if ($form->isValid()) {
 
-                $em = $this->getEm();
-                $em->persist($text);
-                $em->flush();
+                $repository->persistAndFlush($text);
 
                 $this->get('egzakt_system.router_invalidator')->invalidate();
 
@@ -134,11 +127,8 @@ class TextController extends BaseController
      */
     public function deleteAction(Request $request, $id)
     {
-        $text = $this->getEm()->getRepository('EgzaktSystemBundle:Text')->find($id);
-
-        if (!$text) {
-            throw $this->createNotFoundException('Unable to find a Text entity using id "' . $id . '".');
-        }
+        $repository = $this->getRepository('EgzaktSystemBundle:Text');
+        $text = $repository->findOr404($id);
 
         if ($request->get('message')) {
             $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
@@ -151,8 +141,7 @@ class TextController extends BaseController
             )));
         }
 
-        $this->getEm()->remove($text);
-        $this->getEm()->flush();
+        $repository->removeAndFlush($text);
 
         $this->get('session')->getFlashBag()->add('success', 'The text has been deleted.');
 
@@ -169,6 +158,9 @@ class TextController extends BaseController
      */
     public function orderAction()
     {
+
+        $repository = $this->getRepository('EgzaktSystemBundle:Text');
+
         if ($this->getRequest()->isXmlHttpRequest()) {
 
             $i = 0;
@@ -177,13 +169,13 @@ class TextController extends BaseController
             foreach ($elements as $element) {
 
                 $element = explode('_', $element);
-                $entity = $this->getEm()->getRepository('EgzaktSystemBundle:Text')->find($element[1]);
+                $entity = $repository->find($element[1]);
 
                 if ($entity) {
                     $entity->setOrdering(++$i);
-                    $this->getEm()->persist($entity);
-                    $this->getEm()->flush();
+                    $repository->persistAndFlush($entity);
                 }
+
             }
 
             $this->get('egzakt_system.router_invalidator')->invalidate();
