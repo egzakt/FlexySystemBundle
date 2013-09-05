@@ -2,6 +2,7 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\Text;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -122,10 +123,12 @@ class TextController extends BaseController
                 'entity' => $text
             ));
 
-            return new Response(json_encode(array(
-                'template' => $template,
-                'isDeletable' => $text->isDeletable()
-            )));
+            return new JsonResponse(
+                array(
+                    'template' => $template,
+                    'isDeletable' => $text->isDeletable()
+                )
+            );
         }
 
         $repository->removeAndFlush($text);

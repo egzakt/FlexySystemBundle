@@ -2,6 +2,7 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\User;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -158,10 +159,12 @@ class UserController extends BaseController
                 ));
             }
 
-            return new Response(json_encode(array(
-                'template' => $template,
-                'isDeletable' => $isDeletable
-            )));
+            return new JsonResponse(
+                array(
+                    'template' => $template,
+                    'isDeletable' => $isDeletable
+                )
+            );
         }
 
         if ($connectedUser instanceof User && !$connectedUser->equals($user) ) {
