@@ -3,15 +3,12 @@
 namespace Egzakt\SystemBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\ExecutionContext;
-
-use Egzakt\SystemBundle\Lib\BaseTranslationEntity;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
 /**
  * TextTranslation
  */
-class TextTranslation extends BaseTranslationEntity
+class TextTranslation
 {
     /**
      * @var integer $id

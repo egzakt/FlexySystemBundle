@@ -476,7 +476,7 @@ abstract class BaseEntity implements EntityInterface, NavigationElementInterface
      *
      * @param string $locale
      *
-     * @return \Egzakt\Backend\CoreBundle\Lib\BaseTranslationEntity
+     * @return mixed
      */
     public function translate($locale = null)
     {
@@ -517,7 +517,7 @@ abstract class BaseEntity implements EntityInterface, NavigationElementInterface
      *
      * @param string $locale The locale in which we want to get the translation entity
      *
-     * @return \Egzakt\Backend\CoreBundle\Lib\BaseTranslationEntity
+     * @return mixed
      */
     public function getTranslation($locale = null)
     {
