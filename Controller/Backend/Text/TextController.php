@@ -10,7 +10,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Egzakt\SystemBundle\Lib\Backend\BaseController;
-use Egzakt\SystemBundle\Entity\Text;
 use Egzakt\SystemBundle\Form\Backend\TextMainType;
 use Egzakt\SystemBundle\Form\Backend\TextStaticType;
 
@@ -21,6 +20,20 @@ use Egzakt\SystemBundle\Form\Backend\TextStaticType;
  */
 class TextController extends BaseController
 {
+
+    /**
+     * @var \Egzakt\SystemBundle\Entity\TextRepository
+     */
+    private $textRepository;
+
+    /**
+     * @return \Egzakt\SystemBundle\Entity\TextRepository
+     */
+    protected function getTextRepository()
+    {
+        return $this->textRepository;
+    }
+
     /**
      * Init
      */
@@ -28,6 +41,7 @@ class TextController extends BaseController
     {
         parent::init();
 
+        $this->textRepository = $this->getRepository('EgzaktSystemBundle:Text');
         $this->createAndPushNavigationElement('Text list', 'egzakt_system_backend_text');
     }
 
@@ -38,11 +52,10 @@ class TextController extends BaseController
      */
     public function indexAction()
     {
-        $repository = $this->getRepository('EgzaktSystemBundle:Text');
         $section = $this->getSection();
 
-        $mainEntities = $repository->findNonStaticBySection($section);
-        $staticEntities = $repository->findStaticBySection($section);
+        $mainEntities = $this->getTextRepository()->findNonStaticBySection($section);
+        $staticEntities = $this->getTextRepository()->findStaticBySection($section);
 
         return $this->render('EgzaktSystemBundle:Backend/Text/Text:list.html.twig', array(
             'mainEntities' => $mainEntities,
@@ -61,10 +74,9 @@ class TextController extends BaseController
      */
     public function editAction(Request $request, $id)
     {
-        $repository = $this->getRepository('EgzaktSystemBundle:Text');
         $section = $this->getSection();
 
-        $text = $repository->findOrCreate($id, $section);
+        $text = $this->getTextRepository()->findOrCreate($id, $section);
 
         $this->getCore()->addNavigationElement($text);
 
@@ -82,7 +94,7 @@ class TextController extends BaseController
 
             if ($form->isValid()) {
 
-                $repository->persistAndFlush($text);
+                $this->getTextRepository()->persistAndFlush($text);
                 $this->invalidateRouter();
                 $this->addFlash('success', 'The text has been updated.');
 
@@ -115,8 +127,7 @@ class TextController extends BaseController
      */
     public function deleteAction(Request $request, $id)
     {
-        $repository = $this->getRepository('EgzaktSystemBundle:Text');
-        $text = $repository->findOrThrow($id);
+        $text = $this->getTextRepository()->findOrThrow($id);
 
         if ($request->get('message')) {
             $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
@@ -131,7 +142,7 @@ class TextController extends BaseController
             );
         }
 
-        $repository->removeAndFlush($text);
+        $this->getTextRepository()->removeAndFlush($text);
         $this->addFlash('success', 'The text has been deleted.');
         $this->invalidateRouter();
 
@@ -147,8 +158,6 @@ class TextController extends BaseController
     public function orderAction()
     {
 
-        $repository = $this->getRepository('EgzaktSystemBundle:Text');
-
         if ($this->getRequest()->isXmlHttpRequest()) {
 
             $i = 0;
@@ -157,11 +166,11 @@ class TextController extends BaseController
             foreach ($elements as $element) {
 
                 $element = explode('_', $element);
-                $entity = $repository->find($element[1]);
+                $entity = $this->getTextRepository()->find($element[1]);
 
                 if ($entity) {
                     $entity->setOrdering(++$i);
-                    $repository->persistAndFlush($entity);
+                    $this->getTextRepository()->persistAndFlush($entity);
                 }
 
             }

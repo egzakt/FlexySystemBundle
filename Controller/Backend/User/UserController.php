@@ -22,12 +22,17 @@ class UserController extends BaseController
     /**
      * @var bool
      */
-    protected $isDeveloper;
+    private $isDeveloper;
 
-    protected function isDeveloper()
-    {
-        return $this->isDeveloper;
-    }
+    /**
+     * @var \Egzakt\SystemBundle\Entity\RoleRepository
+     */
+    private $roleRepository;
+
+    /**
+     * @var \Egzakt\SystemBundle\Entity\UserRepository
+     */
+    private $userRepository;
 
     /**
      * Init
@@ -35,6 +40,9 @@ class UserController extends BaseController
     public function init()
     {
         parent::init();
+
+        $this->roleRepository = $this->getRepository('EgzaktSystemBundle:Role');
+        $this->userRepository = $this->getRepository('EgzaktSystemBundle:User');
 
         // Check if the current User has the privileges
         if (!$this->get('security.context')->isGranted(Role::ROLE_BACKEND_ADMIN)) {
@@ -59,14 +67,12 @@ class UserController extends BaseController
     public function indexAction()
     {
 
-        $repository = $this->getRepository('EgzaktSystemBundle:Role');
-
         $excludedRoles = array(Role::ROLE_BACKEND_ACCESS);
         if ( !$this->isDeveloper() ) {
             $excludedRoles[] = Role::ROLE_DEVELOPER;
         }
 
-        $roles = $repository->findAllExcept($excludedRoles) ;
+        $roles = $this->getRoleRepository()->findAllExcept($excludedRoles) ;
 
         return $this->render('EgzaktSystemBundle:Backend/User/User:list.html.twig', array('roles' => $roles));
     }
@@ -81,9 +87,7 @@ class UserController extends BaseController
      */
     public function editAction($id, Request $request)
     {
-        $repositoryUser = $this->getRepository('EgzaktSystemBundle:User');
-        $user = $repositoryUser->findOrCreate($id);
-
+        $user = $this->getUserRepository()->findOrCreate($id);
         $this->pushNavigationElement($user);
 
         $form = $this->createForm(new UserType(), $user, array(
@@ -101,8 +105,7 @@ class UserController extends BaseController
             if ($form->isValid()) {
 
                 // All Users are automatically granted the ROLE_BACKEND_ACCESS Role
-                $repositoryRole = $this->getRepository('EgzaktSystemBundle:Role');
-                $backendAccessRole = $repositoryRole->findRoleOrCreate(Role::ROLE_BACKEND_ACCESS);
+                $backendAccessRole = $this->getRoleRepository()->findRoleOrCreate(Role::ROLE_BACKEND_ACCESS);
                 $user->addRole($backendAccessRole);
 
                 // New password set
@@ -112,8 +115,7 @@ class UserController extends BaseController
                 }
                 $user->encodePassword($encoder, $previousEncodedPassword);
 
-                $repositoryUser->persistAndFlush($user);
-
+                $this->getUserRepository()->persistAndFlush($user);
                 $this->addFlash('success', $this->translate('%entity% has been updated.', array('%entity%' => $user)) );
 
                 $this->redirectIf(
@@ -143,8 +145,7 @@ class UserController extends BaseController
      */
     public function deleteAction(Request $request, $id)
     {
-        $repository = $this->getRepository('EgzaktSystemBundle:User');
-        $user = $repository->findOrThrow($id);
+        $user = $this->getUserRepository()->findOrThrow($id);
         $connectedUser = $this->getUser();
 
         if ($request->get('message')) {
@@ -176,9 +177,35 @@ class UserController extends BaseController
                 )
             );
 
-            $repository->removeAndFlush($user);
+            $this->getUserRepository()->removeAndFlush($user);
         }
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_user'));
     }
+
+
+    /**
+     * @return \Egzakt\SystemBundle\Entity\RoleRepository
+     */
+    protected function getRoleRepository()
+    {
+        return $this->roleRepository;
+    }
+
+    /**
+     * @return \Egzakt\SystemBundle\Entity\UserRepository
+     */
+    protected function getUserRepository()
+    {
+        return $this->userRepository;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDeveloper()
+    {
+        return $this->isDeveloper;
+    }
+
 }
