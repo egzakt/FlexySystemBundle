@@ -2,6 +2,8 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\User;
 
+use Egzakt\SystemBundle\Entity\RoleRepository;
+use Egzakt\SystemBundle\Entity\UserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -25,12 +27,12 @@ class UserController extends BaseController
     private $isDeveloper;
 
     /**
-     * @var \Egzakt\SystemBundle\Entity\RoleRepository
+     * @var RoleRepository
      */
     private $roleRepository;
 
     /**
-     * @var \Egzakt\SystemBundle\Entity\UserRepository
+     * @var UserRepository
      */
     private $userRepository;
 
@@ -41,8 +43,8 @@ class UserController extends BaseController
     {
         parent::init();
 
-        $this->roleRepository = $this->getRepository('EgzaktSystemBundle:Role');
-        $this->userRepository = $this->getRepository('EgzaktSystemBundle:User');
+        $this->setRoleRepository( $this->getRepository('EgzaktSystemBundle:Role') );
+        $this->setUserRepository( $this->getRepository('EgzaktSystemBundle:User') );
 
         // Check if the current User has the privileges
         if (!$this->get('security.context')->isGranted(Role::ROLE_BACKEND_ADMIN)) {
@@ -183,7 +185,7 @@ class UserController extends BaseController
 
 
     /**
-     * @return \Egzakt\SystemBundle\Entity\RoleRepository
+     * @return RoleRepository
      */
     protected function getRoleRepository()
     {
@@ -191,11 +193,27 @@ class UserController extends BaseController
     }
 
     /**
-     * @return \Egzakt\SystemBundle\Entity\UserRepository
+     * @param RoleRepository $repository
+     */
+    protected function setRoleRepository(RoleRepository $repository)
+    {
+        $this->roleRepository = $repository;
+    }
+
+    /**
+     * @return UserRepository
      */
     protected function getUserRepository()
     {
         return $this->userRepository;
+    }
+
+    /**
+     * @param UserRepository $repository
+     */
+    protected function setUserRepository(UserRepository $repository)
+    {
+        $this->userRepository = $repository;
     }
 
     /**

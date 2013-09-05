@@ -2,6 +2,9 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\Section;
 
+use Egzakt\SystemBundle\Entity\AppRepository;
+use Egzakt\SystemBundle\Entity\NavigationRepository;
+use Egzakt\SystemBundle\Entity\SectionRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,7 +13,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Egzakt\SystemBundle\Lib\Backend\BaseController;
-use Egzakt\SystemBundle\Entity\Mapping;
 use Egzakt\SystemBundle\Form\Backend\SectionType;
 
 /**
@@ -20,17 +22,17 @@ use Egzakt\SystemBundle\Form\Backend\SectionType;
 class SectionController extends BaseController
 {
     /**
-     * @var \Egzakt\SystemBundle\Entity\SectionRepository
+     * @var SectionRepository
      */
     private $sectionRepository;
 
     /**
-     * @var \Egzakt\SystemBundle\Entity\NavigationRepository
+     * @var NavigationRepository
      */
     private $navigationRepository;
 
     /**
-     * @var \Egzakt\SystemBundle\Entity\AppRepository
+     * @var AppRepository
      */
     private $appRepository;
 
@@ -41,9 +43,9 @@ class SectionController extends BaseController
     {
         parent::init();
 
-        $this->sectionRepository = $this->getRepository('EgzaktSystemBundle:Section');
-        $this->navigationRepository = $this->getRepository('EgzaktSystemBundle:Navigation');
-        $this->appRepository = $this->getRepository('EgzaktSystemBundle:App');
+        $this->setSectionRepository( $this->getRepository('EgzaktSystemBundle:Section') );
+        $this->setNavigationRepository( $this->getRepository('EgzaktSystemBundle:Navigation') );
+        $this->setAppRepository( $this->getRepository('EgzaktSystemBundle:App') );
     }
 
 
@@ -191,7 +193,7 @@ class SectionController extends BaseController
     }
 
     /**
-     * @return \Egzakt\SystemBundle\Entity\SectionRepository
+     * @return SectionRepository
      */
     protected function getSectionRepository()
     {
@@ -199,7 +201,15 @@ class SectionController extends BaseController
     }
 
     /**
-     * @return \Egzakt\SystemBundle\Entity\NavigationRepository
+     * @param SectionRepository $repository
+     */
+    protected function setSectionRepository(SectionRepository $repository)
+    {
+        $this->sectionRepository = $repository;
+    }
+
+    /**
+     * @return NavigationRepository
      */
     protected function getNavigationRepository()
     {
@@ -207,11 +217,26 @@ class SectionController extends BaseController
     }
 
     /**
-     * @return \Egzakt\SystemBundle\Entity\AppRepository
+     * @param NavigationRepository $repository
+     */
+    protected function setNavigationRepository(NavigationRepository $repository)
+    {
+        $this->navigationRepository = $repository;
+    }
+
+    /**
+     * @return AppRepository
      */
     protected function getAppRepository()
     {
         return $this->appRepository;
     }
 
+    /**
+     * @param AppRepository $repository
+     */
+    protected function setAppRepository(AppRepository $repository)
+    {
+        $this->appRepository = $repository;
+    }
 }

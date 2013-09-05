@@ -2,6 +2,7 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\Text;
 
+use Egzakt\SystemBundle\Entity\TextRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,9 +23,11 @@ class TextController extends BaseController
 {
 
     /**
-     * @var \Egzakt\SystemBundle\Entity\TextRepository
+     * @var TextRepository
      */
     private $textRepository;
+
+
     /**
      * Init
      */
@@ -32,7 +35,7 @@ class TextController extends BaseController
     {
         parent::init();
 
-        $this->textRepository = $this->getRepository('EgzaktSystemBundle:Text');
+        $this->setTextRepository( $this->getRepository('EgzaktSystemBundle:Text') );
         $this->createAndPushNavigationElement('Text list', 'egzakt_system_backend_text');
     }
 
@@ -120,7 +123,7 @@ class TextController extends BaseController
                 'entity' => $text
             ));
 
-            return $this->sendJson(
+            return new JsonResponse(
                 array(
                     'template' => $template,
                     'isDeletable' => $text->isDeletable()
@@ -168,11 +171,19 @@ class TextController extends BaseController
     }
 
     /**
-     * @return \Egzakt\SystemBundle\Entity\TextRepository
+     * @return TextRepository
      */
     protected function getTextRepository()
     {
         return $this->textRepository;
+    }
+
+    /**
+     * @param TextRepository $repository
+     */
+    protected function setTextRepository(TextRepository $repository)
+    {
+        $this->textRepository = $repository;
     }
 
 
