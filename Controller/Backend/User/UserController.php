@@ -113,7 +113,7 @@ class UserController extends BaseController
 
                 $repositoryUser->persistAndFlush($user);
 
-                $this->addFlash('success', $this->translate('%entity% has been updated.', array('%entity' => $user)) );
+                $this->addFlash('success', $this->translate('%entity% has been updated.', array('%entity%' => $user)) );
 
                 $this->redirectIf(
                     $request->request->has('save'),
@@ -150,7 +150,7 @@ class UserController extends BaseController
 
             if ($connectedUser instanceof User && $connectedUser->equals($user) ) {
                 $isDeletable = false;
-                $template = $this->get('translator')->trans('You can\'t delete yourself.');
+                $template = $this->translate('You can\'t delete yourself.');
             } else {
                 $isDeletable = $user->isDeletable();
                 $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
@@ -167,9 +167,10 @@ class UserController extends BaseController
         if ($connectedUser instanceof User && !$connectedUser->equals($user) ) {
 
             // Call the translator before we flush the entity so we can have the real __toString()
-            $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-                '%entity% has been deleted.',
-                array('%entity%' => $user != '' ? $user : $user->getEntityName()))
+            $this->addFlash('success',
+                $this->translate('%entity% has been deleted.',
+                    array('%entity%' => $user != '' ? $user : $user->getEntityName())
+                )
             );
 
             $repository->removeAndFlush($user);
