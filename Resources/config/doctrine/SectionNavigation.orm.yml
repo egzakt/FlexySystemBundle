@@ -19,6 +19,7 @@ Egzakt\SystemBundle\Entity\SectionNavigation:
       gedmo:
         timestampable:
           on: update
+  repositoryClass: Egzakt\SystemBundle\Entity\SectionNavigationRepository
   manyToOne:
     section:
       targetEntity: Egzakt\SystemBundle\Entity\Section

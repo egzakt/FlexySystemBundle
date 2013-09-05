@@ -187,7 +187,7 @@ class SectionRepository extends BaseEntityRepository
         return $this->processQuery($queryBuilder);
     }
 
-    public function findRootsWithoutNavigation($appId = null)
+    public function findRootsWithoutNavigation(App $app)
     {
         $queryBuilder = $this->createQueryBuilder('s')
             ->select('s', 'st', 'c', 'ct')
@@ -199,9 +199,9 @@ class SectionRepository extends BaseEntityRepository
             ->andWhere('n.id IS NULL')
             ->orderBy('s.ordering');
 
-        if ($appId) {
+        if ( isset($app) ) {
             $queryBuilder->andWhere('s.app = :appId');
-            $queryBuilder->setParameter('appId', $appId);
+            $queryBuilder->setParameter('appId', $app->getId());
         }
 
         return $this->processQuery($queryBuilder);
@@ -232,5 +232,76 @@ class SectionRepository extends BaseEntityRepository
 
         // Return the list of IDs in a single array
         return $ids;
+    }
+
+    public function findByParent(Section $parent)
+    {
+        return $this->findBy(
+            array(
+                'parent' => $parent->getId(),
+            ),
+            array('ordering' => 'ASC')
+        );
+
+    }
+
+
+    public function findOrCreate($id, App $app, Section $parent = null)
+    {
+        $section = $this->find($id);
+        if ( null === $section ) {
+            $section = new Section();
+            $section->setContainer($this->container);
+            $section->setParent($parent);
+            $section->setApp($app);
+        }
+        return $section;
+    }
+
+
+    public function mergeAndFlush(Section $section, App $currentApp, Navigation $navBar, App $backendApp)
+    {
+
+        if (false == $section->getId()) {
+
+            $mapping = new Mapping();
+            $mapping->setSection($section);
+            $mapping->setApp($backendApp);
+            $mapping->setType('route');
+            $mapping->setTarget('egzakt_system_backend_text');
+
+            $section->addMapping($mapping);
+
+            $mapping = new Mapping();
+            $mapping->setSection($section);
+            $mapping->setApp($backendApp);
+            $mapping->setNavigation($navBar);
+            $mapping->setType('render');
+            $mapping->setTarget('EgzaktSystemBundle:Backend/Text/Navigation:SectionModuleBar');
+
+            $section->addMapping($mapping);
+
+            $mapping = new Mapping();
+            $mapping->setSection($section);
+            $mapping->setApp($backendApp);
+            $mapping->setNavigation($navBar);
+            $mapping->setType('render');
+            $mapping->setTarget('EgzaktSystemBundle:Backend/Section/Navigation:SectionModuleBar');
+
+            $section->addMapping($mapping);
+
+            // Frontend mapping
+            $mapping = new Mapping();
+            $mapping->setSection($section);
+            $mapping->setApp($currentApp);
+            $mapping->setType('route');
+            $mapping->setTarget('egzakt_system_frontend_text');
+
+            $section->addMapping($mapping);
+
+        }
+
+        $this->persistAndFlush($section);
+
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\User;
 
+use Egzakt\SystemBundle\Entity\Role;
 use Egzakt\SystemBundle\Lib\Backend\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -20,7 +21,7 @@ class NavigationController extends BaseController
     public function globalModuleBarAction($_masterRoute)
     {
         // Access restricted to ROLE_BACKEND_ADMIN
-        if (false === $this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN')) {
+        if (false === $this->get('security.context')->isGranted(Role::ROLE_BACKEND_ADMIN)) {
             return new Response();
         }
 

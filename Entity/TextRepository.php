@@ -12,4 +12,42 @@ use Egzakt\SystemBundle\Lib\BaseEntityRepository;
  */
 class TextRepository extends BaseEntityRepository
 {
+
+    public function findOrCreate($id, Section $section)
+    {
+        $text = $this->find($id);
+        if ( null === $text ) {
+            $text = new Text();
+            $text->setContainer($this->container);
+            $text->setSection($section);
+        }
+
+        return $text;
+    }
+
+    public function findNonStaticBySection(Section $section)
+    {
+        return $this->findBy(
+            array(
+                'section' => $section->getId(),
+                'static' => false
+            ),
+            array(
+                'ordering' => 'ASC'
+            )
+        );
+    }
+
+    public function findStaticBySection(Section $section)
+    {
+        return $this->findBy(
+            array(
+                'section' => $section->getId(),
+                'static' => true
+            ),
+            array(
+                'ordering' => 'ASC'
+            )
+        );
+    }
 }

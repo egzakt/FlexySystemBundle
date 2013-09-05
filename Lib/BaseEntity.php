@@ -532,4 +532,17 @@ abstract class BaseEntity implements EntityInterface, NavigationElementInterface
         return null;
     }
 
+    public function equals(BaseEntity $object)
+    {
+        if ( get_class($this) !== get_class($object) ) {
+            return false;
+        }
+
+        if ( $this->getId() !== $object->getId() ) {
+            return false;
+        }
+
+        return true;
+    }
+
 }

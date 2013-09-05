@@ -106,4 +106,16 @@ class UserRepository extends BaseEntityRepository implements UserProviderInterfa
 
         return $this->processQuery($queryBuilder);
     }
+
+    public function findOrCreate($id)
+    {
+        $user = $this->find($id);
+        if ( null == $user ) {
+            $user = new User();
+            $user->setContainer($this->container);
+        }
+
+        return $user;
+    }
+
 }

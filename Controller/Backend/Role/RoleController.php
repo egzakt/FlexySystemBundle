@@ -42,16 +42,16 @@ class RoleController extends BaseController
         parent::init();
 
         // Check if the current User has the privileges
-        if (!$this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN')) {
+        if (!$this->getSecurity()->isGranted(Role::ROLE_BACKEND_ADMIN)) {
             throw new AccessDeniedHttpException();
         }
 
         $this->createAndPushNavigationElement('Roles', 'egzakt_system_backend_role');
 
         // Add/remove some behaviors if Admin
-        $this->isAdmin = $this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN');
-        $this->isDeveloper = $this->get('security.context')->isGranted('ROLE_DEVELOPER');
-        $this->rolesAdmin = array('ROLE_BACKEND_ADMIN', 'ROLE_DEVELOPER');
+        $this->isAdmin = $this->getSecurity()->isGranted(Role::ROLE_BACKEND_ADMIN);
+        $this->isDeveloper = $this->getSecurity()->isGranted(Role::ROLE_DEVELOPER);
+        $this->rolesAdmin = array(Role::ROLE_BACKEND_ADMIN, Role::ROLE_DEVELOPER);
     }
 
     /**

@@ -2,6 +2,9 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\User;
 
+use Egzakt\SystemBundle\Entity\RoleRepository;
+use Egzakt\SystemBundle\Entity\UserRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +24,17 @@ class UserController extends BaseController
     /**
      * @var bool
      */
-    protected $isDeveloper;
+    private $isDeveloper;
+
+    /**
+     * @var RoleRepository
+     */
+    private $roleRepository;
+
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
 
     /**
      * Init
@@ -30,19 +43,22 @@ class UserController extends BaseController
     {
         parent::init();
 
+        $this->setRoleRepository( $this->getRepository('EgzaktSystemBundle:Role') );
+        $this->setUserRepository( $this->getRepository('EgzaktSystemBundle:User') );
+
         // Check if the current User has the privileges
-        if (!$this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN')) {
+        if (!$this->get('security.context')->isGranted(Role::ROLE_BACKEND_ADMIN)) {
             throw new AccessDeniedHttpException();
         }
 
         $this->createAndPushNavigationElement('Users', 'egzakt_system_backend_user');
 
         // Check if the current User has the privileges
-        if (!$this->get('security.context')->isGranted('ROLE_BACKEND_ADMIN')) {
+        if (!$this->getSecurity()->isGranted(Role::ROLE_BACKEND_ADMIN)) {
             throw new AccessDeniedHttpException();
         }
 
-        $this->isDeveloper = $this->get('security.context')->isGranted('ROLE_DEVELOPER');
+        $this->isDeveloper = $this->getSecurity()->isGranted(Role::ROLE_DEVELOPER);
     }
 
     /**
@@ -52,11 +68,13 @@ class UserController extends BaseController
      */
     public function indexAction()
     {
-        if (!$this->isDeveloper) {
-            $roles = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findAllExcept(array('ROLE_DEVELOPER', 'ROLE_BACKEND_ACCESS'));
-        } else {
-            $roles = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findAllExcept('ROLE_BACKEND_ACCESS');
+
+        $excludedRoles = array(Role::ROLE_BACKEND_ACCESS);
+        if ( !$this->isDeveloper() ) {
+            $excludedRoles[] = Role::ROLE_DEVELOPER;
         }
+
+        $roles = $this->getRoleRepository()->findAllExcept($excludedRoles) ;
 
         return $this->render('EgzaktSystemBundle:Backend/User/User:list.html.twig', array('roles' => $roles));
     }
@@ -71,13 +89,7 @@ class UserController extends BaseController
      */
     public function editAction($id, Request $request)
     {
-        $user = $this->getEm()->getRepository('EgzaktSystemBundle:User')->find($id);
-
-        if (!$user) {
-            $user = new User();
-            $user->setContainer($this->container);
-        }
-
+        $user = $this->getUserRepository()->findOrCreate($id);
         $this->pushNavigationElement($user);
 
         $form = $this->createForm(new UserType(), $user, array(
@@ -95,42 +107,25 @@ class UserController extends BaseController
             if ($form->isValid()) {
 
                 // All Users are automatically granted the ROLE_BACKEND_ACCESS Role
-                $backendAccessRole = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findOneBy(array('role' => 'ROLE_BACKEND_ACCESS'));
-                if (!$backendAccessRole) {
-                    $backendAccessRole = new Role();
-                    $backendAccessRole->setRole('ROLE_BACKEND_ACCESS');
-                    $this->getEm()->persist($backendAccessRole);
-                }
-
+                $backendAccessRole = $this->getRoleRepository()->findRoleOrCreate(Role::ROLE_BACKEND_ACCESS);
                 $user->addRole($backendAccessRole);
 
                 // New password set
+                $encoder = null;
                 if ($form->get('password')->getData()) {
                     $encoder = $this->get('security.encoder_factory')->getEncoder($user);
-                    $encodedPassword = $encoder->encodePassword($user->getPassword(), $user->getSalt());
-                } else {
-                    $encodedPassword = $previousEncodedPassword;
                 }
+                $user->encodePassword($encoder, $previousEncodedPassword);
 
-                $user->setPassword($encodedPassword);
+                $this->getUserRepository()->persistAndFlush($user);
+                $this->setSuccessFlash($this->translate('%entity% has been updated.', array('%entity%' => $user)) );
 
-                $this->getEm()->persist($user);
-                $this->getEm()->flush();
-
-                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-                    '%entity% has been updated.',
-                    array('%entity%' => $user))
+                $this->redirectIf(
+                    $request->request->has('save'),
+                    $this->generateUrl('egzakt_system_backend_user'),
+                    $this->generateUrl('egzakt_system_backend_user_edit', array( 'id' => $user->getId() ?: 0 ) )
                 );
 
-                if ($request->request->has('save')) {
-                    return $this->redirect($this->generateUrl('egzakt_system_backend_user'));
-                }
-
-                return $this->redirect($this->generateUrl('egzakt_system_backend_user_edit', array(
-                    'id' => $user->getId()
-                )));
-            } else {
-                $this->get('session')->getFlashBag()->add('error', 'Some fields are invalid.');
             }
         }
 
@@ -150,18 +145,14 @@ class UserController extends BaseController
      */
     public function deleteAction(Request $request, $id)
     {
-        $user = $this->getEm()->getRepository('EgzaktSystemBundle:User')->find($id);
+        $user = $this->getUserRepository()->findOrThrow($id);
         $connectedUser = $this->getUser();
-
-        if (!$user) {
-            throw $this->createNotFoundException('Unable to find User entity.');
-        }
 
         if ($request->get('message')) {
 
-            if ($connectedUser instanceof User && $connectedUser->getId() == $user->getId()) {
+            if ($connectedUser instanceof User && $connectedUser->equals($user) ) {
                 $isDeletable = false;
-                $template = $this->get('translator')->trans('You can\'t delete yourself.');
+                $template = $this->translate('You can\'t delete yourself.');
             } else {
                 $isDeletable = $user->isDeletable();
                 $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
@@ -169,24 +160,68 @@ class UserController extends BaseController
                 ));
             }
 
-            return new Response(json_encode(array(
-                'template' => $template,
-                'isDeletable' => $isDeletable
-            )));
+            return new JsonResponse(
+                array(
+                    'template' => $template,
+                    'isDeletable' => $isDeletable
+                )
+            );
         }
 
-        if ($connectedUser instanceof User && $connectedUser->getId() != $user->getId()) {
+        if ($connectedUser instanceof User && !$connectedUser->equals($user) ) {
 
             // Call the translator before we flush the entity so we can have the real __toString()
-            $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-                '%entity% has been deleted.',
-                array('%entity%' => $user != '' ? $user : $user->getEntityName()))
+            $this->setSuccessFlash(
+                $this->translate('%entity% has been deleted.',
+                    array('%entity%' => $user != '' ? $user : $user->getEntityName())
+                )
             );
 
-            $this->getEm()->remove($user);
-            $this->getEm()->flush();
+            $this->getUserRepository()->removeAndFlush($user);
         }
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_user'));
     }
+
+
+    /**
+     * @return RoleRepository
+     */
+    protected function getRoleRepository()
+    {
+        return $this->roleRepository;
+    }
+
+    /**
+     * @param RoleRepository $repository
+     */
+    protected function setRoleRepository(RoleRepository $repository)
+    {
+        $this->roleRepository = $repository;
+    }
+
+    /**
+     * @return UserRepository
+     */
+    protected function getUserRepository()
+    {
+        return $this->userRepository;
+    }
+
+    /**
+     * @param UserRepository $repository
+     */
+    protected function setUserRepository(UserRepository $repository)
+    {
+        $this->userRepository = $repository;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDeveloper()
+    {
+        return $this->isDeveloper;
+    }
+
 }

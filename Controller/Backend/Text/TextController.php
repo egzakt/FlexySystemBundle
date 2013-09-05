@@ -2,6 +2,8 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\Text;
 
+use Egzakt\SystemBundle\Entity\TextRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -9,7 +11,6 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Egzakt\SystemBundle\Lib\Backend\BaseController;
-use Egzakt\SystemBundle\Entity\Text;
 use Egzakt\SystemBundle\Form\Backend\TextMainType;
 use Egzakt\SystemBundle\Form\Backend\TextStaticType;
 
@@ -20,6 +21,13 @@ use Egzakt\SystemBundle\Form\Backend\TextStaticType;
  */
 class TextController extends BaseController
 {
+
+    /**
+     * @var TextRepository
+     */
+    private $textRepository;
+
+
     /**
      * Init
      */
@@ -27,6 +35,7 @@ class TextController extends BaseController
     {
         parent::init();
 
+        $this->setTextRepository( $this->getRepository('EgzaktSystemBundle:Text') );
         $this->createAndPushNavigationElement('Text list', 'egzakt_system_backend_text');
     }
 
@@ -39,19 +48,8 @@ class TextController extends BaseController
     {
         $section = $this->getSection();
 
-        $mainEntities = $this->getEm()->getRepository('EgzaktSystemBundle:Text')->findBy(array(
-            'section' => $section->getId(),
-            'static' => false
-        ), array(
-            'ordering' => 'ASC'
-        ));
-
-        $staticEntities = $this->getEm()->getRepository('EgzaktSystemBundle:Text')->findBy(array(
-            'section' => $section->getId(),
-            'static' => true
-        ), array(
-            'ordering' => 'ASC'
-        ));
+        $mainEntities = $this->getTextRepository()->findNonStaticBySection($section);
+        $staticEntities = $this->getTextRepository()->findStaticBySection($section);
 
         return $this->render('EgzaktSystemBundle:Backend/Text/Text:list.html.twig', array(
             'mainEntities' => $mainEntities,
@@ -70,17 +68,8 @@ class TextController extends BaseController
      */
     public function editAction(Request $request, $id)
     {
-        $section = $this->getSection();
-
-        $text = $this->getEm()->getRepository('EgzaktSystemBundle:Text')->find($id);
-
-        if (false == $text) {
-            $text = new Text();
-            $text->setContainer($this->container);
-            $text->setSection($section);
-        }
-
-        $this->getCore()->addNavigationElement($text);
+        $text = $this->getTextRepository()->findOrCreate($id, $this->getSection());
+        $this->pushNavigationElement($text);
 
         if ($text->isStatic()) {
             $formType = new TextStaticType();
@@ -96,23 +85,16 @@ class TextController extends BaseController
 
             if ($form->isValid()) {
 
-                $em = $this->getEm();
-                $em->persist($text);
-                $em->flush();
+                $this->getTextRepository()->persistAndFlush($text);
+                $this->invalidateRouter();
+                $this->setSuccessFlash('The text has been updated.');
 
-                $this->get('egzakt_system.router_invalidator')->invalidate();
+                $this->redirectIf(
+                    $request->request->has('save'),
+                    $this->generateUrl('egzakt_system_backend_text'),
+                    $this->generateUrl('egzakt_system_backend_text_edit', array( 'id' => $text->getId() ?: 0 ) )
+                );
 
-                $this->get('session')->getFlashBag()->add('success', 'The text has been updated.');
-
-                if ($request->request->has('save')) {
-                    return $this->redirect($this->generateUrl('egzakt_system_backend_text'));
-                }
-
-                return $this->redirect($this->generateUrl('egzakt_system_backend_text_edit', array(
-                    'id' => $text->getId() ?: 0
-                )));
-            } else {
-                $this->get('session')->getFlashBag()->add('error', 'Some fields are invalid.');
             }
         }
 
@@ -134,29 +116,24 @@ class TextController extends BaseController
      */
     public function deleteAction(Request $request, $id)
     {
-        $text = $this->getEm()->getRepository('EgzaktSystemBundle:Text')->find($id);
-
-        if (!$text) {
-            throw $this->createNotFoundException('Unable to find a Text entity using id "' . $id . '".');
-        }
+        $text = $this->getTextRepository()->findOrThrow($id);
 
         if ($request->get('message')) {
             $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
                 'entity' => $text
             ));
 
-            return new Response(json_encode(array(
-                'template' => $template,
-                'isDeletable' => $text->isDeletable()
-            )));
+            return new JsonResponse(
+                array(
+                    'template' => $template,
+                    'isDeletable' => $text->isDeletable()
+                )
+            );
         }
 
-        $this->getEm()->remove($text);
-        $this->getEm()->flush();
-
-        $this->get('session')->getFlashBag()->add('success', 'The text has been deleted.');
-
-        $this->get('egzakt_system.router_invalidator')->invalidate();
+        $this->getTextRepository()->removeAndFlush($text);
+        $this->setSuccessFlash('The text has been deleted.');
+        $this->invalidateRouter();
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_text'));
     }
@@ -169,6 +146,7 @@ class TextController extends BaseController
      */
     public function orderAction()
     {
+
         if ($this->getRequest()->isXmlHttpRequest()) {
 
             $i = 0;
@@ -177,19 +155,36 @@ class TextController extends BaseController
             foreach ($elements as $element) {
 
                 $element = explode('_', $element);
-                $entity = $this->getEm()->getRepository('EgzaktSystemBundle:Text')->find($element[1]);
+                $entity = $this->getTextRepository()->find($element[1]);
 
                 if ($entity) {
                     $entity->setOrdering(++$i);
-                    $this->getEm()->persist($entity);
-                    $this->getEm()->flush();
+                    $this->getTextRepository()->persistAndFlush($entity);
                 }
+
             }
 
-            $this->get('egzakt_system.router_invalidator')->invalidate();
+            $this->invalidateRouter();
         }
 
-        return new Response('');
+        return $this->send();
     }
+
+    /**
+     * @return TextRepository
+     */
+    protected function getTextRepository()
+    {
+        return $this->textRepository;
+    }
+
+    /**
+     * @param TextRepository $repository
+     */
+    protected function setTextRepository(TextRepository $repository)
+    {
+        $this->textRepository = $repository;
+    }
+
 
 }

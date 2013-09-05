@@ -4,6 +4,7 @@ namespace Egzakt\SystemBundle\Lib\Backend;
 
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 use Egzakt\SystemBundle\Entity\App;
@@ -183,7 +184,46 @@ abstract class BaseController extends Controller implements BaseControllerInterf
      * @param string $type
      * @param string $message
      */
-    protected function addFlash($type, $message) {
+    protected function addFlash($type, $message)
+    {
         $this->get('session')->getFlashBag()->add($type, $message);
+    }
+
+    protected function setSuccessFlash($message)
+    {
+        $this->addFlash('success', $message);
+    }
+    protected function setErrorFlash($message)
+    {
+        $this->addFlash('error', $message);
+    }
+
+    /**
+     * @param $classname
+     * @return \Egzakt\SystemBundle\Lib\BaseEntityRepository
+     */
+    protected function getRepository($classname)
+    {
+        return $this->getDoctrine()->getRepository($classname);
+    }
+
+    protected function invalidateRouter()
+    {
+        $this->get('egzakt_system.router_invalidator')->invalidate();
+    }
+
+    protected function redirectIf($condition, $ifTrue, $ifFalse)
+    {
+        $this->redirect( $condition ? $ifTrue : $ifFalse );
+    }
+
+    protected function translate($text, $args = array())
+    {
+        return $this->get('translator')->trans($text, $args);
+    }
+
+    protected function getSecurity()
+    {
+        return $this->get('security.context');
     }
 }
