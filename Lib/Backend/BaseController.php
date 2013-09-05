@@ -12,6 +12,9 @@ use Egzakt\SystemBundle\Entity\Section;
 use Egzakt\SystemBundle\Lib\BaseControllerInterface;
 use Egzakt\SystemBundle\Lib\NavigationElement;
 
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Security\Core\SecurityContext;
+
 /**
  * Base Controller for all Egzakt backend bundles
  */
@@ -69,7 +72,7 @@ abstract class BaseController extends Controller implements BaseControllerInterf
 
     /**
      * Get the Bundle Name
-     *
+     * @deprecated
      * @return string
      */
     public function getBundleName()
@@ -189,6 +192,10 @@ abstract class BaseController extends Controller implements BaseControllerInterf
         $this->get('session')->getFlashBag()->add($type, $message);
     }
 
+    /**
+     * Set a success message flash.
+     * @param $message
+     */
     protected function setSuccessFlash($message)
     {
         $this->addFlash('success', $message);
@@ -203,23 +210,46 @@ abstract class BaseController extends Controller implements BaseControllerInterf
         return $this->getDoctrine()->getRepository($classname);
     }
 
+    /**
+     * Invalidate the router, refresh the cache.
+     */
     protected function invalidateRouter()
     {
         $this->get('egzakt_system.router_invalidator')->invalidate();
     }
 
+    /**
+     * Redirect user depending of the condition. If it's true, second argument is used. Else it's the third.
+     *
+     * @param $condition
+     * @param $ifTrue
+     * @param $ifFalse
+     * @return RedirectResponse
+     */
     protected function redirectIf($condition, $ifTrue, $ifFalse)
     {
         return $this->redirect( $condition ? $ifTrue : $ifFalse );
     }
 
+    /**
+     * Translate a text using a translator.
+     *
+     * @param $text
+     * @param array $args
+     * @return mixed
+     */
     protected function translate($text, $args = array())
     {
         return $this->get('translator')->trans($text, $args);
     }
 
+    /**
+     * Get the Security Object.
+     * @return SecurityContext
+     */
     protected function getSecurity()
     {
         return $this->get('security.context');
     }
+
 }
