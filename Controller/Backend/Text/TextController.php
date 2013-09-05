@@ -37,21 +37,11 @@ class TextController extends BaseController
      */
     public function indexAction()
     {
+        $repository = $this->getRepository('EgzaktSystemBundle:Text');
         $section = $this->getSection();
 
-        $mainEntities = $this->getRepository('EgzaktSystemBundle:Text')->findBy(array(
-            'section' => $section->getId(),
-            'static' => false
-        ), array(
-            'ordering' => 'ASC'
-        ));
-
-        $staticEntities = $this->getRepository('EgzaktSystemBundle:Text')->findBy(array(
-            'section' => $section->getId(),
-            'static' => true
-        ), array(
-            'ordering' => 'ASC'
-        ));
+        $mainEntities = $repository->findNonStaticBySection($section);
+        $staticEntities = $repository->findStaticBySection($section);
 
         return $this->render('EgzaktSystemBundle:Backend/Text/Text:list.html.twig', array(
             'mainEntities' => $mainEntities,
@@ -92,20 +82,17 @@ class TextController extends BaseController
             if ($form->isValid()) {
 
                 $repository->persistAndFlush($text);
+                $this->invalidateRouter();
+                $this->addFlash('success', 'The text has been updated.');
 
-                $this->get('egzakt_system.router_invalidator')->invalidate();
+                $this->redirectIf(
+                    $request->request->has('save'),
+                    $this->generateUrl('egzakt_system_backend_text'),
+                    $this->generateUrl('egzakt_system_backend_text_edit', array( 'id' => $text->getId() ?: 0 ) )
+                );
 
-                $this->get('session')->getFlashBag()->add('success', 'The text has been updated.');
-
-                if ($request->request->has('save')) {
-                    return $this->redirect($this->generateUrl('egzakt_system_backend_text'));
-                }
-
-                return $this->redirect($this->generateUrl('egzakt_system_backend_text_edit', array(
-                    'id' => $text->getId() ?: 0
-                )));
             } else {
-                $this->get('session')->getFlashBag()->add('error', 'Some fields are invalid.');
+                $this->addFlash('error', 'Some fields are invalid.');
             }
         }
 
@@ -142,10 +129,8 @@ class TextController extends BaseController
         }
 
         $repository->removeAndFlush($text);
-
-        $this->get('session')->getFlashBag()->add('success', 'The text has been deleted.');
-
-        $this->get('egzakt_system.router_invalidator')->invalidate();
+        $this->addFlash('success', 'The text has been deleted.');
+        $this->invalidateRouter();
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_text'));
     }
@@ -178,7 +163,7 @@ class TextController extends BaseController
 
             }
 
-            $this->get('egzakt_system.router_invalidator')->invalidate();
+            $this->invalidateRouter();
         }
 
         return new Response('');

@@ -195,4 +195,15 @@ abstract class BaseController extends Controller implements BaseControllerInterf
     {
         return $this->getDoctrine()->getRepository($classname);
     }
+
+    protected function invalidateRouter()
+    {
+        $this->get('egzakt_system.router_invalidator')->invalidate();
+    }
+
+    protected function redirectIf($condition, $ifTrue, $ifFalse)
+    {
+        $this->redirect( $condition ? $ifTrue : $ifFalse );
+    }
+
 }

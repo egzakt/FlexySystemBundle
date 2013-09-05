@@ -24,4 +24,30 @@ class TextRepository extends BaseEntityRepository
 
         return $text;
     }
+
+    public function findNonStaticBySection(Section $section)
+    {
+        return $this->findBy(
+            array(
+                'section' => $section->getId(),
+                'static' => false
+            ),
+            array(
+                'ordering' => 'ASC'
+            )
+        );
+    }
+
+    public function findStaticBySection(Section $section)
+    {
+        return $this->findBy(
+            array(
+                'section' => $section->getId(),
+                'static' => true
+            ),
+            array(
+                'ordering' => 'ASC'
+            )
+        );
+    }
 }
