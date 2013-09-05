@@ -2,6 +2,7 @@
 
 namespace Egzakt\SystemBundle\Listener;
 
+use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\TwigBundle\Debug\TimedTwigEngine;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
@@ -38,20 +39,22 @@ class ExceptionListener
 
         $exception = $event->getException();
 
-        if ($exception instanceof NotFoundHttpException) {
 
+        if ($exception instanceof NotFoundHttpException) {
             $response = $this->templating->renderResponse('EgzaktSystemBundle:Frontend/Exception:404.html.twig');
             $response->setStatusCode(404);
-
             $event->setResponse($response);
-
         } elseif ($exception instanceof AccessDeniedHttpException) {
-
             $response = $this->templating->renderResponse('EgzaktSystemBundle:Frontend/Exception:403.html.twig');
             $response->setStatusCode(403);
-
+            $event->setResponse($response);
+        } elseif ( $exception instanceof EntityNotFoundException ) {
+            $response = $this->templating->renderResponse('EgzaktSystemBundle:Frontend/Exception:404.html.twig');
+            $response->setStatusCode(404);
             $event->setResponse($response);
         }
+
+
     }
 
     /**
