@@ -9,4 +9,12 @@ class SectionNavigationRepository extends BaseEntityRepository
 {
 
 
+    public function findWith(Section $section, Navigation $navigation)
+    {
+        return $this->findOneBy( array(
+            'section' => $section->getId(),
+            'navigation' => $navigation->getId()
+            )
+        );
+    }
 }

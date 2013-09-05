@@ -246,7 +246,7 @@ class SectionRepository extends BaseEntityRepository
     }
 
 
-    public function findOrCreate($id, Section $parent, App $app)
+    public function findOrCreate($id, App $app, Section $parent = null)
     {
         $section = $this->find($id);
         if ( null === $section ) {

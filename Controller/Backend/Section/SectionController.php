@@ -74,7 +74,7 @@ class SectionController extends BaseController
         $section = $this->getSection();
         $app = $this->getApp();
 
-        $entity = $this->getSectionRepository()->findOrCreate($id, $section, $app);
+        $entity = $this->getSectionRepository()->findOrCreate($id, $app, $section);
         $this->getCore()->addNavigationElement($entity);
         $form = $this->createForm(new SectionType(), $entity, array('current_section' => $entity, 'managed_app' => $this->getApp()));
 

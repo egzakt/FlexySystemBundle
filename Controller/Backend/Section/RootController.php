@@ -82,7 +82,7 @@ class RootController extends BaseController
      */
     public function editAction($id, Request $request)
     {
-        $entity = $this->getSectionRepository()->findOrCreate($id, null, $this->getApp());
+        $entity = $this->getSectionRepository()->findOrCreate($id, $this->getApp());
         $this->pushNavigationElement($entity);
 
         $form = $this->createForm(new RootSectionType(), $entity, array('current_section' => $entity, 'managed_app' => $this->getApp()));
@@ -179,11 +179,14 @@ class RootController extends BaseController
             // Get the navigation id
             preg_match('/_(.)*-/', $elements[0], $matches);
             $navigationId = $matches[1];
+            $navigation = $this->getNavigationRepository()->getReference($navigationId);
 
             foreach ($elements as $element) {
 
                 $sectionId = preg_replace('/(.)*-/', '', $element);
-                $entity = $this->getSectionNavigationRepository()->findOneBy(array('section' => $sectionId, 'navigation' => $navigationId));
+                $section = $this->getSectionRepository()->getReference($sectionId);
+
+                $entity = $this->getSectionNavigationRepository()->findWith($section, $navigation);
 
                 if ($entity) {
                     $entity->setOrdering(++$i);
