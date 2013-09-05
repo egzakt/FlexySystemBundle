@@ -32,4 +32,15 @@ class AppRepository extends BaseEntityRepository
 
         return $this->processQuery($qb);
     }
+
+    public function findOrCreate($id)
+    {
+        $app = $this->find($id);
+        if ( null === $app ) {
+            $app = new App();
+            $app->setContainer($this->container);
+        }
+
+        return $app;
+    }
 }

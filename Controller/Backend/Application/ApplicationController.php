@@ -2,6 +2,8 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\Application;
 
+use Egzakt\SystemBundle\Entity\Role;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -9,7 +11,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Finder\Finder;
 
-use Egzakt\SystemBundle\Entity\App;
 use Egzakt\SystemBundle\Entity\AppRepository;
 use Egzakt\SystemBundle\Form\Backend\ApplicationType;
 use Egzakt\SystemBundle\Lib\Backend\BaseController;
@@ -29,7 +30,7 @@ class ApplicationController extends BaseController
      */
     public function init()
     {
-        if (false === $this->getSecurity()->isGranted('ROLE_DEVELOPER')) {
+        if (false === $this->getSecurity()->isGranted(Role::ROLE_DEVELOPER)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -37,7 +38,7 @@ class ApplicationController extends BaseController
 
         $this->createAndPushNavigationElement('Applications', 'egzakt_system_backend_application');
 
-        $this->appRepository = $this->getEm()->getRepository('EgzaktSystemBundle:App');
+        $this->setAppRepository( $this->getRepository('EgzaktSystemBundle:App') );
     }
 
     /**
@@ -47,7 +48,7 @@ class ApplicationController extends BaseController
      */
     public function listAction()
     {
-        $applications = $this->appRepository->findAllExcept(AppRepository::BACKEND_APP_ID);
+        $applications = $this->getAppRepository()->findAllExcept(AppRepository::BACKEND_APP_ID);
 
         return $this->render('EgzaktSystemBundle:Backend/Application/Application:list.html.twig', array(
             'applications' => $applications
@@ -64,13 +65,7 @@ class ApplicationController extends BaseController
      */
     public function editAction($applicationId, Request $request)
     {
-        $entity = $this->appRepository->find($applicationId);
-
-        if (false == $entity) {
-            $entity = new App();
-            $entity->setContainer($this->container);
-        }
-
+        $entity = $this->getAppRepository()->findOrCreate($applicationId);
         $this->pushNavigationElement($entity);
 
         $form = $this->createForm(new ApplicationType(), $entity);
@@ -81,23 +76,17 @@ class ApplicationController extends BaseController
 
             if ($form->isValid()) {
 
-                $this->getEm()->persist($entity);
-                $this->getEm()->flush();
+                $this->getAppRepository()->persistAndFlush($entity);
+                $this->invalidateRouter();
 
-                $this->get('egzakt_system.router_invalidator')->invalidate();
-
-                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-                    '%entity% has been updated.',
-                    array('%entity%' => $entity))
+                $this->setSuccessFlash(
+                    $this->translate('%entity% has been updated.', array('%entity%' => $entity) )
                 );
 
-                if ($request->request->has('save')) {
-                    return $this->redirect($this->generateUrl('egzakt_system_backend_application'));
-                }
-
-                return $this->redirect($this->generateUrl($entity->getRoute(), $entity->getRouteParams()));
-            } else {
-                $this->get('session')->getFlashBag()->add('error', 'Some fields are invalid.');
+                return $this->redirectIf( $request->request->has('save'),
+                    $this->generateUrl('egzakt_system_backend_application'),
+                    $this->generateUrl($entity->getRoute(), $entity->getRouteParams())
+                );
             }
         }
 
@@ -119,32 +108,45 @@ class ApplicationController extends BaseController
      */
     public function deleteAction(Request $request, $applicationId)
     {
-        $application = $this->appRepository->find($applicationId);
-
-        if (!$application) {
-            throw $this->createNotFoundException('Unable to find the App entity.');
-        }
+        $application = $this->getAppRepository()->findOrThrow($applicationId);
 
         if ($request->get('message')) {
             $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
                 'entity' => $application
             ));
 
-            return new Response(json_encode(array(
+            return new JsonResponse(
+                array(
                 'template' => $template,
                 'isDeletable' => $application->isDeletable()
-            )));
+                )
+            );
         }
 
-        $this->addFlash('success', $this->get('translator')->trans('%entity% has been deleted.', array(
-            '%entity%' => $application
-        )));
+        $this->getAppRepository()->removeAndFlush($application);
+        $this->invalidateRouter();
 
-        $this->getEm()->remove($application);
-        $this->getEm()->flush();
-
-        $this->get('egzakt_system.router_invalidator')->invalidate();
+        $this->setSuccessFlash(
+            $this->translate('%entity has been deleted.', array('%entity%' => $application) )
+        );
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_application'));
     }
+
+    /**
+     * @return AppRepository
+     */
+    protected function getAppRepository()
+    {
+        return $this->appRepository;
+    }
+
+    /**
+     * @param AppRepository $repository
+     */
+    protected function setAppRepository(AppRepository $repository)
+    {
+        $this->appRepository = $repository;
+    }
+
 }
