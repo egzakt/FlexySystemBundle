@@ -70,6 +70,17 @@ class RoleRepository extends BaseEntityRepository
         if ( null == $role ) {
             $role = new Role();
             $role->setRole($roleName);
+            $role->setContainer($this->container);
+        }
+        return $role;
+    }
+
+    public function findOrCreate($id)
+    {
+        $role = $this->find($id);
+        if ( null == $role ) {
+            $role = new Role();
+            $role->setContainer($this->container);
         }
         return $role;
     }

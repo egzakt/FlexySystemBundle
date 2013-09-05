@@ -50,6 +50,21 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
      */
     protected $sections;
 
+    public function hasCode($code)
+    {
+        return $code === $this->role;
+    }
+
+    public function hasOneCode($codes = array())
+    {
+        return in_array($this->getRole(), $codes);
+    }
+
+    public function setBackendCode()
+    {
+        $this->role = 'ROLE_BACKEND_' . strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $this->getName()));
+    }
+
     /**
      * @return string
      */

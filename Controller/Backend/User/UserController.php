@@ -74,7 +74,7 @@ class UserController extends BaseController
             $excludedRoles[] = Role::ROLE_DEVELOPER;
         }
 
-        $roles = $this->getRoleRepository()->findAllExcept($excludedRoles) ;
+        $roles = $this->getRoleRepository()->findAllExcept($excludedRoles);
 
         return $this->render('EgzaktSystemBundle:Backend/User/User:list.html.twig', array('roles' => $roles));
     }

@@ -2,6 +2,8 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\Role;
 
+use Egzakt\SystemBundle\Entity\RoleRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,17 +24,46 @@ class RoleController extends BaseController
     /**
      * @var bool
      */
-    protected $isAdmin;
+    private $isAdmin;
 
     /**
      * @var bool
      */
-    protected $isDeveloper;
+    private $isDeveloper;
 
     /**
      * @var array
      */
-    protected $rolesAdmin;
+    private $rolesAdmin;
+
+    /**
+     * @var RoleRepository;
+     */
+    private $roleRepository;
+
+    /**
+     * @return RoleRepository
+     */
+    protected function getRoleRepository()
+    {
+        return $this->roleRepository;
+    }
+
+    /**
+     * @param RoleRepository $repository
+     */
+    protected function setRoleRepository(RoleRepository $repository)
+    {
+        $this->roleRepository = $repository;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDeveloper()
+    {
+        return $this->isDeveloper;
+    }
 
     /**
      * Init
@@ -52,6 +83,9 @@ class RoleController extends BaseController
         $this->isAdmin = $this->getSecurity()->isGranted(Role::ROLE_BACKEND_ADMIN);
         $this->isDeveloper = $this->getSecurity()->isGranted(Role::ROLE_DEVELOPER);
         $this->rolesAdmin = array(Role::ROLE_BACKEND_ADMIN, Role::ROLE_DEVELOPER);
+
+        $this->setRoleRepository( $this->getRepository('EgzaktSystemBundle:Role') );
+
     }
 
     /**
@@ -61,11 +95,13 @@ class RoleController extends BaseController
      */
     public function indexAction()
     {
-        if (!$this->isDeveloper) {
-            $roles = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findAllExcept(array('ROLE_DEVELOPER', 'ROLE_BACKEND_ACCESS'));
-        } else {
-            $roles = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->findAllExcept('ROLE_BACKEND_ACCESS');
+
+        $excludedRoles = array(Role::ROLE_BACKEND_ACCESS);
+        if ( !$this->isDeveloper() ) {
+            $excludedRoles[] = Role::ROLE_DEVELOPER;
         }
+
+        $roles = $this->getRoleRepository()->findAllExcept($excludedRoles);
 
         return $this->render('EgzaktSystemBundle:Backend/Role/Role:list.html.twig', array('roles' => $roles));
     }
@@ -82,21 +118,15 @@ class RoleController extends BaseController
      */
     public function editAction($id, Request $request)
     {
-        $entity = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->find($id);
+        $entity = $this->getRoleRepository()->findOrCreate($id);
 
-        if (!$entity) {
-            $entity = new Role();
-            $entity->setContainer($this->container);
-        }
-
-        // Not editable
-        if ($entity->getRole() == 'ROLE_DEVELOPER' && !$this->isDeveloper) {
+        if ( $entity->hasCode(Role::ROLE_DEVELOPER) && !$this->isDeveloper() ) {
             throw new NotFoundHttpException();
         }
 
         $this->pushNavigationElement($entity);
 
-        $form = $this->createForm(new RoleType(), $entity, array('admin' => in_array($entity->getRole(), $this->rolesAdmin)));
+        $form = $this->createForm( new RoleType(), $entity, array('admin' => $entity->hasOneCode($this->rolesAdmin)) );
 
         if ($request->getMethod() == 'POST') {
 
@@ -104,34 +134,29 @@ class RoleController extends BaseController
 
             if ($form->isValid()) {
 
-                // Set a Rolename for this Role
-                if (!in_array($entity->getRole(), $this->rolesAdmin)) {
-                    $roleName = 'ROLE_BACKEND_' . strtoupper(preg_replace('/[^A-Za-z0-9]/', '', $entity->getName()));
-                    $entity->setRole($roleName);
+                if ( !$entity->hasOneCode($this->rolesAdmin) ) {
+                    $entity->setBackendCode();
                 }
 
-                $this->getEm()->persist($entity);
-                $this->getEm()->flush();
+                $this->getRoleRepository()->persistAndFlush($entity);
 
-                $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-                    '%entity% has been updated.',
-                    array('%entity%' => $entity))
+                $this->setSuccessFlash(
+                    $this->translate('%entity% has been updated.', array('%entity%' => $entity) )
                 );
 
-                if ($request->request->has('save')) {
-                    return $this->redirect($this->generateUrl('egzakt_system_backend_role'));
-                }
+                $this->redirectIf(
+                    $request->request->has('save'),
+                    $this->generateUrl('egzakt_system_backend_role'),
+                    $this->generateUrl('egzakt_system_backend_role_edit', array(
+                        'id' => $entity->getId() ? : 0
+                        )
+                    )
+                );
 
-                return $this->redirect($this->generateUrl('egzakt_system_backend_role_edit', array(
-                    'id' => $entity->getId() ? : 0
-                )));
-            } else {
-                $this->get('session')->getFlashBag()->add('error', 'Some fields are invalid.');
             }
         }
 
-        return $this->render(
-            'EgzaktSystemBundle:Backend/Role/Role:edit.html.twig',
+        return $this->render('EgzaktSystemBundle:Backend/Role/Role:edit.html.twig',
             array(
                 'entity' => $entity,
                 'form' => $form->createView()
@@ -152,11 +177,7 @@ class RoleController extends BaseController
      */
     public function deleteAction($id)
     {
-        $role = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->find($id);
-
-        if (!$role) {
-            throw $this->createNotFoundException('Unable to find Role entity.');
-        }
+        $role = $this->getRoleRepository()->findOrThrow($id);
 
         if ($this->get('request')->get('message')) {
 
@@ -165,10 +186,11 @@ class RoleController extends BaseController
                 'entity' => $role
             ));
 
-            return new Response(json_encode(array(
+            return new JsonResponse( array(
                 'template' => $template,
                 'isDeletable' => $isDeletable
-            )));
+                )
+            );
         }
 
         // Don't delete some roles
@@ -176,14 +198,11 @@ class RoleController extends BaseController
             throw new \Exception('You can\'t delete this role.');
         }
 
-        // Call the translator before we flush the entity so we can have the real __toString()
-        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-            '%entity% has been deleted.',
-            array('%entity%' => $role))
-        );
+        $this->getRoleRepository()->removeAndFlush($role);
 
-        $this->getEm()->remove($role);
-        $this->getEm()->flush();
+        $this->setSuccessFlash(
+            $this->translate('%entity% has been deleted.', array('%entity%' => $role) )
+        );
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_role'));
     }
