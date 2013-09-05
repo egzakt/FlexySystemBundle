@@ -187,7 +187,7 @@ class SectionRepository extends BaseEntityRepository
         return $this->processQuery($queryBuilder);
     }
 
-    public function findRootsWithoutNavigation($appId = null)
+    public function findRootsWithoutNavigation(App $app)
     {
         $queryBuilder = $this->createQueryBuilder('s')
             ->select('s', 'st', 'c', 'ct')
@@ -199,9 +199,9 @@ class SectionRepository extends BaseEntityRepository
             ->andWhere('n.id IS NULL')
             ->orderBy('s.ordering');
 
-        if ($appId) {
+        if ( isset($app) ) {
             $queryBuilder->andWhere('s.app = :appId');
-            $queryBuilder->setParameter('appId', $appId);
+            $queryBuilder->setParameter('appId', $app->getId());
         }
 
         return $this->processQuery($queryBuilder);

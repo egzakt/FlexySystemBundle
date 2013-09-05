@@ -15,13 +15,10 @@ class NavigationRepository extends BaseEntityRepository
     const APP_MODULE_BAR_ID = 4;
 
     /**
-     * Select all albums that have photos
-     *
-     * @param $appId
-     *
+     * @param App $app
      * @return mixed
      */
-    public function findHaveSections($appId = null)
+    public function findHaveSections(App $app = null)
     {
         $query = $this->createQueryBuilder('n')
             ->select('n', 'sn', 's', 'st')
@@ -31,9 +28,9 @@ class NavigationRepository extends BaseEntityRepository
             ->orderBy('n.id', 'ASC')
             ->addOrderBy('sn.ordering', 'ASC');
 
-        if ($appId) {
+        if ( isset($app) ) {
             $query->where('n.app = :appId');
-            $query->setParameter('appId', $appId);
+            $query->setParameter('appId', $app->getId());
         }
 
         return $this->processQuery($query);
