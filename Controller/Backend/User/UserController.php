@@ -116,7 +116,7 @@ class UserController extends BaseController
                 $user->encodePassword($encoder, $previousEncodedPassword);
 
                 $this->getUserRepository()->persistAndFlush($user);
-                $this->addFlash('success', $this->translate('%entity% has been updated.', array('%entity%' => $user)) );
+                $this->setSuccessFlash($this->translate('%entity% has been updated.', array('%entity%' => $user)) );
 
                 $this->redirectIf(
                     $request->request->has('save'),
@@ -125,7 +125,7 @@ class UserController extends BaseController
                 );
 
             } else {
-                $this->addFlash('error', 'Some fields are invalid.');
+                $this->setErrorFlash('Some fields are invalid.');
             }
         }
 
@@ -171,7 +171,7 @@ class UserController extends BaseController
         if ($connectedUser instanceof User && !$connectedUser->equals($user) ) {
 
             // Call the translator before we flush the entity so we can have the real __toString()
-            $this->addFlash('success',
+            $this->setSuccessFlash(
                 $this->translate('%entity% has been deleted.',
                     array('%entity%' => $user != '' ? $user : $user->getEntityName())
                 )

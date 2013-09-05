@@ -25,15 +25,6 @@ class TextController extends BaseController
      * @var \Egzakt\SystemBundle\Entity\TextRepository
      */
     private $textRepository;
-
-    /**
-     * @return \Egzakt\SystemBundle\Entity\TextRepository
-     */
-    protected function getTextRepository()
-    {
-        return $this->textRepository;
-    }
-
     /**
      * Init
      */
@@ -96,7 +87,7 @@ class TextController extends BaseController
 
                 $this->getTextRepository()->persistAndFlush($text);
                 $this->invalidateRouter();
-                $this->addFlash('success', 'The text has been updated.');
+                $this->setSuccessFlash('The text has been updated.');
 
                 $this->redirectIf(
                     $request->request->has('save'),
@@ -105,7 +96,7 @@ class TextController extends BaseController
                 );
 
             } else {
-                $this->addFlash('error', 'Some fields are invalid.');
+                $this->setErrorFlash('Some fields are invalid.');
             }
         }
 
@@ -134,7 +125,7 @@ class TextController extends BaseController
                 'entity' => $text
             ));
 
-            return new JsonResponse(
+            return $this->sendJson(
                 array(
                     'template' => $template,
                     'isDeletable' => $text->isDeletable()
@@ -143,7 +134,7 @@ class TextController extends BaseController
         }
 
         $this->getTextRepository()->removeAndFlush($text);
-        $this->addFlash('success', 'The text has been deleted.');
+        $this->setSuccessFlash('The text has been deleted.');
         $this->invalidateRouter();
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_text'));
@@ -178,7 +169,16 @@ class TextController extends BaseController
             $this->invalidateRouter();
         }
 
-        return new Response('');
+        return $this->send();
     }
+
+    /**
+     * @return \Egzakt\SystemBundle\Entity\TextRepository
+     */
+    protected function getTextRepository()
+    {
+        return $this->textRepository;
+    }
+
 
 }
