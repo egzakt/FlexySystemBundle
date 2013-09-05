@@ -47,7 +47,7 @@ class UserController extends BaseController
         $this->setUserRepository( $this->getRepository('EgzaktSystemBundle:User') );
 
         // Check if the current User has the privileges
-        if (!$this->get('security.context')->isGranted(Role::ROLE_BACKEND_ADMIN)) {
+        if (!$this->getSecurity()->isGranted(Role::ROLE_BACKEND_ADMIN)) {
             throw new AccessDeniedHttpException();
         }
 
