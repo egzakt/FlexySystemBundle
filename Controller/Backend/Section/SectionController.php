@@ -79,7 +79,7 @@ class SectionController extends BaseController
         $entity = $this->getSectionRepository()->findOrCreate($id, $app, $section);
         $this->pushNavigationElement($entity);
 
-        $form = $this->createForm(new SectionType(), $entity, array('current_section' => $entity, 'managed_app' => $this->getApp()));
+        $form = $this->createForm(new SectionType(), $entity, array('current_section' => $entity, 'managed_app' => $app));
 
         if ('POST' === $request->getMethod()) {
 
@@ -88,9 +88,8 @@ class SectionController extends BaseController
             if ($form->isValid()) {
 
                 $appBackend = $this->getAppRepository()->findOneByName('backend');
-                $currentApp = $this->getApp();
                 $navBar = $this->getNavigationRepository()->find(NavigationRepository::SECTION_MODULE_BAR_ID);
-                $this->getSectionRepository()->mergeAndFlush($entity, $currentApp, $navBar, $appBackend);
+                $this->getSectionRepository()->mergeAndFlush($entity, $app, $navBar, $appBackend);
 
                 $this->invalidateRouter();
                 $this->setSuccessFlash(
