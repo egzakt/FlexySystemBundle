@@ -43,8 +43,8 @@ class UserController extends BaseController
     {
         parent::init();
 
-        $this->setRoleRepository( $this->getRepository('EgzaktSystemBundle:Role') );
-        $this->setUserRepository( $this->getRepository('EgzaktSystemBundle:User') );
+        $this->roleRepository = $this->getRepository('EgzaktSystemBundle:Role');
+        $this->userRepository = $this->getRepository('EgzaktSystemBundle:User');
 
         // Check if the current User has the privileges
         if (!$this->getSecurity()->isGranted(Role::ROLE_BACKEND_ADMIN)) {
@@ -193,27 +193,11 @@ class UserController extends BaseController
     }
 
     /**
-     * @param RoleRepository $repository
-     */
-    protected function setRoleRepository(RoleRepository $repository)
-    {
-        $this->roleRepository = $repository;
-    }
-
-    /**
      * @return UserRepository
      */
     protected function getUserRepository()
     {
         return $this->userRepository;
-    }
-
-    /**
-     * @param UserRepository $repository
-     */
-    protected function setUserRepository(UserRepository $repository)
-    {
-        $this->userRepository = $repository;
     }
 
     /**

@@ -42,30 +42,6 @@ class RoleController extends BaseController
     private $roleRepository;
 
     /**
-     * @return RoleRepository
-     */
-    protected function getRoleRepository()
-    {
-        return $this->roleRepository;
-    }
-
-    /**
-     * @param RoleRepository $repository
-     */
-    protected function setRoleRepository(RoleRepository $repository)
-    {
-        $this->roleRepository = $repository;
-    }
-
-    /**
-     * @return bool
-     */
-    protected function isDeveloper()
-    {
-        return $this->isDeveloper;
-    }
-
-    /**
      * Init
      */
     public function init()
@@ -84,7 +60,7 @@ class RoleController extends BaseController
         $this->isDeveloper = $this->getSecurity()->isGranted(Role::ROLE_DEVELOPER);
         $this->rolesAdmin = array(Role::ROLE_BACKEND_ADMIN, Role::ROLE_DEVELOPER);
 
-        $this->setRoleRepository( $this->getRepository('EgzaktSystemBundle:Role') );
+        $this->roleRepository = $this->getRepository('EgzaktSystemBundle:Role');
 
     }
 
@@ -206,4 +182,21 @@ class RoleController extends BaseController
 
         return $this->redirect($this->generateUrl('egzakt_system_backend_role'));
     }
+
+    /**
+     * @return RoleRepository
+     */
+    protected function getRoleRepository()
+    {
+        return $this->roleRepository;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isDeveloper()
+    {
+        return $this->isDeveloper;
+    }
+
 }

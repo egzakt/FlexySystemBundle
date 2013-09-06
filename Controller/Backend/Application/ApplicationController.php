@@ -38,7 +38,7 @@ class ApplicationController extends BaseController
 
         $this->createAndPushNavigationElement('Applications', 'egzakt_system_backend_application');
 
-        $this->setAppRepository( $this->getRepository('EgzaktSystemBundle:App') );
+        $this->appRepository = $this->getRepository('EgzaktSystemBundle:App');
     }
 
     /**
@@ -139,14 +139,6 @@ class ApplicationController extends BaseController
     protected function getAppRepository()
     {
         return $this->appRepository;
-    }
-
-    /**
-     * @param AppRepository $repository
-     */
-    protected function setAppRepository(AppRepository $repository)
-    {
-        $this->appRepository = $repository;
     }
 
 }

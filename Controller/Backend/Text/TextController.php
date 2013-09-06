@@ -35,7 +35,7 @@ class TextController extends BaseController
     {
         parent::init();
 
-        $this->setTextRepository( $this->getRepository('EgzaktSystemBundle:Text') );
+        $this->textRepository = $this->getRepository('EgzaktSystemBundle:Text');
         $this->createAndPushNavigationElement('Text list', 'egzakt_system_backend_text');
     }
 
@@ -176,14 +176,6 @@ class TextController extends BaseController
     protected function getTextRepository()
     {
         return $this->textRepository;
-    }
-
-    /**
-     * @param TextRepository $repository
-     */
-    protected function setTextRepository(TextRepository $repository)
-    {
-        $this->textRepository = $repository;
     }
 
 

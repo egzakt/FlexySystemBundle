@@ -53,10 +53,10 @@ class RootController extends BaseController
             'appSlug' => $this->getApp()->getSlug()
         ));
 
-        $this->setNavigationRepository( $this->getRepository('EgzaktSystemBundle:Navigation') );
-        $this->setSectionRepository( $this->getRepository('EgzaktSystemBundle:Section') );
-        $this->setAppRepository( $this->getRepository('EgzaktSystemBundle:App') );
-        $this->setSectionNavigationRepository( $this->getRepository('EgzaktSystemBundle:SectionNavigation') );
+        $this->navigationRepository = $this->getRepository('EgzaktSystemBundle:Navigation');
+        $this->sectionRepository = $this->getRepository('EgzaktSystemBundle:Section');
+        $this->appRepository = $this->getRepository('EgzaktSystemBundle:App');
+        $this->sectionNavRepository = $this->getRepository('EgzaktSystemBundle:SectionNavigation');
     }
 
     /**
@@ -211,27 +211,11 @@ class RootController extends BaseController
     }
 
     /**
-     * @param NavigationRepository $repository
-     */
-    protected function setNavigationRepository(NavigationRepository $repository)
-    {
-        $this->navigationRepository = $repository;
-    }
-
-    /**
      * @return SectionRepository
      */
     protected function getSectionRepository()
     {
         return $this->sectionRepository;
-    }
-
-    /**
-     * @param SectionRepository $repository
-     */
-    protected function setSectionRepository(SectionRepository $repository)
-    {
-        $this->sectionRepository = $repository;
     }
 
     /**
@@ -243,27 +227,11 @@ class RootController extends BaseController
     }
 
     /**
-     * @param AppRepository $repository
-     */
-    protected function setAppRepository(AppRepository $repository)
-    {
-        $this->appRepository = $repository;
-    }
-
-    /**
      * @return SectionNavigationRepository
      */
     protected function getSectionNavigationRepository()
     {
         return $this->sectionNavRepository;
-    }
-
-    /**
-     * @param SectionNavigationRepository $repository
-     */
-    protected function setSectionNavigationRepository(SectionNavigationRepository $repository)
-    {
-        $this->sectionNavRepository = $repository;
     }
 
 }

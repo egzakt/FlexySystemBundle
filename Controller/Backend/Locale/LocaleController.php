@@ -32,7 +32,7 @@ class LocaleController extends BaseController
     {
         parent::init();
 
-        $this->setLocaleRepository( $this->getRepository('EgzaktSystemBundle:Locale') );
+        $this->localeRepository = $this->getRepository('EgzaktSystemBundle:Locale');
     }
 
     /**
@@ -133,14 +133,6 @@ class LocaleController extends BaseController
     protected function getLocaleRepository()
     {
         return $this->localeRepository;
-    }
-
-    /**
-     * @param LocaleRepository $repository
-     */
-    protected function setLocaleRepository(LocaleRepository $repository)
-    {
-        $this->localeRepository = $repository;
     }
 
 }
