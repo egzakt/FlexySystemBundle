@@ -2,40 +2,28 @@
 
 namespace Egzakt\SystemBundle\Lib\Backend;
 
-use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\SecurityContext;
 
 use Egzakt\SystemBundle\Entity\App;
-use Egzakt\SystemBundle\Entity\Section;
-use Egzakt\SystemBundle\Lib\BaseControllerInterface;
+use Egzakt\SystemBundle\Lib\ApplicationController;
 use Egzakt\SystemBundle\Lib\NavigationElement;
-
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Security\Core\SecurityContext;
 
 use \Swift_Message;
 
 /**
  * Base Controller for all Egzakt backend bundles
  */
-abstract class BaseController extends Controller implements BaseControllerInterface
+abstract class BaseController extends ApplicationController
 {
-    /**
-     * Init
-     */
-    public function init()
-    {
-        // base implementation
-    }
 
     /**
      * Return the core
      *
      * @return Core
      */
-    public function getCore()
+    protected function getCore()
     {
         return $this->container->get('egzakt_backend.core');
     }
@@ -47,29 +35,9 @@ abstract class BaseController extends Controller implements BaseControllerInterf
      *
      * @return BackendCore
      */
-    public function getBackendCore()
+    protected function getBackendCore()
     {
         return $this->getCore();
-    }
-
-    /**
-     * Return the system core
-     *
-     * @return Core
-     */
-    public function getSystemCore()
-    {
-        return $this->container->get('egzakt_system.core');
-    }
-
-    /**
-     * Get the Section entity
-     *
-     * @return Section
-     */
-    public function getSection()
-    {
-        return $this->getCore()->getSection();
     }
 
     /**
@@ -77,7 +45,7 @@ abstract class BaseController extends Controller implements BaseControllerInterf
      * @deprecated
      * @return string
      */
-    public function getBundleName()
+    protected function getBundleName()
     {
         trigger_error('getBundleName is deprecated.', E_USER_DEPRECATED);
 
@@ -89,7 +57,7 @@ abstract class BaseController extends Controller implements BaseControllerInterf
      *
      * @return App
      */
-    public function getApp()
+    protected function getApp()
     {
         return $this->getCore()->getApp();
     }
@@ -99,20 +67,12 @@ abstract class BaseController extends Controller implements BaseControllerInterf
      *
      * @return string
      */
-    public function getCurrentAppName()
+    protected function getCurrentAppName()
     {
         return $this->getSystemCore()->getCurrentAppName();
     }
 
-    /**
-     * Get the Entity Manager
-     * @deprecated
-     * @return EntityManager
-     */
-    public function getEm()
-    {
-        return $this->getDoctrine()->getManager();
-    }
+
 
     /**
      * Helper method to create a navigation element
@@ -176,49 +136,11 @@ abstract class BaseController extends Controller implements BaseControllerInterf
      */
     public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
-        return $this->container->get('router')->generate(
+        return $this->getService('router')->generate(
             $route,
-            $this->get('egzakt_system.router_auto_parameters_handler')->inject($parameters),
+            $this->getService('egzakt_system.router_auto_parameters_handler')->inject($parameters),
             $referenceType
         );
-    }
-
-    /**
-     * Adds a flash message for type.
-     *
-     * @param string $type
-     * @param string $message
-     */
-    protected function addFlash($type, $message)
-    {
-        $this->get('session')->getFlashBag()->add($type, $message);
-    }
-
-    /**
-     * Set a success message flash.
-     * @param $message
-     */
-    protected function setSuccessFlash($message)
-    {
-        $this->addFlash('success', $message);
-    }
-
-    /**
-     * Set an error message flash.
-     * @param $message
-     */
-    protected function setErrorFlash($message)
-    {
-        $this->addFlash('error', $message);
-    }
-
-    /**
-     * @param $classname
-     * @return BaseEntityRepository
-     */
-    protected function getRepository($classname)
-    {
-        return $this->getDoctrine()->getRepository($classname);
     }
 
     /**
@@ -226,67 +148,7 @@ abstract class BaseController extends Controller implements BaseControllerInterf
      */
     protected function invalidateRouter()
     {
-        $this->get('egzakt_system.router_invalidator')->invalidate();
-    }
-
-    /**
-     * Redirect user depending of the condition. If it's true, second argument is used. Else it's the third.
-     *
-     * @param $condition
-     * @param $ifTrue
-     * @param $ifFalse
-     * @return RedirectResponse
-     */
-    protected function redirectIf($condition, $ifTrue, $ifFalse)
-    {
-        return $this->redirect( $condition ? $ifTrue : $ifFalse );
-    }
-
-    /**
-     * Translate a text using a translator.
-     *
-     * @param $text
-     * @param array $args
-     * @return mixed
-     */
-    protected function translate($text, $args = array())
-    {
-        return $this->get('translator')->trans($text, $args);
-    }
-
-    /**
-     * Get the Security Object.
-     * @return SecurityContext
-     */
-    protected function getSecurity()
-    {
-        return $this->get('security.context');
-    }
-
-    /**
-     * Create a new e-mail.
-     *
-     * @param $subject
-     * @param $from
-     * @param $to
-     * @return Swift_Message
-     */
-    protected function createMail($subject, $from, $to)
-    {
-        $message = Swift_Message::newInstance()
-            ->setSubject($subject)
-            ->setFrom($from)
-            ->setTo($to);
-        return $message;
-    }
-
-    /**
-     * Send an email.
-     * @param Swift_Message $message
-     */
-    protected function sendMail(Swift_Message $message)
-    {
-        $this->get('mailer')->send($message);
+        $this->getService('egzakt_system.router_invalidator')->invalidate();
     }
 
 }
