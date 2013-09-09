@@ -15,16 +15,6 @@ class TextTranslation extends BaseTranslationEntity
 {
     use ORMBehaviors\Translatable\Translation;
 
-//    /**
-//     * @var integer $id
-//     */
-//    protected $id;
-
-//    /**
-//     * @var string $locale
-//     */
-//    protected $locale;
-
     /**
      * @var string $text
      */
@@ -44,41 +34,6 @@ class TextTranslation extends BaseTranslationEntity
      * @var boolean $active
      */
     protected $active;
-
-//    /**
-//     * @var Text
-//     */
-//    protected $translatable;
-
-//    /**
-//     * Get id
-//     *
-//     * @return integer
-//     */
-//    public function getId()
-//    {
-//        return $this->id;
-//    }
-
-//    /**
-//     * Set locale
-//     *
-//     * @param string $locale
-//     */
-//    public function setLocale($locale)
-//    {
-//        $this->locale = $locale;
-//    }
-//
-//    /**
-//     * Get locale
-//     *
-//     * @return string
-//     */
-//    public function getLocale()
-//    {
-//        return $this->locale;
-//    }
 
     /**
      * Set text
@@ -159,26 +114,6 @@ class TextTranslation extends BaseTranslationEntity
     {
         return $this->active;
     }
-
-//    /**
-//     * Set translatable
-//     *
-//     * @param Text $translatable
-//     */
-//    public function setTranslatable(Text $translatable)
-//    {
-//        $this->translatable = $translatable;
-//    }
-//
-//    /**
-//     * Get translatable
-//     *
-//     * @return Text
-//     */
-//    public function getTranslatable()
-//    {
-//        return $this->translatable;
-//    }
 
     /**
      * Validate the sub-fields of a collapsable text

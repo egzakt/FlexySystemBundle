@@ -26,11 +26,6 @@ class Text extends BaseEntity
      */
     protected $section;
 
-//    /**
-//     * @var ArrayCollection
-//     */
-//    protected $translations;
-
     /**
      * @var boolean $collapsable
      */
@@ -55,11 +50,6 @@ class Text extends BaseEntity
      * @var \DateTime $updatedAt
      */
     protected $updatedAt;
-//
-//    public function __construct()
-//    {
-//        $this->translations = new ArrayCollection();
-//    }
 
     /**
      * Get id
@@ -276,26 +266,6 @@ class Text extends BaseEntity
         return $params;
     }
 
-//    /**
-//     * Add translations
-//     *
-//     * @param TextTranslation $translations
-//     */
-//    public function addTextTranslation(TextTranslation $translations)
-//    {
-//        $this->translations[] = $translations;
-//    }
-//
-//    /**
-//     * Get translations
-//     *
-//     * @return ArrayCollection
-//     */
-//    public function getTranslations()
-//    {
-//        return $this->translations;
-//    }
-
     /**
      * List of methods to check before allowing deletion
      *
@@ -305,28 +275,5 @@ class Text extends BaseEntity
     {
         return array('isStatic');
     }
-
-//    /**
-//     * Add translations
-//     *
-//     * @param  \Egzakt\SystemBundle\Entity\TextTranslation $translations
-//     * @return Text
-//     */
-//    public function addTranslation(\Egzakt\SystemBundle\Entity\TextTranslation $translations)
-//    {
-//        $this->translations[] = $translations;
-//
-//        return $this;
-//    }
-//
-//    /**
-//     * Remove translations
-//     *
-//     * @param \Egzakt\SystemBundle\Entity\TextTranslation $translations
-//     */
-//    public function removeTranslation(\Egzakt\SystemBundle\Entity\TextTranslation $translations)
-//    {
-//        $this->translations->removeElement($translations);
-//    }
 
 }
