@@ -5,7 +5,7 @@ namespace Egzakt\SystemBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Egzakt\DoctrineBehaviorsBundle\Model\Translatable\Translatable;
 
 use Egzakt\SystemBundle\Lib\BaseEntity;
 
@@ -14,7 +14,7 @@ use Egzakt\SystemBundle\Lib\BaseEntity;
  */
 class Text extends BaseEntity
 {
-    use ORMBehaviors\Translatable\Translatable;
+    use Translatable;
 
     /**
      * @var integer $id
@@ -329,20 +329,4 @@ class Text extends BaseEntity
 //        $this->translations->removeElement($translations);
 //    }
 
-    public function __call($method, $arguments)
-    {
-        return $this->proxyCurrentLocaleTranslation($method, $arguments);
-    }
-
-    /**
-     * getTranslation
-     *
-     * @param string $locale The locale in which we want to get the translation entity
-     *
-     * @return \Egzakt\Backend\CoreBundle\Lib\BaseTranslationEntity
-     */
-    public function getTranslation()
-    {
-        return $this->translate();
-    }
 }

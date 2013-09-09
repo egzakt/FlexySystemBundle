@@ -97,7 +97,6 @@ class TextController extends BaseController
 
                 $em = $this->getEm();
                 $em->persist($text);
-                $text->mergeNewTranslations();
                 $em->flush();
 
                 $this->get('egzakt_system.router_invalidator')->invalidate();
