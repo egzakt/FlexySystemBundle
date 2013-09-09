@@ -21,11 +21,11 @@ Egzakt\SystemBundle\Entity\Section:
           on: update
   repositoryClass: Egzakt\SystemBundle\Entity\SectionRepository
   oneToMany:
-    translations:
-      targetEntity: Egzakt\SystemBundle\Entity\SectionTranslation
-      mappedBy: translatable
-      fetch: EAGER
-      cascade: [persist]
+#    translations:
+#      targetEntity: Egzakt\SystemBundle\Entity\SectionTranslation
+#      mappedBy: translatable
+#      fetch: EAGER
+#      cascade: [persist]
     children:
       targetEntity: Egzakt\SystemBundle\Entity\Section
       mappedBy: parent

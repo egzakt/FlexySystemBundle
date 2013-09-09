@@ -33,9 +33,9 @@ Egzakt\SystemBundle\Entity\Text:
         name: section_id
         referencedColumnName: id
         onDelete:  cascade
-  oneToMany:
-    translations:
-      targetEntity: Egzakt\SystemBundle\Entity\TextTranslation
-      mappedBy: translatable
-      fetch: EAGER
-      cascade: [persist]
+#  oneToMany:
+#    translations:
+#      targetEntity: Egzakt\SystemBundle\Entity\TextTranslation
+#      mappedBy: translatable
+#      fetch: EAGER
+#      cascade: [persist]

@@ -21,12 +21,12 @@ Egzakt\SystemBundle\Entity\Role:
         timestampable:
           on: update
   lifecycleCallbacks: {  }
-  oneToMany:
-    translations:
-      targetEntity: Egzakt\SystemBundle\Entity\RoleTranslation
-      mappedBy: translatable
-      fetch: EAGER
-      cascade: [persist]
+#  oneToMany:
+#    translations:
+#      targetEntity: Egzakt\SystemBundle\Entity\RoleTranslation
+#      mappedBy: translatable
+#      fetch: EAGER
+#      cascade: [persist]
   manyToMany:
     users:
       targetEntity: Egzakt\SystemBundle\Entity\User
