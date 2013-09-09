@@ -202,6 +202,15 @@ abstract class BaseController extends Controller implements BaseControllerInterf
     }
 
     /**
+     * Set an error message flash.
+     * @param $message
+     */
+    protected function setErrorFlash($message)
+    {
+        $this->addFlash('error', $message);
+    }
+
+    /**
      * @param $classname
      * @return BaseEntityRepository
      */
