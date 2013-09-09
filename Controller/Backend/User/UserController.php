@@ -113,18 +113,26 @@ class UserController extends BaseController
                 // New password set
                 $encoder = null;
                 if ($form->get('password')->getData()) {
-                    $encoder = $this->get('security.encoder_factory')->getEncoder($user);
+                    $encoder = $this->getPasswordEncoder($user);
                 }
                 $user->encodePassword($encoder, $previousEncodedPassword);
 
                 $this->getUserRepository()->persistAndFlush($user);
                 $this->setSuccessFlash($this->translate('%entity% has been updated.', array('%entity%' => $user)) );
 
+
                 return $this->redirectIf(
                     $request->request->has('save'),
                     $this->generateUrl('egzakt_system_backend_user'),
                     $this->generateUrl('egzakt_system_backend_user_edit', array( 'id' => $user->getId() ?: 0 ) )
                 );
+
+                /*
+                return $this->redirectIf( $request->request->has('save'),
+                    'egzakt_system_backend_user',
+                    array('egzakt_system_backend_user_edit', array('id' => $user->getId() ?: 0))
+                );
+                */
 
             }
         }
@@ -180,7 +188,8 @@ class UserController extends BaseController
             $this->getUserRepository()->removeAndFlush($user);
         }
 
-        return $this->redirect($this->generateUrl('egzakt_system_backend_user'));
+        //return $this->redirect($this->generateUrl('egzakt_system_backend_user'));
+        return $this->redirectTo('egzakt_system_backend_user');
     }
 
 
@@ -206,6 +215,11 @@ class UserController extends BaseController
     protected function isDeveloper()
     {
         return $this->isDeveloper;
+    }
+
+    protected function getPasswordEncoder($user)
+    {
+        return $this->getService('security.encoder_factory')->getEncoder($user);
     }
 
 }
