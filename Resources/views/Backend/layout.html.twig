@@ -3,7 +3,7 @@
     <head>
         {% block head %}
             <meta charset="UTF-8" />
-            {#<title>{% block title %}{{ render(controller('EgzaktSystemBundle:Backend/Navigation:PageTitle')) }}{% endblock %}</title>#}
+            <title>{% block title %}{{ render(controller('EgzaktSystemBundle:Backend/Navigation:PageTitle')) }}{% endblock %}</title>
             {% block stylesheets %}{% include 'EgzaktSystemBundle:Backend/Core:stylesheets.html.twig' %}{% endblock %}
             <link rel="icon" type="image/png" href="{{ asset('bundles/egzaktsystem/backend/images/icons/favicon.png') }}" />
             {% block jquery %}
@@ -39,7 +39,7 @@
 
                     <div id="navigation_col">
                         {% block section_bar %}
-                            {#{{ render(controller('EgzaktSystemBundle:Backend/Navigation:SectionBar')) }}#}
+                            {{ render(controller('EgzaktSystemBundle:Backend/Navigation:SectionBar')) }}
                         {% endblock %}
 
                         {% block app_module_bar %}
@@ -53,7 +53,7 @@
 
                     <div id="main_col">
                         {% block breadcrumbs %}
-                            {#{{ render(controller('EgzaktSystemBundle:Backend/Navigation:Breadcrumbs')) }}#}
+                            {{ render(controller('EgzaktSystemBundle:Backend/Navigation:Breadcrumbs')) }}
                         {% endblock %}
 
                         {% block section_module_bar %}
