@@ -207,4 +207,8 @@ abstract class ApplicationController extends Controller implements BaseControlle
         return $this->redirect( $condition ? $ifTrue : $ifFalse );
     }
 
+    protected function redirectTo($routeName, $args = array())
+    {
+        return $this->redirect($this->generateUrl($routeName, $args));
+    }
 }
