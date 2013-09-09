@@ -15,6 +15,8 @@ use Egzakt\SystemBundle\Lib\NavigationElement;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Security\Core\SecurityContext;
 
+use \Swift_Message;
+
 /**
  * Base Controller for all Egzakt backend bundles
  */
@@ -259,6 +261,32 @@ abstract class BaseController extends Controller implements BaseControllerInterf
     protected function getSecurity()
     {
         return $this->get('security.context');
+    }
+
+    /**
+     * Create a new e-mail.
+     *
+     * @param $subject
+     * @param $from
+     * @param $to
+     * @return Swift_Message
+     */
+    protected function createMail($subject, $from, $to)
+    {
+        $message = Swift_Message::newInstance()
+            ->setSubject($subject)
+            ->setFrom($from)
+            ->setTo($to);
+        return $message;
+    }
+
+    /**
+     * Send an email.
+     * @param Swift_Message $message
+     */
+    protected function sendMail(Swift_Message $message)
+    {
+        $this->get('mailer')->send($message);
     }
 
 }
