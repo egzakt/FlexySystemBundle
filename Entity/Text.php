@@ -5,7 +5,7 @@ namespace Egzakt\SystemBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use Doctrine\ORM\Mapping as ORM;
-use Egzakt\DoctrineBehaviorsBundle\Model\Translatable\Translatable;
+use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 
 use Egzakt\SystemBundle\Lib\BaseEntity;
 
@@ -14,7 +14,8 @@ use Egzakt\SystemBundle\Lib\BaseEntity;
  */
 class Text extends BaseEntity
 {
-    use Translatable;
+
+    use EgzaktORMBehaviors\Translatable\Translatable;
 
     /**
      * @var integer $id

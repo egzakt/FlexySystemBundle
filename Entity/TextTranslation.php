@@ -13,6 +13,7 @@ use Knp\DoctrineBehaviors\Model as ORMBehaviors;
  */
 class TextTranslation extends BaseTranslationEntity
 {
+
     use ORMBehaviors\Translatable\Translation;
 
     /**
