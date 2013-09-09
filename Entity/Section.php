@@ -6,12 +6,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\ExecutionContext;
 
 use Egzakt\SystemBundle\Lib\BaseEntity;
+use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 
 /**
  * Section
  */
 class Section extends BaseEntity
 {
+    use EgzaktORMBehaviors\Translatable\Translatable;
+
     /**
      * @var ArrayCollection
      */
@@ -58,11 +61,6 @@ class Section extends BaseEntity
     protected $texts;
 
     /**
-     * @var SectionTranslation
-     */
-    protected $translations;
-
-    /**
      * @var ArrayCollection
      */
     protected $roles;
@@ -79,7 +77,6 @@ class Section extends BaseEntity
     public function __construct()
     {
         $this->children = new ArrayCollection();
-        $this->translations = new ArrayCollection();
         $this->roles = new ArrayCollection();
         $this->mappings = new ArrayCollection();
         $this->sectionNavigations = new ArrayCollection();
@@ -91,7 +88,7 @@ class Section extends BaseEntity
             return 'New section';
         }
 
-        if ($name = $this->translate()->getName()) {
+        if ($name = $this->getName()) {
             return $name;
         }
 
@@ -492,26 +489,6 @@ class Section extends BaseEntity
     }
 
     /**
-     * Add translations
-     *
-     * @param SectionTranslation $translations
-     */
-    public function addSectionTranslation(SectionTranslation $translations)
-    {
-        $this->translations[] = $translations;
-    }
-
-    /**
-     * Get translations
-     *
-     * @return ArrayCollection
-     */
-    public function getTranslations()
-    {
-        return $this->translations;
-    }
-
-    /**
      * Returns the complete path of the section (Section / Sub-Section / Sub-sub-section ... )
      *
      * @return string
@@ -616,29 +593,6 @@ class Section extends BaseEntity
 
             $this->sectionNavigations[] = $sectionNavigation;
         }
-    }
-
-    /**
-     * Add translations
-     *
-     * @param  \Egzakt\SystemBundle\Entity\SectionTranslation $translations
-     * @return Section
-     */
-    public function addTranslation(\Egzakt\SystemBundle\Entity\SectionTranslation $translations)
-    {
-        $this->translations[] = $translations;
-
-        return $this;
-    }
-
-    /**
-     * Remove translations
-     *
-     * @param \Egzakt\SystemBundle\Entity\SectionTranslation $translations
-     */
-    public function removeTranslation(\Egzakt\SystemBundle\Entity\SectionTranslation $translations)
-    {
-        $this->translations->removeElement($translations);
     }
 
     /**

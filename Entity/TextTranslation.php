@@ -2,19 +2,22 @@
 
 namespace Egzakt\SystemBundle\Entity;
 
-use Egzakt\SystemBundle\Lib\BaseTranslationEntity;
 use Symfony\Component\Validator\ExecutionContextInterface;
 
 use Doctrine\ORM\Mapping as ORM;
-use Knp\DoctrineBehaviors\Model as ORMBehaviors;
+use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 
 /**
  * TextTranslation
  */
-class TextTranslation extends BaseTranslationEntity
+class TextTranslation
 {
+    use EgzaktORMBehaviors\Translatable\Translation;
 
-    use ORMBehaviors\Translatable\Translation;
+    /**
+     * @var integer $id
+     */
+    protected $id;
 
     /**
      * @var string $text
