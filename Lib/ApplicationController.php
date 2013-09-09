@@ -19,6 +19,11 @@ abstract class ApplicationController extends Controller implements BaseControlle
     }
 
     /**
+     * @return Core
+     */
+    abstract protected function getCore();
+
+    /**
      * @deprecated Use getService()
      * @param string $id
      * @return object
@@ -38,9 +43,32 @@ abstract class ApplicationController extends Controller implements BaseControlle
     }
 
     /**
-     * @return Core
+     * @param $id
+     * @return bool
      */
-    abstract protected function getCore();
+    protected function hasService($id)
+    {
+        return $this->container->has($id);
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     */
+    protected function getParameter($name)
+    {
+        return $this->container->getParameter($name);
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    protected function hasParameter($name)
+    {
+        return $this->container->hasParameter($name);
+    }
+
 
     /**
      * @return SystemCore
