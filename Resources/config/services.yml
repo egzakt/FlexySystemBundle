@@ -19,6 +19,7 @@ parameters:
     egzakt_system.tree_entity_orderer.class:              Egzakt\SystemBundle\Lib\TreeEntityOrderer
     egzakt_system.form.type.tree_choice.class:            Egzakt\SystemBundle\Form\Type\TreeChoiceType
     egzakt_system.locale_switcher.class:                  Egzakt\SystemBundle\Lib\LocaleSwitcher
+    egzakt_system.section.sluggable_listener.class:       Egzakt\SystemBundle\Lib\SectionSluggableListener
     egzakt_backend.security.cms_voter.class:              Egzakt\SystemBundle\Lib\Backend\CmsVoter
     egzakt_backend.core.class:                            Egzakt\SystemBundle\Lib\Backend\Core
     egzakt_backend.form.type.advanced_file.class:         Egzakt\SystemBundle\Form\Backend\AdvancedFileType
@@ -167,3 +168,9 @@ services:
         arguments: [@service_container]
         tags:
             - { name: security.voter }
+
+    egzakt_system.section.sluggable_listener:
+        class: %egzakt_system.section.sluggable_listener.class%
+        arguments: [@knp.doctrine_behaviors.reflection.class_analyzer]
+        tags:
+            - { name: doctrine.event_subscriber }
