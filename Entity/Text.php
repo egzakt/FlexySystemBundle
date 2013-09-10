@@ -5,7 +5,6 @@ namespace Egzakt\SystemBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
-
 use Egzakt\SystemBundle\Lib\BaseEntity;
 
 /**
