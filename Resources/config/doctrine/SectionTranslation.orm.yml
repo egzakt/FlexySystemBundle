@@ -10,10 +10,6 @@ Egzakt\SystemBundle\Entity\SectionTranslation:
       type: string
       length: 255
       nullable: true
-    slug:
-      type: string
-      length: 255
-      nullable: false
     pageTitle:
       type: string
       length: 255
