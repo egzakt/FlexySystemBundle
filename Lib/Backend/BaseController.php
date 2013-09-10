@@ -4,7 +4,6 @@ namespace Egzakt\SystemBundle\Lib\Backend;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\SecurityContext;
 
 use Egzakt\SystemBundle\Entity\App;
 use Egzakt\SystemBundle\Lib\ApplicationController;
@@ -136,9 +135,9 @@ abstract class BaseController extends ApplicationController
      */
     public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
     {
-        return $this->getService('router')->generate(
+        return $this->get('router')->generate(
             $route,
-            $this->getService('egzakt_system.router_auto_parameters_handler')->inject($parameters),
+            $this->get('egzakt_system.router_auto_parameters_handler')->inject($parameters),
             $referenceType
         );
     }
@@ -148,7 +147,7 @@ abstract class BaseController extends ApplicationController
      */
     protected function invalidateRouter()
     {
-        $this->getService('egzakt_system.router_invalidator')->invalidate();
+        $this->get('egzakt_system.router_invalidator')->invalidate();
     }
 
 }

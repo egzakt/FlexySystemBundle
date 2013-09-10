@@ -24,25 +24,6 @@ abstract class ApplicationController extends Controller implements BaseControlle
     abstract protected function getCore();
 
     /**
-     * @deprecated Use getService()
-     * @param string $id
-     * @return object
-     */
-    public function get($id)
-    {
-        return parent::get($id);
-    }
-
-    /**
-     * @param $id
-     * @return object
-     */
-    protected function getService($id)
-    {
-        return $this->container->get($id);
-    }
-
-    /**
      * @param $id
      * @return bool
      */
@@ -106,7 +87,7 @@ abstract class ApplicationController extends Controller implements BaseControlle
      */
     protected function addFlash($type, $message)
     {
-        $this->getService('session')->getFlashBag()->add($type, $message);
+        $this->get('session')->getFlashBag()->add($type, $message);
     }
 
     /**
@@ -134,7 +115,7 @@ abstract class ApplicationController extends Controller implements BaseControlle
      * @return boolean
      */
     protected function hasFlash($type) {
-        return $this->getService('session')->getFlashBag()->has($type);
+        return $this->get('session')->getFlashBag()->has($type);
     }
 
     /**
@@ -155,7 +136,7 @@ abstract class ApplicationController extends Controller implements BaseControlle
      */
     protected function translate($text, $args = array())
     {
-        return $this->getService('translator')->trans($text, $args);
+        return $this->get('translator')->trans($text, $args);
     }
 
     /**
@@ -164,7 +145,7 @@ abstract class ApplicationController extends Controller implements BaseControlle
      */
     protected function getSecurity()
     {
-        return $this->getService('security.context');
+        return $this->get('security.context');
     }
 
 
@@ -191,7 +172,7 @@ abstract class ApplicationController extends Controller implements BaseControlle
      */
     protected function sendMail(Swift_Message $message)
     {
-        $this->getService('mailer')->send($message);
+        $this->get('mailer')->send($message);
     }
 
     /**
@@ -204,7 +185,7 @@ abstract class ApplicationController extends Controller implements BaseControlle
      */
     protected function redirectIf($condition, $ifTrue, $ifFalse)
     {
-        return $this->redirect( $condition ? $ifTrue : $ifFalse );
+        return $this->redirect($condition ? $ifTrue : $ifFalse);
     }
 
     protected function redirectTo($routeName, $args = array())

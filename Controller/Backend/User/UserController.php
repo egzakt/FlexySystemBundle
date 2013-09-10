@@ -219,7 +219,7 @@ class UserController extends BaseController
 
     protected function getPasswordEncoder($user)
     {
-        return $this->getService('security.encoder_factory')->getEncoder($user);
+        return $this->get('security.encoder_factory')->getEncoder($user);
     }
 
 }

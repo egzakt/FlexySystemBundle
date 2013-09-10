@@ -18,7 +18,7 @@ abstract class BaseController extends ApplicationController
      */
     public function getCore()
     {
-        return $this->container->get('egzakt_frontend.core');
+        return $this->get('egzakt_frontend.core');
     }
 
 
