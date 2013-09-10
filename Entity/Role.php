@@ -18,6 +18,11 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
     use EgzaktORMBehaviors\Translatable\Translatable;
 
     /**
+     * @var integer
+     */
+    protected $id;
+
+    /**
      * @var string $role
      */
     protected $role;
@@ -41,6 +46,16 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
      * @var ArrayCollection
      */
     protected $sections;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return string

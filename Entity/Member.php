@@ -12,6 +12,10 @@ use Egzakt\SystemBundle\Lib\BaseEntity;
  */
 class Member extends BaseEntity implements AdvancedUserInterface, \Serializable
 {
+    /**
+     * @var integer
+     */
+    private $id;
 
     /**
      * @var string $firstname
@@ -72,6 +76,16 @@ class Member extends BaseEntity implements AdvancedUserInterface, \Serializable
      * @var \Datetime $updatedAt
      */
     protected $updatedAt;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return string
@@ -461,4 +475,5 @@ class Member extends BaseEntity implements AdvancedUserInterface, \Serializable
             $this->email
             ) = unserialize($serialized);
     }
+
 }

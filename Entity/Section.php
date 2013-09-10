@@ -16,6 +16,11 @@ class Section extends BaseEntity
     use EgzaktORMBehaviors\Translatable\Translatable;
 
     /**
+     * @var integer
+     */
+    protected $id;
+
+    /**
      * @var ArrayCollection
      */
     protected $children;
@@ -94,16 +99,6 @@ class Section extends BaseEntity
 
         // No translation found in the current locale
         return '';
-    }
-
-    /**
-     * Set id
-     *
-     * @param integer $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     /**
@@ -700,4 +695,5 @@ class Section extends BaseEntity
     {
         return $this->mappings;
     }
+
 }

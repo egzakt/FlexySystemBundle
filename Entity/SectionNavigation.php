@@ -13,6 +13,11 @@ class SectionNavigation extends BaseEntity
     /**
      * @var integer
      */
+    private $id;
+
+    /**
+     * @var integer
+     */
     private $ordering;
 
     /**
@@ -34,6 +39,16 @@ class SectionNavigation extends BaseEntity
      * @var Navigation
      */
     private $navigation;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return string
@@ -150,4 +165,5 @@ class SectionNavigation extends BaseEntity
     {
         return $this->navigation;
     }
+
 }

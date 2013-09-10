@@ -14,11 +14,6 @@ use Egzakt\SystemBundle\Lib\NavigationElementInterface;
 abstract class BaseEntity implements EntityInterface, NavigationElementInterface
 {
     /**
-     * @var integer
-     */
-    protected $id;
-
-    /**
      * The element is currently selected.
      * Used in navigations.
      *
@@ -79,26 +74,6 @@ abstract class BaseEntity implements EntityInterface, NavigationElementInterface
         $classNameTokens = explode('\\', $className);
 
         return array_pop($classNameTokens);
-    }
-
-    /**
-     * Get ID
-     *
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set Id
-     *
-     * @param $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     /**

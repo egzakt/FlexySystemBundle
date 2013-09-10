@@ -40,6 +40,16 @@ class TextTranslation
     protected $active;
 
     /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
      * Set text
      *
      * @param text $text
@@ -130,4 +140,5 @@ class TextTranslation
             $context->addViolationAt('name', 'A collapsable text must have a name');
         }
     }
+
 }

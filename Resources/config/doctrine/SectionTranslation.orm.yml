@@ -13,16 +13,10 @@ Egzakt\SystemBundle\Entity\SectionTranslation:
       type: string
       length: 255
       nullable: true
-      gedmo:
-        - sluggable
     slug:
       type: string
       length: 255
-      nullable: true
-      gedmo:
-        slug:
-          fields: [name]
-          separator: -
+      nullable: false
     pageTitle:
       type: string
       length: 255

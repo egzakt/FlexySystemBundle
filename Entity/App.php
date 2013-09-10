@@ -13,6 +13,11 @@ use Egzakt\SystemBundle\Lib\BaseEntity;
 class App extends BaseEntity
 {
     /**
+     * @var integer
+     */
+    protected $id;
+
+    /**
      * @var string $name
      */
     protected $name;
@@ -60,6 +65,16 @@ class App extends BaseEntity
         $this->sections = new ArrayCollection();
         $this->navigations = new ArrayCollection();
         $this->mappings = new ArrayCollection();
+    }
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
     /**

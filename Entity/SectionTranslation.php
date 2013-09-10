@@ -2,10 +2,9 @@
 
 namespace Egzakt\SystemBundle\Entity;
 
-use Gedmo\Sluggable\Util\Urlizer;
-
 use Doctrine\ORM\Mapping as ORM;
 use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
+use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
  * SectionTranslation
@@ -13,6 +12,8 @@ use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 class SectionTranslation
 {
     use EgzaktORMBehaviors\Translatable\Translation;
+
+    use EgzaktORMBehaviors\Sluggable\Sluggable;
 
     /**
      * @var integer $id
@@ -23,11 +24,6 @@ class SectionTranslation
      * @var string $name
      */
     protected $name;
-
-    /**
-     * @var string $slug
-     */
-    protected $slug;
 
     /**
      * @var string $pageTitle
@@ -70,26 +66,6 @@ class SectionTranslation
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Set slug
-     *
-     * @param string $slug
-     */
-    public function setSlug($slug)
-    {
-        $this->slug = Urlizer::urlize($slug);
-    }
-
-    /**
-     * Get slug
-     *
-     * @return string
-     */
-    public function getSlug()
-    {
-        return $this->slug;
     }
 
     /**
@@ -150,6 +126,16 @@ class SectionTranslation
     public function getActive()
     {
         return $this->active;
+    }
+
+    /**
+     * Get Sluggable Fields
+     *
+     * @return array
+     */
+    public function getSluggableFields()
+    {
+        return array('name');
     }
 
 }
