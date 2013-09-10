@@ -6,9 +6,6 @@ Egzakt\SystemBundle\Entity\SectionTranslation:
       id: true
       generator:
         strategy: AUTO
-    locale:
-      type: string
-      length: 5
     name:
       type: string
       length: 255
