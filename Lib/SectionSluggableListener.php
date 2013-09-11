@@ -3,19 +3,24 @@
 namespace Egzakt\SystemBundle\Lib;
 
 use Egzakt\DoctrineBehaviorsBundle\ORM\Sluggable\SluggableListener;
+use Egzakt\DoctrineBehaviorsBundle\ORM\Sluggable\SluggableListenerInterface;
 
-class SectionSluggableListener extends SluggableListener {
+/**
+ * Class SectionSluggableListener
+ */
+class SectionSluggableListener extends SluggableListener implements SluggableListenerInterface
+{
 
     /**
-     * Get Sluggable Fields
+     * Get Entity Name
      *
-     * Returns the list of sluggable fields
+     * Returns the name of the entity having a slug field which to map the SluggableListener
      *
      * @return array
      */
-    public function getSluggableFields()
+    public function getEntityName()
     {
-        return array('name');
+        return 'Egzakt\SystemBundle\Entity\SectionTranslation';
     }
 
 }
