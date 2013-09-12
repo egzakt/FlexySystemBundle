@@ -53,11 +53,13 @@ class SectionTranslationSluggableListener extends SluggableListener implements S
                         'locale' => $entity->getLocale()
                 ]);
 
+        // On update, look for other slug, not the current entity slug
         if ($translatable->getId()) {
             $queryBuilder->andWhere('t.id <> :id')
                 ->setParameter('id', $translatable->getId());
         }
 
+        // Only look for slug on the same level
         if ($translatable->getParent()) {
             $queryBuilder->andWhere('t.parent = :parent')
                 ->setParameter('parent', $translatable->getParent());
