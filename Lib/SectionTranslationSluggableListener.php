@@ -54,7 +54,7 @@ class SectionTranslationSluggableListener extends SluggableListener implements S
                 ]);
 
         // On update, look for other slug, not the current entity slug
-        if ($translatable->getId()) {
+        if ($em->getUnitOfWork()->isScheduledForUpdate($entity)) {
             $queryBuilder->andWhere('t.id <> :id')
                 ->setParameter('id', $translatable->getId());
         }
