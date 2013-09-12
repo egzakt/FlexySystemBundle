@@ -50,20 +50,6 @@ abstract class BaseEntity implements EntityInterface, NavigationElementInterface
     protected $route;
 
     /**
-     * The locale
-     *
-     * @var string
-     */
-    protected $locale;
-
-    /**
-     * Locales in which the entity is available
-     *
-     * @var array
-     */
-    protected $locales;
-
-    /**
      * Returns the entity name without its path
      *
      * @return string
