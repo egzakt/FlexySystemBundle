@@ -109,6 +109,30 @@ abstract class BaseController extends Controller implements BaseControllerInterf
     }
 
     /**
+     * Init Entity
+     *
+     * Inits a new Entity with default values
+     *
+     * @TODO This method will be renamed to initTranslatableEntity once we get rid of the container.
+     *
+     * @param $entity
+     *
+     * @return mixed
+     */
+    protected function initEntity($entity)
+    {
+        // Set the Edit Locale on translatable entities
+        if (method_exists($entity, 'setCurrentLocale')) {
+            $entity->setCurrentLocale($this->container->get('egzakt_backend.core')->getEditLocale());
+        }
+
+        // @TODO Remove the container from entities
+        $entity->setContainer($this->container);
+
+        return $entity;
+    }
+
+    /**
      * Helper method to create a navigation element
      *
      * @param $name
