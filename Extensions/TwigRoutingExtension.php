@@ -75,11 +75,18 @@ class TwigRoutingExtension extends \Twig_Extension
     {
         $mapping = $this->getMapping($entity);
         $value = $this->getAccessor()->getValue($entity, $mapping->getEntityProperty());
+        if (null === $value) {
+            $value = 0;
+        }
 
-        $routeParams = $this->generateRouteParams(
-            array($mapping->getRouteProperty() => $value),
-            $extraParams
-        );
+        if (null === $extraRoute) {
+            $routeParams = $this->generateRouteParams($extraParams);
+        } else {
+            $routeParams = $this->generateRouteParams(
+                array($mapping->getRouteProperty() => $value),
+                $extraParams
+            );
+        }
 
         if ('backend' === $mapping->getApp() ) {
             $r = $this->getRouter()->generate(
