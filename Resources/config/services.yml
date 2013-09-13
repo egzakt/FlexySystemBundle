@@ -53,12 +53,18 @@ services:
 
     egzakt_system.twig_extension:
         class: %egzakt_system.twig_extension.class%
-        arguments: [ %kernel.trusted_hosts% ]
+        arguments: [ @egzakt_system.entity_route, @router, @egzakt_system.router_auto_parameters_handler, %kernel.trusted_hosts% ]
         tags:
           - { name: twig.extension }
         calls:
           - [ setLocale, [ %locale% ] ]
           - [ setSystemCore, [ @egzakt_system.core ] ]
+
+    egzakt_system.twig_routing_extension:
+        class: Egzakt\SystemBundle\Extensions\TwigRoutingExtension
+        arguments: [ @egzakt_system.core, @egzakt_system.entity_route, @router, @egzakt_system.router_auto_parameters_handler, @property_accessor ]
+        tags:
+          - { name: twig.extension }
 
     egzakt_system.twig_translation_extension:
         class: %egzakt_system.twig_translation_extension.class%
@@ -163,3 +169,17 @@ services:
         arguments: [@service_container]
         tags:
             - { name: security.voter }
+
+
+    egzakt_system.entity_route:
+        class: Egzakt\SystemBundle\Lib\EntityRouting
+        arguments: [ @egzakt_system.entity_route_builder ]
+
+    egzakt_system.entity_route_builder:
+        class: Egzakt\SystemBundle\Lib\EntityRoutingBuilder
+        arguments: [@doctrine.orm.entity_manager]
+
+    egzakt_system.entity_route_system_builder:
+        class: Egzakt\SystemBundle\Lib\EntityRouteSystemMapping
+        tags:
+            - { name: egzakt_system.entity_route }

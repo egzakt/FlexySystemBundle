@@ -46,19 +46,19 @@
                 {% for entity in role.users %}
                     <tr id="item_{{ entity.id }}">
                         <td class="name {{ entity.active ? '' : ' inactive' }}">
-                            <a href="{{ path('egzakt_system_backend_user_edit', { 'id': entity.id }) }}">{{ entity.username }}</a>
+                            <a href="{{ entitypath(entity, 'edit') }}">{{ entity.username }}</a>
                         </td>
                         <td>{{ entity.firstname }}</td>
                         <td>{{ entity.lastname }}</td>
                         <td>{{ entity.updatedat|date('Y-m-d') }}</td>
                         {% include 'EgzaktSystemBundle:Backend/User/User:switch_user.html.twig' with { role: role, user: entity } %}
                         <td class="edit">
-                            <a href="{{ path('egzakt_system_backend_user_edit', { 'id': entity.id }) }}" title="Modifier">
+                            <a href="{{ entitypath(entity, 'edit') }}" title="Modifier">
                                 <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/edit.png') }}" width="15" height="15" alt="" />
                             </a>
                         </td>
                         <td class="delete">
-                            <a href="{{ path('egzakt_system_backend_user_delete', { 'id': entity.id }) }}" rel="{{ path('egzakt_system_backend_user_delete', { 'id': entity.id, 'message': true }) }}" title="{% trans %}Delete{% endtrans %}">
+                            <a href="{{ entitypath(entity, 'delete') }}" rel="{{ entitypath(entity, 'delete', {'message': true}) }}" title="{% trans %}Delete{% endtrans %}">
                                 <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/delete.png') }}" width="12" height="15" alt="" />
                             </a>
                         </td>
