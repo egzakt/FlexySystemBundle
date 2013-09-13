@@ -4,7 +4,6 @@ namespace Egzakt\SystemBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
-use Knp\DoctrineBehaviors\Model as ORMBehaviors;
 
 /**
  * SectionTranslation
