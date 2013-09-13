@@ -17,32 +17,32 @@ class Mapping extends BaseEntity
     /**
      * @var string
      */
-    protected $type;
+    private $type;
 
     /**
      * @var string
      */
-    protected $target;
+    private $target;
 
     /**
      * @var integer
      */
-    protected $ordering;
+    private $ordering;
 
     /**
      * @var Section
      */
-    protected $section;
+    private $section;
 
     /**
      * @var App
      */
-    protected $app;
+    private $app;
 
     /**
      * @var Navigation
      */
-    protected $navigation;
+    private $navigation;
 
     /**
      * Get id

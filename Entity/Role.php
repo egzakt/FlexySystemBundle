@@ -20,32 +20,32 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
     /**
      * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string $role
      */
-    protected $role;
+    private $role;
 
     /**
      * @var \DateTime $createdAt
      */
-    protected $createdAt;
+    private $createdAt;
 
     /**
      * @var \DateTime $updatedAt
      */
-    protected $updatedAt;
+    private $updatedAt;
 
     /**
      * @var ArrayCollection
      */
-    protected $users;
+    private $users;
 
     /**
      * @var ArrayCollection
      */
-    protected $sections;
+    private $sections;
 
     /**
      * Get id

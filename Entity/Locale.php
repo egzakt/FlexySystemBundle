@@ -12,7 +12,7 @@ class Locale extends BaseEntity
     /**
      * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string

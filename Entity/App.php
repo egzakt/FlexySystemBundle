@@ -15,47 +15,47 @@ class App extends BaseEntity
     /**
      * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string $name
      */
-    protected $name;
+    private $name;
 
     /**
      * @var string $slug
      */
-    protected $slug;
+    private $slug;
 
     /**
      * @var int $order
      */
-    protected $order;
+    private $order;
 
     /**
      * @var integer $ordering
      */
-    protected $ordering;
+    private $ordering;
 
     /**
      * @var string $prefix
      */
-    protected $prefix;
+    private $prefix;
 
     /**
      * @var array
      */
-    protected $sections;
+    private $sections;
 
     /**
      * @var Collection
      */
-    protected $navigations;
+    private $navigations;
 
     /**
      * @var Collection
      */
-    protected $mappings;
+    private $mappings;
 
     /**
      * Constructor

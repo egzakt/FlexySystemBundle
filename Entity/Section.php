@@ -18,12 +18,12 @@ class Section extends BaseEntity
     /**
      * @var integer
      */
-    protected $id;
+    private $id;
 
     /**
      * @var ArrayCollection
      */
-    protected $children;
+    private $children;
 
     /**
      * @var Section
@@ -33,47 +33,47 @@ class Section extends BaseEntity
     /**
      * @var string
      */
-    protected $app;
+    private $app;
 
     /**
      * @var \DateTime
      */
-    protected $createdAt;
+    private $createdAt;
 
     /**
      * @var \DateTime
      */
-    protected $updatedAt;
+    private $updatedAt;
 
     /**
      * @var integer
      */
-    protected $ordering;
+    private $ordering;
 
     /**
      * @var array
      */
-    protected $routeParams;
+    private $routeParams;
 
     /**
      * @var array
      */
-    protected $sectionNavigations;
+    private $sectionNavigations;
 
     /**
      * @var array
      */
-    protected $texts;
+    private $texts;
 
     /**
      * @var ArrayCollection
      */
-    protected $roles;
+    private $roles;
 
     /**
      * @var ArrayCollection
      */
-    protected $mappings;
+    private $mappings;
 
     /**
      * Construct

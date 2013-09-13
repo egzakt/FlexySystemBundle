@@ -17,27 +17,27 @@ class TextTranslation
     /**
      * @var integer $id
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string $text
      */
-    protected $text;
+    private $text;
 
     /**
      * @var string $name
      */
-    protected $name;
+    private $name;
 
     /**
      * @var string $anchor
      */
-    protected $anchor;
+    private $anchor;
 
     /**
      * @var boolean $active
      */
-    protected $active;
+    private $active;
 
     /**
      * Get id

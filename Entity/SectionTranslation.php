@@ -17,27 +17,27 @@ class SectionTranslation
     /**
      * @var integer $id
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string $name
      */
-    protected $name;
+    private $name;
 
     /**
      * @var string $pageTitle
      */
-    protected $pageTitle;
+    private $pageTitle;
 
     /**
      * @var string $headCode
      */
-    protected $headCode;
+    private $headCode;
 
     /**
      * @var boolean $active
      */
-    protected $active;
+    private $active;
 
     /**
      * @return int

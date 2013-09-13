@@ -17,37 +17,37 @@ class Text extends BaseEntity
     /**
      * @var integer $id
      */
-    protected $id;
+    private $id;
 
     /**
      * @var Section
      */
-    protected $section;
+    private $section;
 
     /**
      * @var boolean $collapsable
      */
-    protected $collapsable;
+    private $collapsable;
 
     /**
      * @var boolean $static
      */
-    protected $static = false;
+    private $static = false;
 
     /**
      * @var integer $ordering
      */
-    protected $ordering;
+    private $ordering;
 
     /**
      * @var \DateTime $createdAt
      */
-    protected $createdAt;
+    private $createdAt;
 
     /**
      * @var \DateTime $updatedAt
      */
-    protected $updatedAt;
+    private $updatedAt;
 
     /**
      * Get id
