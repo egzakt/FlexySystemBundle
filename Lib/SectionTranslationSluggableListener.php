@@ -15,18 +15,6 @@ class SectionTranslationSluggableListener extends SluggableListener implements S
 {
 
     /**
-     * Get Entity Name
-     *
-     * Returns the name of the entity having a slug field which to map the SluggableListener
-     *
-     * @return array
-     */
-    public function getEntityName()
-    {
-        return 'Egzakt\SystemBundle\Entity\SectionTranslation';
-    }
-
-    /**
      * Get Select Query Builder
      *
      * Returns the Select QueryBuilder that will check for a similar slug in the table

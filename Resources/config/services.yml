@@ -173,4 +173,4 @@ services:
         class: %egzakt_system.section_translation.sluggable_listener.class%
         arguments: [@knp.doctrine_behaviors.reflection.class_analyzer]
         tags:
-            - { name: doctrine.event_subscriber }
+            - { name: doctrine.event_subscriber, type: sluggable, entity: Egzakt\SystemBundle\Entity\SectionTranslation }
