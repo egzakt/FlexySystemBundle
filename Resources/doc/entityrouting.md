@@ -13,7 +13,7 @@ Let's see how this work.
 
 In the backend, we write our templates like this :
 
-```twig
+```html
 <td class="edit">
     <a href="{{ path('egzakt_system_backend_user_edit', { 'id': entity.id }) }}" title="Modifier">
         <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/edit.png') }}" width="15" height="15" alt="" />
@@ -32,7 +32,7 @@ And we all know that coding the same thing is a bad concept.
 
 This is the final solution of all problems :
 
-```twig
+```html
 <td class="edit">
     <a href="{{ entitypath(entity, 'edit' }) }}" title="Modifier">
         <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/edit.png') }}" width="15" height="15" alt="" />
