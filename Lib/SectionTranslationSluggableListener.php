@@ -3,7 +3,6 @@
 namespace Egzakt\SystemBundle\Lib;
 
 use Egzakt\DoctrineBehaviorsBundle\ORM\Sluggable\SluggableListener;
-use Egzakt\DoctrineBehaviorsBundle\ORM\Sluggable\SluggableListenerInterface;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\QueryBuilder;
@@ -11,7 +10,7 @@ use Doctrine\ORM\QueryBuilder;
 /**
  * Class SectionTranslationSluggableListener
  */
-class SectionTranslationSluggableListener extends SluggableListener implements SluggableListenerInterface
+class SectionTranslationSluggableListener extends SluggableListener
 {
 
     /**
