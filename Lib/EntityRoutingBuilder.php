@@ -18,6 +18,9 @@ class EntityRoutingBuilder
      */
     private $routes;
 
+    const entityPropertyFrontend = 'slug';
+    const entityPropertyDefault = 'id';
+
     /**
      * @param EntityManager $em
      */
@@ -51,10 +54,10 @@ class EntityRoutingBuilder
         if (null === $entityProperty) {
             switch ($app) {
                 case 'frontend':
-                    $entityProperty = 'slug';
+                    $entityProperty = EntityRoutingBuilder::entityPropertyFrontend;
                     break;
                 default:
-                    $entityProperty = 'id';
+                    $entityProperty = EntityRoutingBuilder::entityPropertyDefault;
             }
         }
 
