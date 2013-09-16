@@ -63,7 +63,7 @@ class EntityRoutingBuilder
 
         $mapping = $this->get($app, $entity);
         if (null !== $mapping) {
-            throw new Exception('Route mapping already exists for "'.$app.' / '.$entity.'"');
+            throw new Exception('Route mapping already exists for "'.$app.' / '.$entity.'" with route : "'.$mapping->getRoute().'" ');
         }
 
         $route = new EntityRoute($app, $entity, $route, $routeProperty, $entityProperty);
