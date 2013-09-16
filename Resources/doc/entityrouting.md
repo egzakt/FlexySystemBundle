@@ -64,7 +64,6 @@ class EntityRouteSystemMapping implements EntityRouteMappingInterface
      */
     public function map(EntityRoutingBuilder $builder)
     {
-
         $builder->add('backend', 'Egzakt\\SystemBundle\\Entity\\User', 'egzakt_system_backend_user', 'id');
     }
 
@@ -83,7 +82,9 @@ In this ::map() method, we will add an entity-route mapping into the builder by 
 You can pass a 5th parameter which is the property name of the class used to link with the variable name in the route, but it's set to "slug" in the frontend app, and "id" for the other application by default.
 
 In our example, we bound the User class with the "egzakt_system_backend_user" route. We assume that all actions against User class will use the prefix "egzakt_system_backend_user" route.
+
 We can have "egzakt_system_backend_user_edit", "egzakt_system_backend_user_delete", "egzakt_system_backend_user_add", etc... Don't worry about the last "_" in the route, it's automatically handled by the service.
+
 
 ### The Configuration file
 
