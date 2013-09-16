@@ -78,7 +78,7 @@ In this ::map() method, we will add an entity-route mapping into the builder by 
  - the application name
  - the entity class name
  - the route name
- - the variable name in the route like the ID or a slug.
+ - the variable name in the route like the Id or a slug.
 
 You can pass a 5th parameter which is the property name of the class used to link with the variable name in the route, but it's set to "slug" in the frontend app, and "id" for the other application by default.
 
