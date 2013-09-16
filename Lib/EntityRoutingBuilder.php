@@ -43,7 +43,7 @@ class EntityRoutingBuilder
         }
 
         try {
-            $this->getEntityManager->getClassMetadata($entity);
+            $this->getEntityManager()->getClassMetadata($entity);
         } catch (Exception $e) {
             throw new Exception('Unknown entity : '.$entity);
         }
