@@ -24,7 +24,15 @@ parameters:
     egzakt_backend.form.type.advanced_file.class:         Egzakt\SystemBundle\Form\Backend\AdvancedFileType
     egzakt_frontend.core.class:                           Egzakt\SystemBundle\Lib\Frontend\Core
 
+    twig.extension.routing.class: Egzakt\SystemBundle\Extension\RoutingExtension
+
 services:
+
+    twig.extension.routing:
+        class: Egzakt\SystemBundle\Extensions\RoutingExtension
+        arguments: [ @router, @egzakt_system.router_auto_parameters_handler, @egzakt_system.core, @egzakt_system.entity_route, @property_accessor ]
+        tags:
+          - { name: twig.extension }
 
     egzakt_system.kernel_controller_listener:
         class: %egzakt_system.kernel_controller_listener.class%
@@ -53,18 +61,12 @@ services:
 
     egzakt_system.twig_extension:
         class: %egzakt_system.twig_extension.class%
-        arguments: [ @egzakt_system.entity_route, @router, @egzakt_system.router_auto_parameters_handler, %kernel.trusted_hosts% ]
+        arguments: [ %kernel.trusted_hosts% ]
         tags:
           - { name: twig.extension }
         calls:
           - [ setLocale, [ %locale% ] ]
           - [ setSystemCore, [ @egzakt_system.core ] ]
-
-    egzakt_system.twig_routing_extension:
-        class: Egzakt\SystemBundle\Extensions\TwigRoutingExtension
-        arguments: [ @egzakt_system.core, @egzakt_system.entity_route, @router, @egzakt_system.router_auto_parameters_handler, @property_accessor ]
-        tags:
-          - { name: twig.extension }
 
     egzakt_system.twig_translation_extension:
         class: %egzakt_system.twig_translation_extension.class%

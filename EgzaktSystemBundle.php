@@ -15,6 +15,5 @@ class EgzaktSystemBundle extends Bundle
     {
         $container->addCompilerPass(new RouterExtensionCompilerPass());
         $container->addCompilerPass(new HttpKernelExtensionCompilerPass());
-        $container->addCompilerPass(new EntityRouteExtensionCompilerPass());
     }
 }
