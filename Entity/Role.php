@@ -6,43 +6,56 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Security\Core\Role\RoleInterface;
 
 use Egzakt\SystemBundle\Entity\User;
-use Egzakt\SystemBundle\Entity\RoleTranslation;
 use Egzakt\SystemBundle\Lib\BaseEntity;
+
+use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 
 /**
  * Role
  */
 class Role extends BaseEntity implements RoleInterface, \Serializable
 {
+    use EgzaktORMBehaviors\Translatable\Translatable;
+
+    /**
+     * @var integer
+     */
+    private $id;
+
     /**
      * @var string $role
      */
-    protected $role;
+    private $role;
 
     /**
      * @var \DateTime $createdAt
      */
-    protected $createdAt;
+    private $createdAt;
 
     /**
      * @var \DateTime $updatedAt
      */
-    protected $updatedAt;
+    private $updatedAt;
 
     /**
      * @var ArrayCollection
      */
-    protected $translations;
+    private $users;
 
     /**
      * @var ArrayCollection
      */
-    protected $users;
+    private $sections;
 
     /**
-     * @var ArrayCollection
+     * Get id
+     *
+     * @return integer
      */
-    protected $sections;
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return string
@@ -53,7 +66,7 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
             return 'New role';
         }
 
-        if ($name = $this->name) {
+        if ($name = $this->getName()) {
             return $name;
         }
 
@@ -65,7 +78,6 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
     {
         $this->users = new ArrayCollection();
         $this->sections = new ArrayCollection();
-        $this->translations = new ArrayCollection();
     }
 
     /**
@@ -187,49 +199,6 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
     public function getSections()
     {
         return $this->sections;
-    }
-
-    /**
-     * Add translations
-     *
-     * @param RoleTranslation $translations
-     */
-    public function addRoleTranslation(RoleTranslation $translations)
-    {
-        $this->translations[] = $translations;
-    }
-
-    /**
-     * Get translations
-     *
-     * @return ArrayCollection
-     */
-    public function getTranslations()
-    {
-        return $this->translations;
-    }
-
-    /**
-     * Add translations
-     *
-     * @param  \Egzakt\SystemBundle\Entity\RoleTranslation $translations
-     * @return Role
-     */
-    public function addTranslation(\Egzakt\SystemBundle\Entity\RoleTranslation $translations)
-    {
-        $this->translations[] = $translations;
-
-        return $this;
-    }
-
-    /**
-     * Remove translations
-     *
-     * @param \Egzakt\SystemBundle\Entity\RoleTranslation $translations
-     */
-    public function removeTranslation(\Egzakt\SystemBundle\Entity\RoleTranslation $translations)
-    {
-        $this->translations->removeElement($translations);
     }
 
     /**

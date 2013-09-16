@@ -15,57 +15,57 @@ class User extends BaseEntity implements AdvancedUserInterface, \Serializable
     /**
      * @var int
      */
-    protected $id;
+    private $id;
 
     /**
      * @var string
      */
-    protected $username;
+    private $username;
 
     /**
      * @var string
      */
-    protected $password;
+    private $password;
 
     /**
      * @var string
      */
-    protected $firstname;
+    private $firstname;
 
     /**
      * @var string
      */
-    protected $lastname;
+    private $lastname;
 
     /**
      * @var string
      */
-    protected $email;
+    private $email;
 
     /**
      * @var boolean
      */
-    protected $active;
+    private $active;
 
     /**
      * @var \DateTime
      */
-    protected $createdAt;
+    private $createdAt;
 
     /**
      * @var \DateTime
      */
-    protected $updatedAt;
+    private $updatedAt;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    protected $roles;
+    private $roles;
 
     /**
      * @var string $salt
      */
-    protected $salt;
+    private $salt;
 
     /**
      * Constructor

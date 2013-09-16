@@ -12,66 +12,80 @@ use Egzakt\SystemBundle\Lib\BaseEntity;
  */
 class Member extends BaseEntity implements AdvancedUserInterface, \Serializable
 {
+    /**
+     * @var integer
+     */
+    private $id;
 
     /**
      * @var string $firstname
      */
-    protected $firstname;
+    private $firstname;
 
     /**
      * @var string $lastname
      */
-    protected $lastname;
+    private $lastname;
 
     /**
      * @var string $email
      */
-    protected $email;
+    private $email;
 
     /**
      * @var string $password
      */
-    protected $password;
+    private $password;
 
     /**
      * @var string $address
      */
-    protected $address;
+    private $address;
 
     /**
      * @var string $city
      */
-    protected $city;
+    private $city;
 
     /**
      * @var string $postalCode
      */
-    protected $postalCode;
+    private $postalCode;
 
     /**
      * @var string $telephone
      */
-    protected $telephone;
+    private $telephone;
 
     /**
      * @var boolean $emailConfirmed
      */
-    protected $emailConfirmed;
+    private $emailConfirmed;
 
     /**
      * @var boolean $active
      */
-    protected $active;
+    private $active;
 
     /**
      * @var \Datetime $createdAt
      */
-    protected $createdAt;
+    private $createdAt;
 
     /**
      * @var \Datetime $updatedAt
      */
-    protected $updatedAt;
+    private $updatedAt;
+
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
      * @return string
@@ -461,4 +475,5 @@ class Member extends BaseEntity implements AdvancedUserInterface, \Serializable
             $this->email
             ) = unserialize($serialized);
     }
+
 }

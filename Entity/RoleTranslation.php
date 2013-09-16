@@ -2,33 +2,25 @@
 
 namespace Egzakt\SystemBundle\Entity;
 
-use Egzakt\SystemBundle\Lib\BaseTranslationEntity;
-use Egzakt\SystemBundle\Entity\Role;
+use Doctrine\ORM\Mapping as ORM;
+use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 
 /**
  * RoleTranslation
  */
-class RoleTranslation extends BaseTranslationEntity
+class RoleTranslation
 {
+    use EgzaktORMBehaviors\Translatable\Translation;
+
     /**
      * @var integer $id
      */
     protected $id;
 
     /**
-     * @var string $locale
-     */
-    protected $locale;
-
-    /**
      * @var string $name
      */
     protected $name;
-
-    /**
-     * @var Role
-     */
-    protected $translatable;
 
     /**
      * Get id
@@ -38,26 +30,6 @@ class RoleTranslation extends BaseTranslationEntity
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set locale
-     *
-     * @param string $locale
-     */
-    public function setLocale($locale)
-    {
-        $this->locale = $locale;
-    }
-
-    /**
-     * Get locale
-     *
-     * @return string
-     */
-    public function getLocale()
-    {
-        return $this->locale;
     }
 
     /**
@@ -80,23 +52,4 @@ class RoleTranslation extends BaseTranslationEntity
         return $this->name;
     }
 
-    /**
-     * Set translatable
-     *
-     * @param Role $translatable
-     */
-    public function setTranslatable(Role $translatable)
-    {
-        $this->translatable = $translatable;
-    }
-
-    /**
-     * Get translatable
-     *
-     * @return Role
-     */
-    public function getTranslatable()
-    {
-        return $this->translatable;
-    }
 }

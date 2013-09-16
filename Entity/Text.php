@@ -4,6 +4,7 @@ namespace Egzakt\SystemBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 use Egzakt\SystemBundle\Lib\BaseEntity;
 
 /**
@@ -11,50 +12,42 @@ use Egzakt\SystemBundle\Lib\BaseEntity;
  */
 class Text extends BaseEntity
 {
+    use EgzaktORMBehaviors\Translatable\Translatable;
+
     /**
      * @var integer $id
      */
-    protected $id;
+    private $id;
 
     /**
      * @var Section
      */
-    protected $section;
-
-    /**
-     * @var ArrayCollection
-     */
-    protected $translations;
+    private $section;
 
     /**
      * @var boolean $collapsable
      */
-    protected $collapsable;
+    private $collapsable;
 
     /**
      * @var boolean $static
      */
-    protected $static = false;
+    private $static = false;
 
     /**
      * @var integer $ordering
      */
-    protected $ordering;
+    private $ordering;
 
     /**
      * @var \DateTime $createdAt
      */
-    protected $createdAt;
+    private $createdAt;
 
     /**
      * @var \DateTime $updatedAt
      */
-    protected $updatedAt;
-
-    public function __construct()
-    {
-        $this->translations = new ArrayCollection();
-    }
+    private $updatedAt;
 
     /**
      * Get id
@@ -272,26 +265,6 @@ class Text extends BaseEntity
     }
 
     /**
-     * Add translations
-     *
-     * @param TextTranslation $translations
-     */
-    public function addTextTranslation(TextTranslation $translations)
-    {
-        $this->translations[] = $translations;
-    }
-
-    /**
-     * Get translations
-     *
-     * @return ArrayCollection
-     */
-    public function getTranslations()
-    {
-        return $this->translations;
-    }
-
-    /**
      * List of methods to check before allowing deletion
      *
      * @return array
@@ -301,26 +274,4 @@ class Text extends BaseEntity
         return array('isStatic');
     }
 
-    /**
-     * Add translations
-     *
-     * @param  \Egzakt\SystemBundle\Entity\TextTranslation $translations
-     * @return Text
-     */
-    public function addTranslation(\Egzakt\SystemBundle\Entity\TextTranslation $translations)
-    {
-        $this->translations[] = $translations;
-
-        return $this;
-    }
-
-    /**
-     * Remove translations
-     *
-     * @param \Egzakt\SystemBundle\Entity\TextTranslation $translations
-     */
-    public function removeTranslation(\Egzakt\SystemBundle\Entity\TextTranslation $translations)
-    {
-        $this->translations->removeElement($translations);
-    }
 }
