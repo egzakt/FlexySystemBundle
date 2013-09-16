@@ -5,7 +5,6 @@ namespace Egzakt\SystemBundle\Lib;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 
-
 class EntityRoutingBuilder
 {
 
@@ -50,7 +49,7 @@ class EntityRoutingBuilder
         }
 
         if (null === $entityProperty) {
-            switch ( $app ) {
+            switch ($app) {
                 case 'frontend':
                     $entityProperty = 'slug';
                     break;

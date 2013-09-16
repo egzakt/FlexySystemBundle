@@ -87,8 +87,8 @@ class EntityRoute
     }
 
     /**
-     * @param string $app
-     * @param string $entity
+     * @param  string $app
+     * @param  string $entity
      * @return bool
      */
     public function equals($app, $entity)

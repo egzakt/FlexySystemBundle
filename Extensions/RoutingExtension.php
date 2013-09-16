@@ -47,6 +47,7 @@ class RoutingExtension extends BaseRoutingExtension
     {
         $functions = parent::getFunctions();
         $functions[] = new \Twig_SimpleFunction('entitypath', array($this, 'entityPath'));
+
         return $functions;
     }
 
@@ -58,6 +59,7 @@ class RoutingExtension extends BaseRoutingExtension
     public function getPath($name, $parameters = array(), $relative = false)
     {
         $parameters = $this->getParamsHandler()->inject($parameters);
+
         return parent::getPath($name, $parameters, $relative);
     }
 
@@ -69,6 +71,7 @@ class RoutingExtension extends BaseRoutingExtension
     public function getUrl($name, $parameters = array(), $schemeRelative = false)
     {
         $parameters = $this->getParamsHandler()->inject($parameters);
+
         return parent::getPath($name, $parameters, $schemeRelative);
     }
 
@@ -76,8 +79,8 @@ class RoutingExtension extends BaseRoutingExtension
      * Return the URL of an entity mapped by the EntityRoute service.
      *
      * @param $entity
-     * @param string|null $extraRoute
-     * @param array $extraParams
+     * @param  string|null $extraRoute
+     * @param  array       $extraParams
      * @return string
      */
     public function entityPath($entity, $extraRoute = null, $extraParams = array())
@@ -108,13 +111,14 @@ class RoutingExtension extends BaseRoutingExtension
                 $routeParams
             );
         }
+
         return $r;
 
     }
 
     /**
      * @param $initialRoute
-     * @param string|null $extraRoute
+     * @param  string|null $extraRoute
      * @return string
      */
     protected function generateRouteName($initialRoute, $extraRoute = null)
@@ -133,14 +137,14 @@ class RoutingExtension extends BaseRoutingExtension
 
     /**
      * @param $initialParams
-     * @param array $extraParams
+     * @param  array $extraParams
      * @return array
      */
     protected function generateRouteParams($initialParams, $extraParams = array())
     {
         $params = $initialParams;
 
-        if ( null !== $extraParams ) {
+        if (null !== $extraParams) {
             $params = array_merge($initialParams, $extraParams);
         }
 
