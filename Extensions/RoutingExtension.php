@@ -100,19 +100,10 @@ class RoutingExtension extends BaseRoutingExtension
             );
         }
 
-        if ('backend' === $mapping->getApp() ) {
-            $r = $this->getPath(
-                $this->generateRouteName($mapping->getRoute(), $extraRoute),
-                $this->getParamsHandler()->inject($routeParams)
-            );
-        } else {
-            $r = $this->getPath(
+        return $this->getPath(
                 $this->generateRouteName($mapping->getRoute(), $extraRoute),
                 $routeParams
-            );
-        }
-
-        return $r;
+        );
 
     }
 
