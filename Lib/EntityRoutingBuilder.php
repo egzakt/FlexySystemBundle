@@ -37,13 +37,13 @@ class EntityRoutingBuilder
      */
     public function add($app, $entity, $route, $routeProperty, $entityProperty = null)
     {
-        $oApp = $this->em->getRepository('EgzaktSystemBundle:App')->findOneBy(array('name' => $app));
+        $oApp = $this->getEntityManager()->getRepository('EgzaktSystemBundle:App')->findOneBy(array('name' => $app));
         if (null === $oApp) {
             throw new Exception('Unknown app : '.$app);
         }
 
         try {
-            $this->em->getClassMetadata($entity);
+            $this->getEntityManager->getClassMetadata($entity);
         } catch (Exception $e) {
             throw new Exception('Unknown entity : '.$entity);
         }
@@ -87,6 +87,14 @@ class EntityRoutingBuilder
     protected function getRoutes()
     {
         return $this->routes;
+    }
+
+    /**
+     * @return EntityManager
+     */
+    protected function getEntityManager()
+    {
+        return $this->em;
     }
 
 }
