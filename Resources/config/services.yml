@@ -8,6 +8,7 @@ parameters:
     egzakt_system.helper.class:                           Egzakt\SystemBundle\Lib\Helper
     egzakt_system.twig_extension.class:                   Egzakt\SystemBundle\Extensions\TwigExtension
     egzakt_system.twig_translation_extension.class:       Egzakt\SystemBundle\Extensions\TranslationExtension
+    egzakt_system.twig_routing_extension.class:           Egzakt\SystemBundle\Extension\RoutingExtension
     egzakt_system.inspect_extension.class:                Egzakt\SystemBundle\Extensions\InspectExtension
     egzakt_system.navigation_builder.class:               Egzakt\SystemBundle\Lib\NavigationBuilder
     egzakt_system.navigation_item.class:                  Egzakt\SystemBundle\Lib\NavigationItem
@@ -24,12 +25,12 @@ parameters:
     egzakt_backend.form.type.advanced_file.class:         Egzakt\SystemBundle\Form\Backend\AdvancedFileType
     egzakt_frontend.core.class:                           Egzakt\SystemBundle\Lib\Frontend\Core
 
-    twig.extension.routing.class: Egzakt\SystemBundle\Extension\RoutingExtension
+
 
 services:
 
     twig.extension.routing:
-        class: Egzakt\SystemBundle\Extensions\RoutingExtension
+        class: %egzakt_system.twig_routing_extension.class%
         arguments: [ @router, @egzakt_system.router_auto_parameters_handler, @egzakt_system.core, @egzakt_system.entity_route, @property_accessor ]
         tags:
           - { name: twig.extension }
