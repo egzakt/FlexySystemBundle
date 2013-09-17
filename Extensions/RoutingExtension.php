@@ -2,6 +2,9 @@
 
 namespace Egzakt\SystemBundle\Extensions;
 
+use Egzakt\SystemBundle\Lib\Core;
+use Egzakt\SystemBundle\Lib\EntityRouting;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Bridge\Twig\Extension\RoutingExtension as BaseRoutingExtension;
 
@@ -9,10 +12,6 @@ use Egzakt\SystemBundle\Lib\RouterAutoParametersHandler;
 
 class RoutingExtension extends BaseRoutingExtension
 {
-    /**
-     * @var UrlGeneratorInterface
-     */
-    private $generator;
 
     /**
      * @var RouterAutoParametersHandler
@@ -20,19 +19,36 @@ class RoutingExtension extends BaseRoutingExtension
     private $autoParametersHandler;
 
     /**
-     * @param RouterAutoParametersHandler $autoParametersHandler
+     * @var Core
      */
-    public function setAutoParametersHandler($autoParametersHandler)
-    {
-        $this->autoParametersHandler = $autoParametersHandler;
-    }
+    private $systemCore;
 
     /**
-     * @inheritdoc
+     * @var EntityRouting
      */
-    public function __construct(UrlGeneratorInterface $generator)
+    private $entityRouting;
+
+    /**
+     * @var PropertyAccessorInterface
+     */
+    private $accessor;
+
+    public function __construct(UrlGeneratorInterface $generator, RouterAutoParametersHandler $raph, Core $systemCore, EntityRouting $er, PropertyAccessorInterface $pai)
     {
-        $this->generator = $generator;
+        parent::__construct($generator);
+        $this->autoParametersHandler = $raph;
+        $this->systemCore = $systemCore;
+        $this->entityRouting = $er;
+        $this->accessor = $pai;
+
+    }
+
+    public function getFunctions()
+    {
+        $functions = parent::getFunctions();
+        $functions[] = new \Twig_SimpleFunction('entitypath', array($this, 'entityPath'));
+
+        return $functions;
     }
 
     /**
@@ -42,9 +58,9 @@ class RoutingExtension extends BaseRoutingExtension
      */
     public function getPath($name, $parameters = array(), $relative = false)
     {
-        $parameters = $this->autoParametersHandler->inject($parameters);
+        $parameters = $this->getParamsHandler()->inject($parameters);
 
-        return $this->generator->generate($name, $parameters, $relative ? UrlGeneratorInterface::RELATIVE_PATH : UrlGeneratorInterface::ABSOLUTE_PATH);
+        return parent::getPath($name, $parameters, $relative);
     }
 
     /**
@@ -54,8 +70,120 @@ class RoutingExtension extends BaseRoutingExtension
      */
     public function getUrl($name, $parameters = array(), $schemeRelative = false)
     {
-        $parameters = $this->autoParametersHandler->inject($parameters);
+        $parameters = $this->getParamsHandler()->inject($parameters);
 
-        return $this->generator->generate($name, $parameters, $schemeRelative ? UrlGeneratorInterface::NETWORK_PATH : UrlGeneratorInterface::ABSOLUTE_URL);
+        return parent::getPath($name, $parameters, $schemeRelative);
     }
+
+    /**
+     * Return the URL of an entity mapped by the EntityRoute service.
+     *
+     * @param $entity
+     * @param  string|null $extraRoute
+     * @param  array       $extraParams
+     * @return string
+     */
+    public function entityPath($entity, $extraRoute = null, $extraParams = array())
+    {
+        $mapping = $this->getMapping($entity);
+        $value = $this->getAccessor()->getValue($entity, $mapping->getEntityProperty());
+        if (null === $value) {
+            $value = 0;
+        }
+
+        if (null === $extraRoute) {
+            $routeParams = $this->generateRouteParams($extraParams);
+        } else {
+            $routeParams = $this->generateRouteParams(
+                array($mapping->getRouteProperty() => $value),
+                $extraParams
+            );
+        }
+
+        return $this->getPath(
+                $this->generateRouteName($mapping->getRoute(), $extraRoute),
+                $routeParams
+        );
+
+    }
+
+    /**
+     * @param $initialRoute
+     * @param  string|null $extraRoute
+     * @return string
+     */
+    protected function generateRouteName($initialRoute, $extraRoute = null)
+    {
+        $route = $initialRoute;
+
+        if (null !== $extraRoute) {
+            if (substr($extraRoute, 0, 1) !== '_') {
+                $route.= '_';
+            }
+            $route.= $extraRoute;
+        }
+
+        return $route;
+    }
+
+    /**
+     * @param $initialParams
+     * @param  array $extraParams
+     * @return array
+     */
+    protected function generateRouteParams($initialParams, $extraParams = array())
+    {
+        $params = $initialParams;
+
+        if (null !== $extraParams) {
+            $params = array_merge($initialParams, $extraParams);
+        }
+
+        return $params;
+    }
+
+    /**
+     * @param $entity
+     * @return EntityRoute
+     */
+    protected function getMapping($entity)
+    {
+        return $this->getEntityRouting()->get(
+            $this->getSystemCore()->getCurrentAppName(),
+            get_class($entity)
+        );
+    }
+
+    /**
+     * @return Core
+     */
+    protected function getSystemCore()
+    {
+        return $this->systemCore;
+    }
+
+    /**
+     * @return EntityRouting
+     */
+    protected function getEntityRouting()
+    {
+        return $this->entityRouting;
+    }
+
+    /**
+     * @return PropertyAccessorInterface
+     */
+    protected function getAccessor()
+    {
+        return $this->accessor;
+    }
+
+    /**
+     * @return RouterAutoParametersHandler
+     */
+    protected function getParamsHandler()
+    {
+        return $this->autoParametersHandler;
+    }
+
 }

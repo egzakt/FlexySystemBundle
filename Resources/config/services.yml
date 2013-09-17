@@ -8,6 +8,7 @@ parameters:
     egzakt_system.helper.class:                           Egzakt\SystemBundle\Lib\Helper
     egzakt_system.twig_extension.class:                   Egzakt\SystemBundle\Extensions\TwigExtension
     egzakt_system.twig_translation_extension.class:       Egzakt\SystemBundle\Extensions\TranslationExtension
+    egzakt_system.twig_routing_extension.class:           Egzakt\SystemBundle\Extensions\RoutingExtension
     egzakt_system.inspect_extension.class:                Egzakt\SystemBundle\Extensions\InspectExtension
     egzakt_system.navigation_builder.class:               Egzakt\SystemBundle\Lib\NavigationBuilder
     egzakt_system.navigation_item.class:                  Egzakt\SystemBundle\Lib\NavigationItem
@@ -24,7 +25,15 @@ parameters:
     egzakt_backend.form.type.advanced_file.class:         Egzakt\SystemBundle\Form\Backend\AdvancedFileType
     egzakt_frontend.core.class:                           Egzakt\SystemBundle\Lib\Frontend\Core
 
+
+
 services:
+
+    twig.extension.routing:
+        class: %egzakt_system.twig_routing_extension.class%
+        arguments: [ @router, @egzakt_system.router_auto_parameters_handler, @egzakt_system.core, @egzakt_system.entity_route, @property_accessor ]
+        tags:
+          - { name: twig.extension }
 
     egzakt_system.kernel_controller_listener:
         class: %egzakt_system.kernel_controller_listener.class%
@@ -163,3 +172,17 @@ services:
         arguments: [@service_container]
         tags:
             - { name: security.voter }
+
+
+    egzakt_system.entity_route:
+        class: Egzakt\SystemBundle\Lib\EntityRouting
+        arguments: [ @egzakt_system.entity_route_builder ]
+
+    egzakt_system.entity_route_builder:
+        class: Egzakt\SystemBundle\Lib\EntityRoutingBuilder
+        arguments: [@doctrine.orm.entity_manager]
+
+    egzakt_system.entity_route_system_builder:
+        class: Egzakt\SystemBundle\Lib\EntityRouteSystemMapping
+        tags:
+            - { name: egzakt_system.entity_route }
