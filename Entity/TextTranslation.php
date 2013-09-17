@@ -4,7 +4,6 @@ namespace Egzakt\SystemBundle\Entity;
 
 use Symfony\Component\Validator\ExecutionContextInterface;
 
-use Doctrine\ORM\Mapping as ORM;
 use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 
 /**
