@@ -13,14 +13,15 @@ abstract class CrudController extends BaseController
 
     public function deleteAction(Request $request, $id)
     {
+        $deleteService = $this->get('egzakt_system.deletable');
 
         $entity = $this->getEm()->getRepository($this->getEntityClassname())->find($id);
         if (null === $entity) {
             $this->createNotFoundException('Entity not found : '.$this->getEntityClassname().' with ID : '.$id);
         }
 
-        if ($this->getRequest()->isXMLHttpRequest()) {
-            $result = $this->checkDeletable($entity);
+        if ($request->isXMLHttpRequest()) {
+            $result = $deleteService->checkDeletable($entity);
             $output = $result->toArray();
             $output['template'] = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig',
                 array(
@@ -36,7 +37,7 @@ abstract class CrudController extends BaseController
         $mapping = $routeService->get($this->getAppName(), $this->getentityClassname());
         $baseRoute = $mapping->getRoute();
 
-        $result = $this->checkDeletable($entity);
+        $result = $deleteService->checkDeletable($entity);
         if ($result->isSuccess()) {
 
             $this->getEm()->remove($entity);
