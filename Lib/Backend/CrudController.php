@@ -2,7 +2,6 @@
 
 namespace Egzakt\SystemBundle\Lib\Backend;
 
-use \Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,17 +11,12 @@ abstract class CrudController extends BaseController
 
     abstract protected function getEntityClassname();
 
-    abstract public function editAction(Request $request, $id);
-
-    abstract public function indexAction(Request $request);
-
-
     public function deleteAction(Request $request, $id)
     {
 
         $entity = $this->getEm()->getRepository($this->getEntityClassname())->find($id);
         if (null === $entity) {
-            throw new Exception('...');
+            $this->createNotFoundException('Entity not found : '.$this->getEntityClassname().' with ID : '.$id);
         }
 
         if ($this->getRequest()->isXMLHttpRequest()) {
