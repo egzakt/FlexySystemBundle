@@ -36,6 +36,7 @@ class DoctrineEventListener
         $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\Text');
         $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\Section');
         $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\App');
+        $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\Mapping');
     }
 
     /**
