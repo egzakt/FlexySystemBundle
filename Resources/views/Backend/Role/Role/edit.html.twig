@@ -7,13 +7,10 @@
 
 {% block content_main %}
 
-    <form novalidate="novalidate" action="{{ path(entity.route, entity.routeParams) }}" method="post" {{ form_enctype(form) }}>
+    <form novalidate="novalidate" method="post" {{ form_enctype(form) }}>
 
         {% block edit_action %}
-            {% include 'EgzaktSystemBundle:Backend/Core:edit_actions.html.twig' with {
-                'delete_route': path(entity.route('delete'), entity.routeParams),
-                'cancel_route': path('egzakt_system_backend_role'),
-            } %}
+            {% include 'EgzaktSystemBundle:Backend/Core:edit_actions.html.twig' %}
         {% endblock %}
 
         <div id="fields_box">

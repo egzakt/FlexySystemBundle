@@ -48,7 +48,7 @@
             {% for application in applications %}
                 <tr id="item_{{ application.id }}">
                     <td class="name">
-                        <a href="{{ path('egzakt_system_backend_application_edit', { id: application.id }) }}">
+                        <a href="{{ path(application.route('edit'), application.routeParams) }}">
                             {{ application }}
                         </a>
                     </td>
@@ -57,13 +57,13 @@
                     </td>
                     <td class="edit">
                         {% if application.isEditable %}
-                            <a href="{{ path('egzakt_system_backend_application_edit', { id: application.id }) }}" title="{% trans %}Edit{% endtrans %}">
+                            <a href="{{ path(application.route('edit'), application.routeParams) }}" title="{% trans %}Edit{% endtrans %}">
                                 <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/edit.png') }}" width="15" height="15" alt="" />
                             </a>
                         {% endif %}
                     </td>
                     <td class="delete">
-                        <a href="{{ path('egzakt_system_backend_application_delete', { id: application.id }) }}" rel="{{ path('egzakt_system_backend_application_delete', { id: application.id, message: true }) }}" title="{% trans %}Delete{% endtrans %}">
+                        <a href="{{ path(application.route('delete'), application.routeParams) }}" title="{% trans %}Delete{% endtrans %}">
                             <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/delete.png') }}" width="12" height="15" alt="" />
                         </a>
                     </td>

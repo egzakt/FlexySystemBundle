@@ -220,52 +220,36 @@ class Text extends BaseEntity
     }
 
     /**
-     * Get Route Backend
+     * Get the backend route
      *
-     * @param string $action Action
-     * @deprecated
-     * @return string
-     */
-    public function getRoute($action = 'edit')
-    {
-        return $this->getRouteBackend($action);
-    }
-
-    /**
-     * Get Route Backend
-     *
-     * @param string $action Action
+     * @param string $suffix
      *
      * @return string
      */
-    public function getRouteBackend($action = 'edit')
+    public function getRouteBackend($suffix = null)
     {
-        return 'EgzaktBackendTextBundle_' . $action;
+        $route = 'egzakt_system_backend_text';
+
+        if (null !== $suffix) {
+            $route .= '_' . $suffix;
+        }
+
+        return $route;
     }
 
     /**
-     * Get Route Backend Params
+     * Get params for the backend route
      *
-     * @param array $params Route Params
-     * @deprecated
-     * @return array
-     */
-    public function getRouteParams($params = array())
-    {
-        return $this->getRouteBackendParams($params);
-    }
-    /**
-     * Get Route Backend Params
-     *
-     * @param array $params Route Params
+     * @param array $params Additional parameters
      *
      * @return array
      */
     public function getRouteBackendParams($params = array())
     {
-        $defaults = array(
-            'id' => $this->id ? $this->id : 0
-        );
+        $defaults = array();
+        if (null !== $this->getId()) {
+            $defaults['id'] = intval($this->getId());
+        }
         $params = array_merge($defaults, $params);
 
         return $params;

@@ -249,9 +249,15 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
      *
      * @return string
      */
-    public function getRouteBackend($suffix = 'edit')
+    public function getRouteBackend($suffix = null)
     {
-        return 'egzakt_system_backend_role_' . $suffix;
+        $route = 'egzakt_system_backend_role';
+
+        if (null !== $suffix) {
+            $route .= '_' . $suffix;
+        }
+
+        return $route;
     }
 
     /**
@@ -263,10 +269,10 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
      */
     public function getRouteBackendParams($params = array())
     {
-        $defaults = array(
-            'id' => $this->id ? $this->id : 0
-        );
-
+        $defaults = array();
+        if (null !== $this->getId()) {
+            $defaults['id'] = intval($this->getId());
+        }
         $params = array_merge($defaults, $params);
 
         return $params;
@@ -279,7 +285,8 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
      */
     public function isDeletable()
     {
-        return !in_array($this->getRole(), array('ROLE_DEVELOPER', 'ROLE_BACKEND_ADMIN', 'ROLE_ADMIN'));
+        $isDeletable = parent::isDeletable();
+        return $isDeletable && !in_array($this->getRole(), array('ROLE_DEVELOPER', 'ROLE_BACKEND_ADMIN', 'ROLE_ADMIN'));
     }
 
     /**

@@ -117,7 +117,7 @@ class TextController extends CrudController
         }
 
         return $this->render('EgzaktSystemBundle:Backend/Text/Text:edit.html.twig', array(
-            'text' => $text,
+            'entity' => $text,
             'form' => $form->createView(),
         ));
     }

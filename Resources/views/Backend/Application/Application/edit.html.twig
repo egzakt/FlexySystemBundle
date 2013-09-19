@@ -10,10 +10,7 @@
     {{ form_start(form) }}
 
         {% block edit_actions %}
-            {% include 'EgzaktSystemBundle:Backend/Core:edit_actions.html.twig' with {
-                'delete_route': path(entity.route('delete'), entity.routeParams),
-                'cancel_route': path('egzakt_system_backend_application')
-            } %}
+            {% include 'EgzaktSystemBundle:Backend/Core:edit_actions.html.twig' %}
         {% endblock %}
 
         <div id="fields_box">

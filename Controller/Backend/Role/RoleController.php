@@ -84,7 +84,7 @@ class RoleController extends CrudController
      *
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      */
-    public function editAction($id, Request $request)
+    public function editAction(Request $request, $id)
     {
         $entity = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->find($id);
 

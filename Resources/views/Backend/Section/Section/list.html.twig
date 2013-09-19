@@ -62,7 +62,7 @@
                         {{ entity.ordering }}
                     </td>
                     <td class="name{% if not entity.active %} inactive{% endif %}">
-                        <a href="{{ path('egzakt_system_backend_section_edit', { 'id': entity.id }) }}">{% include 'EgzaktSystemBundle:Backend/Core:entity_title.html.twig' with { 'entity': entity } %}</a>
+                        <a href="{{ path(entity.route('edit'), entity.routeParams) }}">{% include 'EgzaktSystemBundle:Backend/Core:entity_title.html.twig' with { 'entity': entity } %}</a>
                     </td>
                     <td>
                         {{ entity.children|length }}
@@ -71,12 +71,12 @@
                         {{ entity.updatedAt|date('Y-m-d') }}
                     </td>
                     <td class="edit">
-                        <a href="{{ path('egzakt_system_backend_section_edit', { 'id': entity.id }) }}" title="{% trans %}Edit{% endtrans %}">
+                        <a href="{{ path(entity.route('edit'), entity.routeParams) }}" title="{% trans %}Edit{% endtrans %}">
                             <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/edit.png') }}" width="15" height="15" alt="" />
                         </a>
                     </td>
                     <td class="delete">
-                        <a href="{{ path('egzakt_system_backend_section_delete', { 'id': entity.id }) }}" rel="{{ path('egzakt_system_backend_section_delete', { 'id': entity.id, 'message': true }) }}" title="{% trans %}Delete{% endtrans %}">
+                        <a href="{{ path(entity.route('delete'), entity.routeParams) }}" title="{% trans %}Delete{% endtrans %}">
                             <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/delete.png') }}" width="12" height="15" alt="" />
                         </a>
                     </td>

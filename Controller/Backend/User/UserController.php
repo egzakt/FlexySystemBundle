@@ -134,7 +134,7 @@ class UserController extends CrudController
         }
 
         return $this->render('EgzaktSystemBundle:Backend/User/User:edit.html.twig', array(
-            'user' => $user,
+            'entity' => $user,
             'form' => $form->createView()
         ));
     }

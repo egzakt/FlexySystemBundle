@@ -188,7 +188,7 @@ abstract class BaseEntity implements EntityInterface, NavigationElementInterface
      */
     public function isDeletable()
     {
-        if (!$this->getId()) {
+        if (null === $this->getId()) {
             return false;
         }
 
@@ -263,7 +263,7 @@ abstract class BaseEntity implements EntityInterface, NavigationElementInterface
      *
      * @return string
      */
-    public function getRoute($suffix = '')
+    public function getRoute($suffix = null)
     {
         if ($this->route) {
             return $this->route;
@@ -277,11 +277,7 @@ abstract class BaseEntity implements EntityInterface, NavigationElementInterface
             $methodName = 'getRouteFrontend';
         }
 
-        if ($suffix) {
-            $route = $this->$methodName($suffix);
-        } else {
-            $route = $this->$methodName();
-        }
+        $route = $this->$methodName($suffix);
 
         return $route;
     }
