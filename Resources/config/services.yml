@@ -101,10 +101,14 @@ services:
         shared: true
         class:  %egzakt_system.page_title.class%
 
-    egzakt_system.pre_persist_listener:
+    egzakt_system.doctrine_listener:
         class: Egzakt\SystemBundle\Listener\DoctrineEventListener
+        arguments: [ @egzakt_system.router_invalidator ]
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: postRemove }
             - { name: doctrine.event_listener, event: onFlush }
 
 

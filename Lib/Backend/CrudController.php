@@ -1,0 +1,90 @@
+<?php
+
+namespace Egzakt\SystemBundle\Lib\Backend;
+
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+abstract class CrudController extends BaseController
+{
+
+    /**
+     * Return the name of the class which is used with the Crud.
+     *
+     * @return string
+     */
+    abstract protected function getEntityClassname();
+
+    /**
+     * Initiate a delete request.
+     *
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse|RedirectResponse
+     */
+    public function deleteAction(Request $request, $id)
+    {
+        $deleteService = $this->get('egzakt_system.deletable');
+
+        $entity = $this->getEm()->getRepository($this->getEntityClassname())->find($id);
+        if (null === $entity) {
+            $this->createNotFoundException('Entity not found : '.$this->getEntityClassname().' with ID : '.$id);
+        }
+
+        if ($request->isXMLHttpRequest()) {
+            $result = $deleteService->checkDeletable($entity);
+            $output = $result->toArray();
+            $output['template'] = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig',
+                array(
+                    'entity' => $entity,
+                    'result' => $result
+                )
+            );
+
+            return new JsonResponse($output);
+        }
+
+        $result = $deleteService->checkDeletable($entity);
+        if ($result->isSuccess()) {
+            $this->getEm()->remove($entity);
+            $this->getEm()->flush();
+
+            $this->addFlash('success', $this->get('translator')->trans(
+                '%entity% has been deleted.',
+                array('%entity%' => $entity)
+            ));
+
+            return $this->redirect($this->generateUrl($entity->getRoute(), $entity->getRouteParams()));
+        }
+
+        return $this->redirect($this->generateUrl($entity->getRoute(), $entity->getRouteParams()));
+    }
+
+    /**
+     * Initiate a reorder request.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function orderAction(Request $request)
+    {
+        $i = 0;
+        $elements = explode(';', trim($request->get('elements'), ';'));
+
+        foreach ($elements as $element) {
+
+            $element = explode('_', $element);
+            $entity = $this->getEm()->getRepository($this->getEntityClassName())->find($element[1]);
+
+            if ($entity) {
+                $entity->setOrdering(++$i);
+                $this->getEm()->persist($entity);
+            }
+
+            $this->getEm()->flush();
+        }
+
+        return new JsonResponse('');
+    }
+}

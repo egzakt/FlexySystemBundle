@@ -2,18 +2,69 @@
 
 namespace Egzakt\SystemBundle\Listener;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Doctrine\ORM\NoResultException;
 
 use Egzakt\SystemBundle\Lib\BaseEntity;
 use Egzakt\SystemBundle\Lib\BaseTranslationEntity;
+use Egzakt\SystemBundle\Lib\RouterInvalidator;
 
 /**
  * Doctrine Event Listener
  */
 class DoctrineEventListener
 {
+    /**
+     * @var RouterInvalidator
+     */
+    private $routerInvalidator;
+
+    /**
+     * @var ArrayCollection
+     */
+    private $invalidators;
+
+    /**
+     * @param RouterInvalidator $ri
+     */
+    public function __construct(RouterInvalidator $ri)
+    {
+        $this->routerInvalidator = $ri;
+        $this->invalidators = new ArrayCollection();
+        $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\Text');
+        $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\Section');
+        $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\App');
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    public function postRemove(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+        $this->invalidateRouter($entity);
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    public function postUpdate(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+        $this->invalidateRouter($entity);
+    }
+
+    /**
+     * @param LifecycleEventArgs $args
+     */
+    public function postPersist(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
+        $this->invalidateRouter($entity);
+    }
+
     /**
      * Pre Persist
      *
@@ -87,6 +138,18 @@ class DoctrineEventListener
                     }
                 }
             }
+        }
+
+    }
+
+    /**
+     * Invalidate the router if the entity is in the "Invalidators" list.
+     * @param $entity
+     */
+    protected function invalidateRouter($entity)
+    {
+        if ($this->invalidators->contains(get_class($entity))) {
+            $this->routerInvalidator->invalidate();
         }
     }
 

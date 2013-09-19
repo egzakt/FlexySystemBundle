@@ -143,7 +143,7 @@ class App extends BaseEntity
      */
     public function getRouteParams($params = array())
     {
-        $defaults = array('applicationId' => intval($this->id));
+        $defaults = array('id' => intval($this->id));
         $params = array_merge($defaults, $params);
 
         return $params;

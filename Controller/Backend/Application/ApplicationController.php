@@ -2,26 +2,32 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\Application;
 
+use Egzakt\SystemBundle\Lib\Backend\CrudController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Egzakt\SystemBundle\Entity\App;
 use Egzakt\SystemBundle\Entity\AppRepository;
 use Egzakt\SystemBundle\Form\Backend\ApplicationType;
-use Egzakt\SystemBundle\Lib\Backend\BaseController;
 
 /**
  * Application Controller
  */
-class ApplicationController extends BaseController
+class ApplicationController extends CrudController
 {
     /**
      * @var AppRepository
      */
     protected $appRepository;
+
+    /**
+     * @inheritdoc
+     */
+    protected function getEntityClassname()
+    {
+        return 'Egzakt\\SystemBundle\\Entity\\App';
+    }
 
     /**
      * Init
@@ -53,17 +59,9 @@ class ApplicationController extends BaseController
         ));
     }
 
-    /**
-     *
-     *
-     * @param integer $applicationId
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response
-     */
-    public function editAction($applicationId, Request $request)
+    public function editAction(Request $request, $id)
     {
-        $entity = $this->appRepository->find($applicationId);
+        $entity = $this->appRepository->find($id);
 
         if (false == $entity) {
             $entity = new App();
@@ -82,8 +80,6 @@ class ApplicationController extends BaseController
 
                 $this->getEm()->persist($entity);
                 $this->getEm()->flush();
-
-                $this->get('egzakt_system.router_invalidator')->invalidate();
 
                 $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
                     '%entity% has been updated.',
@@ -106,44 +102,4 @@ class ApplicationController extends BaseController
         ));
     }
 
-    /**
-     * Deletes a App entity.
-     *
-     * @param Request $request
-     * @param integer $applicationId
-     *
-     * @throws NotFoundHttpException
-     *
-     * @return Response|RedirectResponse
-     */
-    public function deleteAction(Request $request, $applicationId)
-    {
-        $application = $this->appRepository->find($applicationId);
-
-        if (!$application) {
-            throw $this->createNotFoundException('Unable to find the App entity.');
-        }
-
-        if ($request->get('message')) {
-            $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
-                'entity' => $application
-            ));
-
-            return new Response(json_encode(array(
-                'template' => $template,
-                'isDeletable' => $application->isDeletable()
-            )));
-        }
-
-        $this->addFlash('success', $this->get('translator')->trans('%entity% has been deleted.', array(
-            '%entity%' => $application
-        )));
-
-        $this->getEm()->remove($application);
-        $this->getEm()->flush();
-
-        $this->get('egzakt_system.router_invalidator')->invalidate();
-
-        return $this->redirect($this->generateUrl('egzakt_system_backend_application'));
-    }
 }
