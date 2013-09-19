@@ -15,6 +15,15 @@ use Egzakt\SystemBundle\Form\Backend\MemberType;
  */
 class MemberController extends CrudController
 {
+
+    /**
+     * @inheritdoc
+     */
+    protected function getEntityClassname()
+    {
+        return 'Egzakt\\SystemBundle\\Entity\\Member';
+    }
+
     /**
      * Init
      */
@@ -23,11 +32,6 @@ class MemberController extends CrudController
         parent::init();
 
 //        $this->getCore()->addNavigationElement($this->getSectionBundle());
-    }
-
-    protected function getEntityClassname()
-    {
-        return 'Egzakt\\SystemBundle\\Entity\\Member';
     }
 
     /**

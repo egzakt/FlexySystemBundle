@@ -9,8 +9,20 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class CrudController extends BaseController
 {
 
+    /**
+     * Return the name of the class which is used with the Crud.
+     *
+     * @return string
+     */
     abstract protected function getEntityClassname();
 
+    /**
+     * Initiate a delete request.
+     *
+     * @param Request $request
+     * @param $id
+     * @return JsonResponse|RedirectResponse
+     */
     public function deleteAction(Request $request, $id)
     {
         $deleteService = $this->get('egzakt_system.deletable');
@@ -51,13 +63,16 @@ abstract class CrudController extends BaseController
         }
 
         return $this->redirect($this->generateUrl($baseRoute));
-
     }
 
-
+    /**
+     * Initiate a reorder request.
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function orderAction(Request $request)
     {
-
         $i = 0;
         $elements = explode(';', trim($request->get('elements'), ';'));
 
@@ -75,6 +90,5 @@ abstract class CrudController extends BaseController
         }
 
         return new JsonResponse('');
-
     }
 }

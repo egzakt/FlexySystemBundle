@@ -22,11 +22,13 @@ class UserController extends CrudController
      */
     protected $isDeveloper;
 
+    /**
+     * @inheritdoc
+     */
     protected function getEntityClassname()
     {
         return 'Egzakt\\SystemBundle\\Entity\\User';
     }
-
 
     /**
      * Init

@@ -14,10 +14,14 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class TextController extends CrudController
 {
 
+    /**
+     * @inheritdoc
+     */
     protected function getEntityClassname()
     {
         return 'Egzakt\\SystemBundle\\Entity\\Text';
     }
+
     /**
      * Init
      */

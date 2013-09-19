@@ -33,7 +33,9 @@ class RoleController extends CrudController
      */
     protected $rolesAdmin;
 
-
+    /**
+     * @inheritdoc
+     */
     protected function getEntityClassname()
     {
         return 'Egzakt\\SystemBundle\\Entity\\Role';

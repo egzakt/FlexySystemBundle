@@ -6,7 +6,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use Egzakt\SystemBundle\Lib\Backend\CrudController;
 use Egzakt\SystemBundle\Entity\Locale;
@@ -18,6 +17,9 @@ use Egzakt\SystemBundle\Form\Backend\LocaleType;
 class LocaleController extends CrudController
 {
 
+    /**
+     * @inheritdoc
+     */
     protected function getEntityClassname()
     {
         return 'Egzakt\\SystemBundle\\Entity\\Locale';
