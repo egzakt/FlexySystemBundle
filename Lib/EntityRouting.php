@@ -36,6 +36,11 @@ class EntityRouting
         return $this->getBuilder()->get($app, $entity);
     }
 
+    public function getAlias($alias, $entity)
+    {
+        return $this->getBuilder()->getAlias($alias, $entity);
+    }
+
     /**
      * @return EntityRoutingBuilder
      */

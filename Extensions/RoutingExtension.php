@@ -47,6 +47,7 @@ class RoutingExtension extends BaseRoutingExtension
     {
         $functions = parent::getFunctions();
         $functions[] = new \Twig_SimpleFunction('entitypath', array($this, 'entityPath'));
+        $functions[] = new \Twig_SimpleFunction('entityaliaspath', array($this, 'entityAliasPath'));
 
         return $functions;
     }
@@ -85,7 +86,8 @@ class RoutingExtension extends BaseRoutingExtension
      */
     public function entityPath($entity, $extraRoute = null, $extraParams = array())
     {
-        $mapping = $this->getMapping($entity);
+        $mapping = $this->getMapping($this->getSystemCore()->getCurrentAppName(), get_class($entity));
+
         $value = $this->getAccessor()->getValue($entity, $mapping->getEntityProperty());
         if (null === $value) {
             $value = 0;
@@ -105,6 +107,54 @@ class RoutingExtension extends BaseRoutingExtension
                 $routeParams
         );
 
+    }
+
+    /**
+     * Return the URL of an entity mapped by the EntityRoute service.
+     *
+     * @param $alias
+     * @param $entity
+     * @param null $extraRoute
+     * @param array $extraParams
+     * @return string
+     */
+    public function entityAliasPath($alias, $entity, $extraRoute = null, $extraParams = array())
+    {
+        $mapping = $this->getMapping($alias, get_class($entity) );
+        $value = $this->getAccessor()->getValue($entity, $mapping->getEntityProperty());
+        if (null === $value) {
+            $value = 0;
+        }
+
+        if (null === $extraRoute) {
+            $routeParams = $this->generateRouteParams($extraParams);
+        } else {
+            $routeParams = $this->generateRouteParams(
+                array($mapping->getRouteProperty() => $value),
+                $extraParams
+            );
+        }
+
+        return $this->getPath(
+            $this->generateRouteName($mapping->getRoute(), $extraRoute),
+            $routeParams
+        );
+
+    }
+
+    /**
+     * Return the mapping.
+     *
+     * @param $name
+     * @param $classname
+     * @return EntityRoute|null
+     */
+    protected function getMapping($name, $classname)
+    {
+        return $this->getEntityRouting()->getAlias(
+            $name,
+            $classname
+        );
     }
 
     /**
@@ -140,18 +190,6 @@ class RoutingExtension extends BaseRoutingExtension
         }
 
         return $params;
-    }
-
-    /**
-     * @param $entity
-     * @return EntityRoute
-     */
-    protected function getMapping($entity)
-    {
-        return $this->getEntityRouting()->get(
-            $this->getSystemCore()->getCurrentAppName(),
-            get_class($entity)
-        );
     }
 
     /**

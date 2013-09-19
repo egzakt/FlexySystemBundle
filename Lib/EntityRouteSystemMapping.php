@@ -15,6 +15,7 @@ class EntityRouteSystemMapping implements EntityRouteMappingInterface
         $builder->add('backend', 'Egzakt\\SystemBundle\\Entity\\Role', 'egzakt_system_backend_role', 'id');
         $builder->add('backend', 'Egzakt\\SystemBundle\\Entity\\App', 'egzakt_system_backend_application', 'applicationId');
         $builder->add('backend', 'Egzakt\\SystemBundle\\Entity\\Section', 'egzakt_system_backend_section', 'id');
+        $builder->addAlias('root', 'backend', 'Egzakt\\SystemBundle\\Entity\\Section', 'egzakt_system_backend_section_root', 'id');
         $builder->add('backend', 'Egzakt\\SystemBundle\\Entity\\Locale', 'egzakt_system_backend_locale', 'id');
         $builder->add('backend', 'Egzakt\\SystemBundle\\Entity\\Member', 'egzakt_system_backend_member', 'id');
         $builder->add('backend', 'Egzakt\\SystemBundle\\Entity\\Text', 'egzakt_system_backend_text', 'id');

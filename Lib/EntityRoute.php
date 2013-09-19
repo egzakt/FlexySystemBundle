@@ -8,6 +8,11 @@ class EntityRoute
     /**
      * @var string
      */
+    private $alias;
+
+    /**
+     * @var string
+     */
     private $app;
 
     /**
@@ -31,19 +36,29 @@ class EntityRoute
     private $entityProperty;
 
     /**
+     * @param string $alias
      * @param string $app
      * @param string $entity
      * @param string $route
      * @param string $routeProperty
      * @param string $entityProperty
      */
-    public function __construct($app, $entity, $route, $routeProperty, $entityProperty)
+    public function __construct($alias, $app, $entity, $route, $routeProperty, $entityProperty)
     {
+        $this->alias = $alias;
         $this->app = $app;
         $this->entity = $entity;
         $this->route = $route;
         $this->routeProperty = $routeProperty;
         $this->entityProperty = $entityProperty;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAlias()
+    {
+        return $this->alias;
     }
 
     /**
@@ -87,13 +102,12 @@ class EntityRoute
     }
 
     /**
-     * @param  string $app
-     * @param  string $entity
+     * @param  string $alias
      * @return bool
      */
-    public function equals($app, $entity)
+    public function equals($alias)
     {
-        return $this->getApp() === $app && $this->getEntity() === $entity;
+        return $this->getAlias() === $alias;
     }
 
 }
