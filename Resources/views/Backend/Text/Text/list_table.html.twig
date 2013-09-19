@@ -41,7 +41,7 @@
                     {{ entity.ordering }}
                 </td>
                 <td class="name{% if not entity.active %} inactive{% endif %}">
-                    <a href="{{ path(entity.route('edit'), entity.routeParams) }}">
+                    <a href="{{ path(entity.route, entity.routeParams) }}">
                         {% include 'EgzaktSystemBundle:Backend/Core:entity_title.html.twig' with { 'entity': entity } %}
                     </a>
                 </td>
@@ -54,7 +54,7 @@
                     {{ entity.updatedAt|date('Y-m-d') }}
                 </td>
                 <td class="edit">
-                    <a href="{{ path(entity.route('edit'), entity.routeParams) }}" title="{% trans %}Edit{% endtrans %}">
+                    <a href="{{ path(entity.route, entity.routeParams) }}" title="{% trans %}Edit{% endtrans %}">
                         <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/edit.png') }}" width="15" height="15" alt="{% trans %}edit{% endtrans %}" />
                     </a>
                 </td>

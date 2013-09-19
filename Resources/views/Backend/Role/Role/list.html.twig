@@ -25,14 +25,14 @@
             {% for role in roles %}
                 <tr id="item_{{ role.id }}">
                     <td class="name">
-                        <a href="{{ path(role.route('edit'), role.routeParams) }}">
+                        <a href="{{ path(role.route, role.routeParams) }}">
                             {% include 'EgzaktSystemBundle:Backend/Core:entity_title.html.twig' with {'entity': role} %}
                         </a>
                     </td>
                     <td>{{ role.users|length }}</td>
                     <td>{{ role.updatedAt|date('Y-m-d') }}</td>
                     <td class="edit">
-                        <a href="{{ path(role.route('edit'), role.routeParams) }}" title="Modifier">
+                        <a href="{{ path(role.route, role.routeParams) }}" title="Modifier">
                             <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/edit.png') }}" width="15" height="15" alt="" />
                         </a>
                     </td>

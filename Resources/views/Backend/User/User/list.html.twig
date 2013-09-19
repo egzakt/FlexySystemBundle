@@ -46,14 +46,14 @@
                 {% for user in role.users %}
                     <tr id="item_{{ user.id }}">
                         <td class="name {{ user.active ? '' : ' inactive' }}">
-                            <a href="{{ path(user.route('edit'), user.routeParams) }}">{{ user.username }}</a>
+                            <a href="{{ path(user.route, user.routeParams) }}">{{ user.username }}</a>
                         </td>
                         <td>{{ user.firstname }}</td>
                         <td>{{ user.lastname }}</td>
                         <td>{{ user.updatedat|date('Y-m-d') }}</td>
                         {% include 'EgzaktSystemBundle:Backend/User/User:switch_user.html.twig' with { role: role, user: user } %}
                         <td class="edit">
-                            <a href="{{ path(user.route('edit'), user.routeParams) }}" title="Modifier">
+                            <a href="{{ path(user.route, user.routeParams) }}" title="Modifier">
                                 <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/edit.png') }}" width="15" height="15" alt="" />
                             </a>
                         </td>
