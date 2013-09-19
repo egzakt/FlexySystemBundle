@@ -58,17 +58,10 @@ class ApplicationController extends CrudController
         ));
     }
 
-    /**
-     *
-     *
-     * @param integer $applicationId
-     * @param Request $request
-     *
-     * @return RedirectResponse|Response
-     */
-    public function editAction($applicationId, Request $request)
+
+    public function editAction(Request $request, $id)
     {
-        $entity = $this->appRepository->find($applicationId);
+        $entity = $this->appRepository->find($id);
 
         if (false == $entity) {
             $entity = new App();
