@@ -1,6 +1,3 @@
-{% if cancel_route is not defined %}
-    {% set cancel_route = path(entity.route) %}
-{% endif %}
 {% if delete_route is not defined and entity.isDeletable() %}
     {% set delete_route = path(entity.route('delete'), entity.routeParams) %}
 {% endif %}

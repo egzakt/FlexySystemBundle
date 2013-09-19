@@ -53,15 +53,9 @@ class Locale extends BaseEntity
      *
      * @return string
      */
-    public function getRouteBackend($suffix = null)
+    public function getRouteBackend($suffix = 'edit')
     {
-        $route = 'egzakt_system_backend_locale';
-
-        if (null !== $suffix) {
-            $route .= '_' . $suffix;
-        }
-
-        return $route;
+        return 'egzakt_system_backend_locale_'.$suffix;
     }
 
     /**

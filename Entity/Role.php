@@ -249,15 +249,9 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
      *
      * @return string
      */
-    public function getRouteBackend($suffix = null)
+    public function getRouteBackend($suffix = 'edit')
     {
-        $route = 'egzakt_system_backend_role';
-
-        if (null !== $suffix) {
-            $route .= '_' . $suffix;
-        }
-
-        return $route;
+        return 'egzakt_system_backend_role_'.$suffix;
     }
 
     /**

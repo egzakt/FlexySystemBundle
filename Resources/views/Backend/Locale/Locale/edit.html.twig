@@ -10,7 +10,9 @@
     <form novalidate="novalidate" method="post" {{ form_enctype(form) }}>
 
         {% block edit_actions %}
-            {% include 'EgzaktSystemBundle:Backend/Core:edit_actions.html.twig' %}
+            {% include 'EgzaktSystemBundle:Backend/Core:edit_actions.html.twig' with
+                { 'cancel_route': path('egzakt_system_backend_locale') }
+            %}
         {% endblock %}
 
         <div id="fields_box">

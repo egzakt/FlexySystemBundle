@@ -439,15 +439,9 @@ class User extends BaseEntity implements AdvancedUserInterface, \Serializable
      *
      * @return string
      */
-    public function getRouteBackend($suffix = null)
+    public function getRouteBackend($suffix = 'edit')
     {
-        $route = 'egzakt_system_backend_user';
-
-        if (null !== $suffix) {
-            $route .= '_' . $suffix;
-        }
-
-        return $route;
+        return 'egzakt_system_backend_user_'.$suffix;
     }
 
     /**
