@@ -59,7 +59,7 @@ abstract class CrudController extends BaseController
     {
 
         $i = 0;
-        $elements = explode(';', trim($this->getRequest()->get('elements'), ';'));
+        $elements = explode(';', trim($request->get('elements'), ';'));
 
         foreach ($elements as $element) {
 
