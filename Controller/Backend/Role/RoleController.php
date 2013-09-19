@@ -8,14 +8,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use Egzakt\SystemBundle\Lib\Backend\BaseController;
+use Egzakt\SystemBundle\Lib\Backend\CrudController;
 use Egzakt\SystemBundle\Entity\Role;
 use Egzakt\SystemBundle\Form\Backend\RoleType;
 
 /**
  * Role Controller.
  */
-class RoleController extends BaseController
+class RoleController extends CrudController
 {
 
     /**
@@ -32,6 +32,12 @@ class RoleController extends BaseController
      * @var array
      */
     protected $rolesAdmin;
+
+
+    protected function getEntityClassname()
+    {
+        return 'Egzakt\\SystemBundle\\Entity\\Role';
+    }
 
     /**
      * Init
@@ -138,52 +144,4 @@ class RoleController extends BaseController
         );
     }
 
-    /**
-     * Deletes a Role entity
-     *
-     * @param $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     *
-     * @throws \Exception
-     */
-    public function deleteAction($id)
-    {
-        $role = $this->getEm()->getRepository('EgzaktSystemBundle:Role')->find($id);
-
-        if (!$role) {
-            throw $this->createNotFoundException('Unable to find Role entity.');
-        }
-
-        if ($this->get('request')->get('message')) {
-
-            $isDeletable = $role->isDeletable();
-            $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
-                'entity' => $role
-            ));
-
-            return new Response(json_encode(array(
-                'template' => $template,
-                'isDeletable' => $isDeletable
-            )));
-        }
-
-        // Don't delete some roles
-        if (!$role->isDeletable()) {
-            throw new \Exception('You can\'t delete this role.');
-        }
-
-        // Call the translator before we flush the entity so we can have the real __toString()
-        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-            '%entity% has been deleted.',
-            array('%entity%' => $role))
-        );
-
-        $this->getEm()->remove($role);
-        $this->getEm()->flush();
-
-        return $this->redirect($this->generateUrl('egzakt_system_backend_role'));
-    }
 }

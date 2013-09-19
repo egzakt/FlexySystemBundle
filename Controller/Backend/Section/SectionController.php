@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use Egzakt\SystemBundle\Lib\Backend\BaseController;
+use Egzakt\SystemBundle\Lib\Backend\CrudController;
 use Egzakt\SystemBundle\Entity\Mapping;
 use Egzakt\SystemBundle\Entity\NavigationRepository;
 use Egzakt\SystemBundle\Entity\Section;
@@ -19,7 +19,7 @@ use Egzakt\SystemBundle\Form\Backend\SectionType;
  * Section controller.
  *
  */
-class SectionController extends BaseController
+class SectionController extends CrudController
 {
     /**
      * @var SectionRepository
@@ -30,6 +30,14 @@ class SectionController extends BaseController
      * @var NavigationRepository
      */
     protected $navigationRepository;
+
+    /**
+     * @inheritdoc
+     */
+    protected function getEntityClassname()
+    {
+        return 'Egzakt\\SystemBundle\\Entity\\Section';
+    }
 
     /**
      * Init
@@ -166,82 +174,6 @@ class SectionController extends BaseController
             'entity' => $entity,
             'form' => $form->createView()
         ));
-    }
-
-    /**
-     * Deletes a Section entity.
-     *
-     * @param Request $request
-     * @param integer $id      The ID of the Section to delete
-     *
-     * @throws NotFoundHttpException
-     *
-     * @return Response|RedirectResponse
-     */
-    public function deleteAction(Request $request, $id)
-    {
-        $section = $this->sectionRepository->find($id);
-
-        if (!$section) {
-            throw $this->createNotFoundException('Unable to find Section entity.');
-        }
-
-        if ($request->get('message')) {
-            $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
-                'entity' => $section
-            ));
-
-            return new Response(json_encode(array(
-                'template' => $template,
-                'isDeletable' => $section->isDeletable()
-            )));
-        }
-
-        // Call the translator before we flush the entity so we can have the real __toString()
-        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-            '%entity% has been deleted.',
-            array('%entity%' => $section->getName() != '' ? $section->getName() : $section->getEntityName()))
-        );
-
-        $this->getEm()->remove($section);
-        $this->getEm()->flush();
-
-        $this->get('egzakt_system.router_invalidator')->invalidate();
-
-        return $this->redirect($this->generateUrl('egzakt_system_backend_section'));
-    }
-
-    /**
-     * Set order on a Section entity.
-     *
-     * @param Request $request
-     *
-     * @return Response
-     */
-    public function orderAction(Request $request)
-    {
-        if ($this->getRequest()->isXmlHttpRequest()) {
-
-            $i = 0;
-            $elements = explode(';', trim($request->get('elements'), ';'));
-
-            foreach ($elements as $element) {
-
-                $element = explode('_', $element);
-                $entity = $this->sectionRepository->find($element[1]);
-
-                if ($entity) {
-                    $entity->setOrdering(++$i);
-                    $this->getEm()->persist($entity);
-                }
-
-                $this->getEm()->flush();
-            }
-
-            $this->get('egzakt_system.router_invalidator')->invalidate();
-        }
-
-        return new Response('');
     }
 
 }

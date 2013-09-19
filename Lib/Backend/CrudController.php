@@ -39,7 +39,6 @@ abstract class CrudController extends BaseController
 
         $result = $deleteService->checkDeletable($entity);
         if ($result->isSuccess()) {
-
             $this->getEm()->remove($entity);
             $this->getEm()->flush();
 
