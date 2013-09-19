@@ -10,16 +10,6 @@ Egzakt\SystemBundle\Entity\Role:
     role:
       type: string
       length: 30
-    createdAt:
-      type: datetime
-      gedmo:
-        timestampable:
-          on: create
-    updatedAt:
-      type: datetime
-      gedmo:
-        timestampable:
-          on: update
   lifecycleCallbacks: {  }
   manyToMany:
     users:

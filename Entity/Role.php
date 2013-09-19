@@ -16,6 +16,7 @@ use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 class Role extends BaseEntity implements RoleInterface, \Serializable
 {
     use EgzaktORMBehaviors\Translatable\Translatable;
+    use EgzaktORMBehaviors\Timestampable\Timestampable;
 
     /**
      * @var integer
@@ -26,16 +27,6 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
      * @var string $role
      */
     private $role;
-
-    /**
-     * @var \DateTime $createdAt
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTime $updatedAt
-     */
-    private $updatedAt;
 
     /**
      * @var ArrayCollection
@@ -96,46 +87,6 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
     public function setRole($role)
     {
         $this->role = $role;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
     }
 
     /**
@@ -288,5 +239,4 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
             $this->role
         ) = unserialize($serialized);
     }
-
 }

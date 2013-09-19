@@ -3,12 +3,15 @@
 namespace Egzakt\SystemBundle\Entity;
 
 use Egzakt\SystemBundle\Lib\BaseEntity;
+use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 
 /**
  * Login
  */
 class Login extends BaseEntity
 {
+    use EgzaktORMBehaviors\Timestampable\Timestampable;
+
     /**
      * @var integer
      */
@@ -28,11 +31,6 @@ class Login extends BaseEntity
      * @var boolean $success
      */
     private $success;
-
-    /**
-     * @var \DateTime $createdAt
-     */
-    private $createdAt;
 
     /**
      * Get id
@@ -119,25 +117,4 @@ class Login extends BaseEntity
     {
         return $this->success;
     }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
 }

@@ -14,6 +14,7 @@ use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 class Section extends BaseEntity
 {
     use EgzaktORMBehaviors\Translatable\Translatable;
+    use EgzaktORMBehaviors\Timestampable\Timestampable;
 
     /**
      * @var integer
@@ -34,16 +35,6 @@ class Section extends BaseEntity
      * @var string
      */
     private $app;
-
-    /**
-     * @var \DateTime
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTime
-     */
-    private $updatedAt;
 
     /**
      * @var integer
@@ -259,46 +250,6 @@ class Section extends BaseEntity
     public function addApp(App $app)
     {
         $this->app[] = $app;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
     }
 
     /**

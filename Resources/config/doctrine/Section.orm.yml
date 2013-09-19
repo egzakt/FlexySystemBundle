@@ -9,16 +9,6 @@ Egzakt\SystemBundle\Entity\Section:
     ordering:
       type: integer
       nullable: true
-    createdAt:
-      type: datetime
-      gedmo:
-        timestampable:
-          on: create
-    updatedAt:
-      type: datetime
-      gedmo:
-        timestampable:
-          on: update
   repositoryClass: Egzakt\SystemBundle\Entity\SectionRepository
   oneToMany:
     children:

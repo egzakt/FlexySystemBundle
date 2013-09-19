@@ -6,12 +6,15 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 use Egzakt\SystemBundle\Lib\BaseEntity;
+use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 
 /**
  * Member
  */
 class Member extends BaseEntity implements AdvancedUserInterface, \Serializable
 {
+    use EgzaktORMBehaviors\Timestampable\Timestampable;
+
     /**
      * @var integer
      */
@@ -66,16 +69,6 @@ class Member extends BaseEntity implements AdvancedUserInterface, \Serializable
      * @var boolean $active
      */
     private $active;
-
-    /**
-     * @var \Datetime $createdAt
-     */
-    private $createdAt;
-
-    /**
-     * @var \Datetime $updatedAt
-     */
-    private $updatedAt;
 
     /**
      * Get id
@@ -330,46 +323,6 @@ class Member extends BaseEntity implements AdvancedUserInterface, \Serializable
     }
 
     /**
-     * Set createdAt
-     *
-     * @param \Datetime $createdAt
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \Datetime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updatedAt
-     *
-     * @param \Datetime $updatedAt
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return \Datetime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
      * @return bool
      */
     public function isAccountNonExpired()
@@ -475,5 +428,4 @@ class Member extends BaseEntity implements AdvancedUserInterface, \Serializable
             $this->email
             ) = unserialize($serialized);
     }
-
 }

@@ -4,8 +4,8 @@ namespace Egzakt\SystemBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 use Egzakt\SystemBundle\Lib\BaseEntity;
+use Egzakt\DoctrineBehaviorsBundle\Model as EgzaktORMBehaviors;
 
 /**
  * Text
@@ -13,6 +13,7 @@ use Egzakt\SystemBundle\Lib\BaseEntity;
 class Text extends BaseEntity
 {
     use EgzaktORMBehaviors\Translatable\Translatable;
+    use EgzaktORMBehaviors\Timestampable\Timestampable;
 
     /**
      * @var integer $id
@@ -38,16 +39,6 @@ class Text extends BaseEntity
      * @var integer $ordering
      */
     private $ordering;
-
-    /**
-     * @var \DateTime $createdAt
-     */
-    private $createdAt;
-
-    /**
-     * @var \DateTime $updatedAt
-     */
-    private $updatedAt;
 
     /**
      * Get id
@@ -127,46 +118,6 @@ class Text extends BaseEntity
     public function getOrdering()
     {
         return $this->ordering;
-    }
-
-    /**
-     * Set createdAt
-     *
-     * @param \DateTime $createdAt Created At date/time
-     */
-    public function setCreatedAt($createdAt)
-    {
-        $this->createdAt = $createdAt;
-    }
-
-    /**
-     * Get createdAt
-     *
-     * @return \DateTime
-     */
-    public function getCreatedAt()
-    {
-        return $this->createdAt;
-    }
-
-    /**
-     * Set updatedAt
-     *
-     * @param \DateTime $updatedAt Updated At date/time
-     */
-    public function setUpdatedAt($updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-    }
-
-    /**
-     * Get updatedAt
-     *
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
     }
 
     /**
