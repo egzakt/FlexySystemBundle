@@ -2,20 +2,28 @@
 
 namespace Egzakt\SystemBundle\Controller\Backend\Member;
 
+use Egzakt\SystemBundle\Lib\Backend\CrudController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use Egzakt\SystemBundle\Lib\Backend\BaseController;
 use Egzakt\SystemBundle\Entity\Member;
 use Egzakt\SystemBundle\Form\Backend\MemberType;
 
 /**
  * Member Controller
  */
-class MemberController extends BaseController
+class MemberController extends CrudController
 {
+
+    /**
+     * @inheritdoc
+     */
+    protected function getEntityClassname()
+    {
+        return 'Egzakt\\SystemBundle\\Entity\\Member';
+    }
+
     /**
      * Init
      */
@@ -104,45 +112,5 @@ class MemberController extends BaseController
         ));
     }
 
-    /**
-     * Delete a Member entity.
-     *
-     * @param Request $request
-     * @param int     $id
-     *
-     * @return RedirectResponse|Response
-     *
-     * @throws NotFoundHttpException
-     */
-    public function deleteAction(Request $request, $id)
-    {
-        $member = $this->getEm()->getRepository('EgzaktSystemBundle:Member')->find($id);
-
-        if (!$member) {
-            throw $this->createNotFoundException('Unable to find a member entity using id "' . $id . '".');
-        }
-
-        if ($request->get('message')) {
-            $template = $this->renderView('EgzaktSystemBundle:Backend/Core:delete_message.html.twig', array(
-                'entity' => $member
-            ));
-
-            return new Response(json_encode(array(
-                'template' => $template,
-                'isDeletable' => $member->isDeletable()
-            )));
-        }
-
-        // Call the translator before we flush the entity so we can have the real __toString()
-        $this->get('session')->getFlashBag()->add('success', $this->get('translator')->trans(
-            '%entity% has been deleted.',
-            array('%entity%' => $member != '' ? $member : $member->getEntityName()))
-        );
-
-        $this->getEm()->remove($member);
-        $this->getEm()->flush();
-
-        return $this->redirect($this->generateUrl('egzakt_system_backend_member'));
-    }
 
 }

@@ -8,6 +8,7 @@ parameters:
     egzakt_system.helper.class:                           Egzakt\SystemBundle\Lib\Helper
     egzakt_system.twig_extension.class:                   Egzakt\SystemBundle\Extensions\TwigExtension
     egzakt_system.twig_translation_extension.class:       Egzakt\SystemBundle\Extensions\TranslationExtension
+    egzakt_system.twig_routing_extension.class:           Egzakt\SystemBundle\Extensions\RoutingExtension
     egzakt_system.inspect_extension.class:                Egzakt\SystemBundle\Extensions\InspectExtension
     egzakt_system.navigation_builder.class:               Egzakt\SystemBundle\Lib\NavigationBuilder
     egzakt_system.navigation_item.class:                  Egzakt\SystemBundle\Lib\NavigationItem
@@ -26,7 +27,15 @@ parameters:
     egzakt_system.deletable.class:                        Egzakt\SystemBundle\Lib\DeletableService
     egzakt_system.deletable_user_listener.class:          Egzakt\SystemBundle\Listener\UserDeletableListener
 
+
+
 services:
+
+    twig.extension.routing:
+        class: %egzakt_system.twig_routing_extension.class%
+        arguments: [ @router, @egzakt_system.router_auto_parameters_handler, @egzakt_system.core, @egzakt_system.entity_route, @property_accessor ]
+        tags:
+          - { name: twig.extension }
 
     egzakt_system.deletable:
         class: %egzakt_system.deletable.class%
@@ -101,10 +110,14 @@ services:
         shared: true
         class:  %egzakt_system.page_title.class%
 
-    egzakt_system.pre_persist_listener:
+    egzakt_system.doctrine_listener:
         class: Egzakt\SystemBundle\Listener\DoctrineEventListener
+        arguments: [ @egzakt_system.router_invalidator ]
         tags:
             - { name: doctrine.event_listener, event: prePersist }
+            - { name: doctrine.event_listener, event: postPersist }
+            - { name: doctrine.event_listener, event: postUpdate }
+            - { name: doctrine.event_listener, event: postRemove }
             - { name: doctrine.event_listener, event: onFlush }
 
 
@@ -174,3 +187,17 @@ services:
         arguments: [@service_container]
         tags:
             - { name: security.voter }
+
+
+    egzakt_system.entity_route:
+        class: Egzakt\SystemBundle\Lib\EntityRouting
+        arguments: [ @egzakt_system.entity_route_builder ]
+
+    egzakt_system.entity_route_builder:
+        class: Egzakt\SystemBundle\Lib\EntityRoutingBuilder
+        arguments: [@doctrine.orm.entity_manager]
+
+    egzakt_system.entity_route_system_builder:
+        class: Egzakt\SystemBundle\Lib\EntityRouteSystemMapping
+        tags:
+            - { name: egzakt_system.entity_route }
