@@ -263,7 +263,7 @@ abstract class BaseEntity implements EntityInterface, NavigationElementInterface
      *
      * @return string
      */
-    public function getRoute($suffix = null)
+    public function getRoute($suffix = 'edit')
     {
         if ($this->route) {
             return $this->route;
