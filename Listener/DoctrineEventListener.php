@@ -28,6 +28,7 @@ class DoctrineEventListener
 
     /**
      * @param RouterInvalidator $ri
+     * @param $invalidatorEntities
      */
     public function __construct(RouterInvalidator $ri, $invalidatorEntities)
     {
