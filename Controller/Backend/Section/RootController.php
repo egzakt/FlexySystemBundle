@@ -206,8 +206,6 @@ class RootController extends BaseController
         $this->getEm()->remove($section);
         $this->getEm()->flush();
 
-        $this->get('egzakt_system.router_invalidator')->invalidate();
-
         return $this->redirect($this->generateUrl('egzakt_system_backend_section_root', array('appSlug' => $this->getApp()->getSlug())));
     }
 
@@ -239,7 +237,6 @@ class RootController extends BaseController
                 }
             }
 
-            $this->get('egzakt_system.router_invalidator')->invalidate();
         }
 
         return new Response('');

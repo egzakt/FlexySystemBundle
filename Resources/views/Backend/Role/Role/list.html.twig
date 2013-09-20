@@ -22,22 +22,22 @@
                 </tr>
             </thead>
             <tbody>
-            {% for entity in roles %}
-                <tr id="item_{{ entity.id }}">
+            {% for role in roles %}
+                <tr id="item_{{ role.id }}">
                     <td class="name">
-                        <a href="{{ path(entity.route, entity.routeParams) }}">
-                            {% include 'EgzaktSystemBundle:Backend/Core:entity_title.html.twig' with { 'entity': entity } %}
+                        <a href="{{ path(role.route, role.routeParams) }}">
+                            {% include 'EgzaktSystemBundle:Backend/Core:entity_title.html.twig' with {'entity': role} %}
                         </a>
                     </td>
-                    <td>{{ entity.users|length }}</td>
-                    <td>{{ entity.updatedAt|date('Y-m-d') }}</td>
+                    <td>{{ role.users|length }}</td>
+                    <td>{{ role.updatedAt|date('Y-m-d') }}</td>
                     <td class="edit">
-                        <a href="{{ path(entity.route('edit'), entity.routeParams) }}" title="Modifier">
+                        <a href="{{ path(role.route, role.routeParams) }}" title="Modifier">
                             <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/edit.png') }}" width="15" height="15" alt="" />
                         </a>
                     </td>
                     <td class="delete">
-                        <a href="{{ path(entity.route('delete'), entity.routeParams) }}" rel="{{ path(entity.route('delete'), entity.routeParams({'message': true})) }}" title="{% trans %}Delete{% endtrans %}">
+                        <a href="{{ path(role.route('delete'), role.routeParams) }}" title="{% trans %}Delete{% endtrans %}">
                             <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/delete.png') }}" width="12" height="15" alt="" />
                         </a>
                     </td>

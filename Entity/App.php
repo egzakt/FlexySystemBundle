@@ -117,33 +117,30 @@ class App extends BaseEntity
     }
 
     /**
-     * Get the default route to entity
+     * Get the backend route
      *
      * @param string $suffix
      *
      * @return string
      */
-    public function getRoute($suffix = 'edit')
+    public function getRouteBackend($suffix = 'edit')
     {
-        $route = 'egzakt_system_backend_application';
-
-        if ($suffix) {
-            $route .= '_' . $suffix;
-        }
-
-        return $route;
+        return 'egzakt_system_backend_application_'.$suffix;
     }
 
     /**
-     * Get slug
+     * Get params for the backend route
      *
-     * @param array $params The params of the route
+     * @param array $params Additional parameters
      *
      * @return array
      */
-    public function getRouteParams($params = array())
+    public function getRouteBackendParams($params = array())
     {
-        $defaults = array('applicationId' => intval($this->id));
+        $defaults = array();
+        if (null !== $this->getId()) {
+            $defaults['id'] = intval($this->getId());
+        }
         $params = array_merge($defaults, $params);
 
         return $params;

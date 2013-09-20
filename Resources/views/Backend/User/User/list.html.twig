@@ -43,22 +43,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                {% for entity in role.users %}
-                    <tr id="item_{{ entity.id }}">
-                        <td class="name {{ entity.active ? '' : ' inactive' }}">
-                            <a href="{{ path('egzakt_system_backend_user_edit', { 'id': entity.id }) }}">{{ entity.username }}</a>
+                {% for user in role.users %}
+                    <tr id="item_{{ user.id }}">
+                        <td class="name {{ user.active ? '' : ' inactive' }}">
+                            <a href="{{ path(user.route, user.routeParams) }}">{{ user.username }}</a>
                         </td>
-                        <td>{{ entity.firstname }}</td>
-                        <td>{{ entity.lastname }}</td>
-                        <td>{{ entity.updatedat|date('Y-m-d') }}</td>
-                        {% include 'EgzaktSystemBundle:Backend/User/User:switch_user.html.twig' with { role: role, user: entity } %}
+                        <td>{{ user.firstname }}</td>
+                        <td>{{ user.lastname }}</td>
+                        <td>{{ user.updatedat|date('Y-m-d') }}</td>
+                        {% include 'EgzaktSystemBundle:Backend/User/User:switch_user.html.twig' with { role: role, user: user } %}
                         <td class="edit">
-                            <a href="{{ path('egzakt_system_backend_user_edit', { 'id': entity.id }) }}" title="Modifier">
+                            <a href="{{ path(user.route, user.routeParams) }}" title="Modifier">
                                 <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/edit.png') }}" width="15" height="15" alt="" />
                             </a>
                         </td>
                         <td class="delete">
-                            <a href="{{ path('egzakt_system_backend_user_delete', { 'id': entity.id }) }}" title="{% trans %}Delete{% endtrans %}">
+                            <a href="{{ path(user.route('delete'), user.routeParams) }}" title="{% trans %}Delete{% endtrans %}">
                                 <img src="{{ asset('bundles/egzaktsystem/backend/images/buttons/delete.png') }}" width="12" height="15" alt="" />
                             </a>
                         </td>

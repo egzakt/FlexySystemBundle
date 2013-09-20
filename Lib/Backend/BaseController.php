@@ -11,7 +11,6 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 abstract class BaseController extends ApplicationController
 {
 
-
     /**
      * Return the core
      *
@@ -33,6 +32,5 @@ abstract class BaseController extends ApplicationController
             $referenceType
         );
     }
-
 
 }

@@ -432,4 +432,34 @@ class User extends BaseEntity implements AdvancedUserInterface, \Serializable
         ) = unserialize($serialized);
     }
 
+    /**
+     * Get the backend route
+     *
+     * @param string $suffix
+     *
+     * @return string
+     */
+    public function getRouteBackend($suffix = 'edit')
+    {
+        return 'egzakt_system_backend_user_'.$suffix;
+    }
+
+    /**
+     * Get params for the backend route
+     *
+     * @param array $params Additional parameters
+     *
+     * @return array
+     */
+    public function getRouteBackendParams($params = array())
+    {
+        $defaults = array();
+        if (null !== $this->getId()) {
+            $defaults['id'] = intval($this->getId());
+        }
+        $params = array_merge($defaults, $params);
+
+        return $params;
+    }
+
 }

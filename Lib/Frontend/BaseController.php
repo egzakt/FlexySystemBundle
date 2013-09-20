@@ -10,7 +10,6 @@ use Egzakt\SystemBundle\Lib\ApplicationController;
 abstract class BaseController extends ApplicationController
 {
 
-
     /**
      * Get the frontend core
      *
@@ -20,6 +19,5 @@ abstract class BaseController extends ApplicationController
     {
         return $this->get('egzakt_frontend.core');
     }
-
 
 }

@@ -48,7 +48,6 @@ abstract class ApplicationController extends Controller implements BaseControlle
         return $this->getCore()->getSection();
     }
 
-
     /**
      * Get the current app entity
      *
@@ -234,6 +233,7 @@ abstract class ApplicationController extends Controller implements BaseControlle
     protected function checkDeletable($entity)
     {
         $ds = $this->get('egzakt_system.deletable');
+
         return $ds->checkDeletable($entity);
     }
 

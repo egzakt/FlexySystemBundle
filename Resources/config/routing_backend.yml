@@ -150,9 +150,9 @@ egzakt_system_backend_application:
     defaults: { _controller: "EgzaktSystemBundle:Backend/Application/Application:list" }
 
 egzakt_system_backend_application_edit:
-    pattern:  /applications/{applicationId}/edit
-    defaults: { _controller: "EgzaktSystemBundle:Backend/Application/Application:edit", applicationId: 0 }
+    pattern:  /applications/{id}/edit
+    defaults: { _controller: "EgzaktSystemBundle:Backend/Application/Application:edit", id: 0 }
 
 egzakt_system_backend_application_delete:
-    pattern:  /applications/{applicationId}/delete
+    pattern:  /applications/{id}/delete
     defaults: { _controller: "EgzaktSystemBundle:Backend/Application/Application:delete" }    
