@@ -39,6 +39,14 @@ class RoleController extends CrudController
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function getBaseRoute()
+    {
+        return 'egzkat_system_backend_role';
+    }
+
+    /**
      * Init
      */
     public function init()

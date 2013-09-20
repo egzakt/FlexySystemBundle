@@ -27,6 +27,15 @@ class UserController extends CrudController
     {
         return 'Egzakt\\SystemBundle\\Entity\\User';
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function getBaseRoute()
+    {
+        return 'egzakt_system_backend_user';
+    }
+
     /**
      * Init
      */

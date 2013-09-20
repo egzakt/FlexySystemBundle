@@ -30,6 +30,14 @@ class ApplicationController extends CrudController
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function getBaseRoute()
+    {
+        return 'egzakt_system_backend_application';
+    }
+
+    /**
      * Init
      */
     public function init()

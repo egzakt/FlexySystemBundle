@@ -17,6 +17,13 @@ abstract class CrudController extends BaseController
     abstract protected function getEntityClassname();
 
     /**
+     * Return the name of the base route.
+     *
+     * @return string
+     */
+    abstract protected function getBaseRoute();
+
+    /**
      * Initiate a delete request.
      *
      * @param Request $request
@@ -55,10 +62,10 @@ abstract class CrudController extends BaseController
                 array('%entity%' => $entity)
             ));
 
-            return $this->redirect($this->generateUrl($entity->getRoute(), $entity->getRouteParams()));
+            return $this->redirect($this->generateUrl($this->getBaseRoute(), $entity->getRouteParams()));
         }
 
-        return $this->redirect($this->generateUrl($entity->getRoute(), $entity->getRouteParams()));
+        return $this->redirect($this->generateUrl($this->getBaseRoute(), $entity->getRouteParams()));
     }
 
     /**

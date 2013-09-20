@@ -26,6 +26,14 @@ class LocaleController extends CrudController
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function getBaseRoute()
+    {
+        return 'egzakt_system_backend_locale';
+    }
+
+    /**
      * Init
      */
     public function init()

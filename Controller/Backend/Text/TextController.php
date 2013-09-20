@@ -23,6 +23,14 @@ class TextController extends CrudController
     }
 
     /**
+     * @inheritdoc
+     */
+    protected function getBaseRoute()
+    {
+        return 'egzakt_system_backend_text';
+    }
+
+    /**
      * Init
      */
     public function init()
