@@ -29,14 +29,10 @@ class DoctrineEventListener
     /**
      * @param RouterInvalidator $ri
      */
-    public function __construct(RouterInvalidator $ri)
+    public function __construct(RouterInvalidator $ri, $invalidatorEntities)
     {
         $this->routerInvalidator = $ri;
-        $this->invalidators = new ArrayCollection();
-        $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\Text');
-        $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\Section');
-        $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\App');
-        $this->invalidators->add('Egzakt\\SystemBundle\\Entity\\Mapping');
+        $this->invalidators = new ArrayCollection($invalidatorEntities);
     }
 
     /**

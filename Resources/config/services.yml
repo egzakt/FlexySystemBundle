@@ -26,6 +26,13 @@ parameters:
     egzakt_system.deletable.class:                        Egzakt\SystemBundle\Lib\DeletableService
     egzakt_system.deletable_user_listener.class:          Egzakt\SystemBundle\Listener\UserDeletableListener
 
+    routing_invalidator_entities:
+      - Egzakt\SystemBundle\Entity\Text
+      - Egzakt\SystemBundle\Entity\App
+      - Egzakt\SystemBundle\Entity\Section
+      - Egzakt\SystemBundle\Entity\Mapping
+
+
 services:
 
     egzakt_system.deletable:
@@ -103,7 +110,7 @@ services:
 
     egzakt_system.doctrine_listener:
         class: Egzakt\SystemBundle\Listener\DoctrineEventListener
-        arguments: [ @egzakt_system.router_invalidator ]
+        arguments: [ @egzakt_system.router_invalidator, %routing_invalidator_entities% ]
         tags:
             - { name: doctrine.event_listener, event: prePersist }
             - { name: doctrine.event_listener, event: postPersist }
