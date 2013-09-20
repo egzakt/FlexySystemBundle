@@ -280,6 +280,7 @@ class Role extends BaseEntity implements RoleInterface, \Serializable
     public function isDeletable()
     {
         $isDeletable = parent::isDeletable();
+
         return $isDeletable && !in_array($this->getRole(), array('ROLE_DEVELOPER', 'ROLE_BACKEND_ADMIN', 'ROLE_ADMIN'));
     }
 

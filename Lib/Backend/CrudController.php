@@ -4,7 +4,6 @@ namespace Egzakt\SystemBundle\Lib\Backend;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 abstract class CrudController extends BaseController
 {
@@ -71,7 +70,7 @@ abstract class CrudController extends BaseController
     /**
      * Initiate a reorder request.
      *
-     * @param Request $request
+     * @param  Request      $request
      * @return JsonResponse
      */
     public function orderAction(Request $request)

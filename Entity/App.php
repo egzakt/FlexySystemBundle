@@ -146,7 +146,6 @@ class App extends BaseEntity
         return $params;
     }
 
-
     /**
      * Set slug
      *

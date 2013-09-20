@@ -14,7 +14,6 @@ use Egzakt\SystemBundle\Entity\Section;
 use Egzakt\SystemBundle\Entity\SectionRepository;
 use Egzakt\SystemBundle\Form\Backend\SectionType;
 
-
 class SectionController extends CrudController
 {
     /**
@@ -177,6 +176,5 @@ class SectionController extends CrudController
             'form' => $form->createView()
         ));
     }
-
 
 }

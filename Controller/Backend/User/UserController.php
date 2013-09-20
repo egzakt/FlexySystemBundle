@@ -12,7 +12,6 @@ use Egzakt\SystemBundle\Entity\User;
 use Egzakt\SystemBundle\Form\Backend\UserType;
 use Egzakt\SystemBundle\Entity\Role;
 
-
 class UserController extends CrudController
 {
     /**
