@@ -128,13 +128,9 @@
             if (data.success) {
 
                 var success_message = $('<div/>', {
-                    'class': 'flash-success',
+                    'class': 'flash-success popup',
                     'text': data.message
                 });
-
-                success_message.css('top', '50%');
-                success_message.css('left', '50%');
-                success_message.css('position', 'fixed');
 
                 $(success_message).insertAfter($('body'));
 

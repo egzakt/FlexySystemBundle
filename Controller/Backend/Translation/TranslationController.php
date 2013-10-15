@@ -2,8 +2,8 @@
 
 namespace Flexy\SystemBundle\Controller\Backend\Translation;
 
-use Flexy\SystemBundle\Translation\Php\PhpExtractor;
-use Flexy\SystemBundle\Translation\Twig\TwigExtractor;
+use Flexy\SystemBundle\Translation\Extractor\PhpExtractor;
+use Flexy\SystemBundle\Translation\Extractor\TwigExtractor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
