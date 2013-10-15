@@ -2,12 +2,15 @@
 
 namespace Flexy\SystemBundle\Controller\Backend\Translation;
 
+use Flexy\SystemBundle\Translation\Php\PhpExtractor;
+use Flexy\SystemBundle\Translation\Twig\TwigExtractor;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Finder\Finder;
+use Symfony\Component\Translation\Extractor\ChainExtractor;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Catalogue\MergeOperation;
 
@@ -85,7 +88,12 @@ class TranslationController extends BaseController
                 // load any messages from templates
                 $bundleViewPath = $bundle->getPath() . '/Resources/views/';
                 $templateCatalogue = new MessageCatalogue($locale->getCode());
-                $extractor = $this->container->get('translation.extractor');
+
+                // Custom Template Extractor
+                // TODO: Create a service and a CompilerPass to add the extractors
+                $extractor = new ChainExtractor();
+                $extractor->addExtractor('twig', new TwigExtractor($this->container->get('twig')));
+                $extractor->addExtractor('php', new PhpExtractor());
                 file_exists($bundleViewPath) ? $extractor->extract($bundleViewPath, $templateCatalogue) : null;
 
                 // load any existing messages from the translation files
