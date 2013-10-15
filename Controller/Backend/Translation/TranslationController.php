@@ -90,10 +90,7 @@ class TranslationController extends BaseController
                 $templateCatalogue = new MessageCatalogue($locale->getCode());
 
                 // Custom Template Extractor
-                // TODO: Create a service and a CompilerPass to add the extractors
-                $extractor = new ChainExtractor();
-                $extractor->addExtractor('twig', new TwigExtractor($this->container->get('twig')));
-                $extractor->addExtractor('php', new PhpExtractor());
+                $extractor = $this->container->get('flexy_system.translation.extractor');
                 file_exists($bundleViewPath) ? $extractor->extract($bundleViewPath, $templateCatalogue) : null;
 
                 // load any existing messages from the translation files

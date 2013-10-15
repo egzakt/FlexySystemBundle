@@ -31,6 +31,9 @@ parameters:
     flexy_backend.login_listener.class:                        Flexy\SystemBundle\Listener\LoginBackendListener
     flexy_frontend.core.class:                                 Flexy\SystemBundle\Lib\Frontend\Core
     flexy_system.translation_editor_loader.class:              Flexy\SystemBundle\Translation\TranslationEditorLoader
+    flexy_system.translation.extractor.class:                  Symfony\Component\Translation\Extractor\ChainExtractor
+    flexy_system.translation.extractor.php.class:              Flexy\SystemBundle\Translation\Extractor\PhpExtractor
+    flexy_system.translation.extractor.twig.class:             Flexy\SystemBundle\Translation\Extractor\TwigExtractor
 
 services:
 
@@ -200,7 +203,7 @@ services:
 
     flexy_system.security.cms_voter:
         class: %flexy_backend.security.cms_voter.class%
-        arguments: [@service_container]
+        arguments: [ @service_container ]
         tags:
             - { name: security.voter }
 
@@ -211,6 +214,20 @@ services:
 
     flexy_system.translation.translator_editor_loader:
         class: %flexy_system.translation_editor_loader.class%
-        arguments: [@doctrine.orm.entity_manager, %kernel.root_dir%]
+        arguments: [ @doctrine.orm.entity_manager, %kernel.root_dir% ]
         tags:
             - { name: translation.loader, alias: db }
+
+    flexy_system.translation.extractor:
+        class: %flexy_system.translation.extractor.class%
+
+    flexy_system.translation.extractor.php:
+        class: %flexy_system.translation.extractor.php.class%
+        tags:
+            - { name: flexy_system.translation.extractor, alias: php }
+
+    flexy_system.translation.extractor.twig:
+        class: %flexy_system.translation.extractor.twig.class%
+        arguments: [ @twig ]
+        tags:
+            - { name: flexy_system.translation.extractor, alias: twig }
