@@ -61,6 +61,9 @@ class ExceptionListener
             return;
         }
 
+        $this->container->get('flexy_system.core')->setApplicationCore($this->container->get('flexy_frontend.core'));
+        $this->container->get('flexy_system.core')->setCurrentAppName('frontend');
+
         $exception = $event->getException();
 
         if ($exception instanceof NotFoundHttpException) {
@@ -169,8 +172,6 @@ class ExceptionListener
     private function setSection($section)
     {
         $this->setFlexyRequest($section);
-        $this->container->get('flexy_system.core')->setApplicationCore($this->container->get('flexy_frontend.core'));
-        $this->container->get('flexy_system.core')->setCurrentAppName('frontend');
         $this->container->get('flexy_frontend.core')->addNavigationElement($section);
     }
 
