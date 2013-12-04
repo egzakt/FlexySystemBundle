@@ -63,8 +63,6 @@ class ExceptionListener
 
         $exception = $event->getException();
 
-        $this->container->get('flexy_system.core')->setCurrentAppName('frontend');
-
         if ($exception instanceof NotFoundHttpException) {
 
             $name = '404 Error';
@@ -172,6 +170,7 @@ class ExceptionListener
     {
         $this->setFlexyRequest($section);
         $this->container->get('flexy_system.core')->setApplicationCore($this->container->get('flexy_frontend.core'));
+        $this->container->get('flexy_system.core')->setCurrentAppName('frontend');
         $this->container->get('flexy_frontend.core')->addNavigationElement($section);
     }
 
