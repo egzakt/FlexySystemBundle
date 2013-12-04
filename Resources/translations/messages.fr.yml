@@ -141,3 +141,11 @@ Search a Translation: Rechercher une traduction
 
 Displayed on the language switcher: Affiché sur le sélecteur de langue
 Home page URL: URL de la page d'accueil
+
+500 Internal Server Error: 500 Erreur interne du serveur
+404 Not found: 404 Ressource introuvable
+403 Forbidden - Access Denied: 403 Accès non-autorisé
+
+404 Error: Erreur 404
+403 Error: Erreur 403
+500 Error: Erreur 500
