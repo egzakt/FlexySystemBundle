@@ -80,6 +80,10 @@ services:
         calls:
             - [ setKernel, [ @kernel ] ]
             - [ setTemplating, [ @templating ] ]
+            - [ setEntityManager, [ @doctrine.orm.entity_manager ] ]
+            - [ setTranslator, [ @translator ] ]
+            - [ setRequest, [ @?request= ] ]
+            - [ setContainer, [ @service_container ] ]
 
     flexy_system.core:
         class: %flexy_system.core.class%

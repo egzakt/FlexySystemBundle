@@ -49,9 +49,76 @@ class LoadSectionData extends AbstractFixture implements OrderedFixtureInterface
         $manager->persist($sectionHome);
         $manager->persist($sectionHomeFr);
         $manager->persist($sectionHomeEn);
+
+        $section404 = new Section();
+        $section404->setId(2);
+        $section404->setContainer($this->container);
+        $section404->setApp($manager->merge($this->getReference('app-frontend')));
+
+        $section404Fr = new SectionTranslation();
+        $section404Fr->setLocale($manager->merge($this->getReference('locale-fr'))->getCode());
+        $section404Fr->setName('Erreur 404');
+        $section404Fr->setActive(true);
+        $section404Fr->setTranslatable($section404);
+
+        $section404En = new SectionTranslation();
+        $section404En->setLocale($manager->merge($this->getReference('locale-en'))->getCode());
+        $section404En->setName('404 Error');
+        $section404En->setActive(true);
+        $section404En->setTranslatable($section404);
+
+        $manager->persist($section404);
+        $manager->persist($section404Fr);
+        $manager->persist($section404En);
+
+        $section403 = new Section();
+        $section403->setId(3);
+        $section403->setContainer($this->container);
+        $section403->setApp($manager->merge($this->getReference('app-frontend')));
+
+        $section403Fr = new SectionTranslation();
+        $section403Fr->setLocale($manager->merge($this->getReference('locale-fr'))->getCode());
+        $section403Fr->setName('Erreur 403');
+        $section403Fr->setActive(true);
+        $section403Fr->setTranslatable($section403);
+
+        $section403En = new SectionTranslation();
+        $section403En->setLocale($manager->merge($this->getReference('locale-en'))->getCode());
+        $section403En->setName('403 Error');
+        $section403En->setActive(true);
+        $section403En->setTranslatable($section403);
+
+        $manager->persist($section403);
+        $manager->persist($section403Fr);
+        $manager->persist($section403En);
+
+        $section500 = new Section();
+        $section500->setId(4);
+        $section500->setContainer($this->container);
+        $section500->setApp($manager->merge($this->getReference('app-frontend')));
+
+        $section500Fr = new SectionTranslation();
+        $section500Fr->setLocale($manager->merge($this->getReference('locale-fr'))->getCode());
+        $section500Fr->setName('Erreur 500');
+        $section500Fr->setActive(true);
+        $section500Fr->setTranslatable($section500);
+
+        $section500En = new SectionTranslation();
+        $section500En->setLocale($manager->merge($this->getReference('locale-en'))->getCode());
+        $section500En->setName('500 Error');
+        $section500En->setActive(true);
+        $section500En->setTranslatable($section500);
+
+        $manager->persist($section500);
+        $manager->persist($section500Fr);
+        $manager->persist($section500En);
+        
         $manager->flush();
 
         $this->addReference('section-home', $sectionHome);
+        $this->addReference('section-403', $section403);
+        $this->addReference('section-404', $section404);
+        $this->addReference('section-500', $section500);
     }
 
     /**
