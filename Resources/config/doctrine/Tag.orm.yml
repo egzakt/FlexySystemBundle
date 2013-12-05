@@ -1,0 +1,24 @@
+Flexy\SystemBundle\Entity\Tag:
+  type: entity
+  repositoryClass: Flexy\SystemBundle\Entity\TagRepository
+  fields:
+    id:
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+    class:
+      type: string
+      length: 255
+      nullable: false
+    entityId:
+      type: integer
+      nullable: false
+    name:
+      type: string
+      length: 255
+      nullable: false
+    active:
+      type: boolean
+      nullable: true
+  lifecycleCallbacks: {  }
