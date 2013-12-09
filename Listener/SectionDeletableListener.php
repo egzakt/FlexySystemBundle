@@ -34,30 +34,10 @@ class SectionDeletableListener extends BaseDeletableListener
         }
 
         // Internally tagged
-        if ($this->isInternallyTagged($entity->getId())) {
+        if (count($entity->getInternalTags())) {
             $this->addError('This section is protected by the system and therefore cannot be deleted.');
         }
 
         return $this->validate();
-    }
-
-    /**
-     * Check if a Section is tagged on an internal tag
-     *
-     * @param $sectionId
-     *
-     * @return bool
-     */
-    private function isInternallyTagged($sectionId)
-    {
-        $tags = $this->entityManager->getRepository('FlexySystemBundle:Tag')->findInternals('Flexy\SystemBundle\Entity\Section');
-
-        foreach($tags as $tag) {
-            if ($tag->getEntityId() == $sectionId) {
-                return true;
-            }
-        }
-
-        return false;
     }
 }

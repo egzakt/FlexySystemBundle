@@ -3,7 +3,6 @@
 namespace Flexy\SystemBundle\Controller\Backend;
 
 use Flexy\SystemBundle\Entity\AppRepository;
-use Flexy\SystemBundle\Entity\TagRepository;
 use Flexy\SystemBundle\Entity\NavigationRepository;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -28,18 +27,12 @@ class NavigationController extends BaseController
     protected $mappingRepository;
 
     /**
-     * @var TagRepository
-     */
-    protected $tagRepository;
-
-    /**
      * Init
      */
     public function init()
     {
         $this->sectionRepository = $this->getEm()->getRepository('FlexySystemBundle:Section');
         $this->mappingRepository = $this->getEm()->getRepository('FlexySystemBundle:Mapping');
-        $this->tagRepository = $this->getEm()->getRepository('FlexySystemBundle:Tag');
     }
 
     /**
@@ -57,19 +50,10 @@ class NavigationController extends BaseController
 
         $sections = $this->sectionRepository->findByAppJoinChildren($this->getApp());
 
-        // Find the tagged Section entities
-        // These Sections will be removed since we don't want them to show up in the Navigation
-        $taggedSections = array();
-
-        $tags = $this->tagRepository->findInternals('Flexy\SystemBundle\Entity\Section');
-
-        foreach($tags as $tag) {
-            $taggedSections[] = $tag->getEntityId();
-        }
-
+        // @TODO: Find a way to display groups of sections. This is temporary.
         // Cleanup of level 1 sections
         foreach ($sections as $key => $section) {
-            if ($section->getParent() || in_array($section->getId(), $taggedSections)) {
+            if ($section->getParent() || $section->getInternalTags()) {
                 unset($sections[$key]);
             }
         }

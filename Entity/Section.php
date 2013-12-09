@@ -15,6 +15,7 @@ class Section extends BaseEntity
 {
     use FlexyORMBehaviors\Translatable\Translatable;
     use FlexyORMBehaviors\Timestampable\Timestampable;
+    use FlexyORMBehaviors\Taggable\Taggable;
 
     /**
      * @var integer

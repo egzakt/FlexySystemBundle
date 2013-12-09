@@ -76,12 +76,3 @@ Flexy\SystemBundle\Entity\Token:
     properties:
         token:
             - NotBlank: ~
-
-Flexy\SystemBundle\Entity\Tag:
-  properties:
-    class:
-      - NotBlank: ~
-    entityId:
-      - NotBlank: ~
-    name:
-      - NotBlank: ~
