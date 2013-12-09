@@ -50,9 +50,10 @@ class NavigationController extends BaseController
 
         $sections = $this->sectionRepository->findByAppJoinChildren($this->getApp());
 
+        // @TODO: Find a way to display groups of sections. This is temporary.
         // Cleanup of level 1 sections
         foreach ($sections as $key => $section) {
-            if ($section->getParent()) {
+            if ($section->getParent() || $section->getInternalTags()) {
                 unset($sections[$key]);
             }
         }

@@ -176,12 +176,13 @@ class SectionRepository extends BaseEntityRepository
     public function findByAppJoinChildren($appId)
     {
         $queryBuilder = $this->createQueryBuilder('s')
-            ->select('s', 'st', 'sm', 'c', 'ct', 'cm')
+            ->select('s', 'st', 'sm', 'c', 'ct', 'cm', 't')
             ->leftJoin('s.translations', 'st')
             ->leftJoin('s.mappings', 'sm')
             ->leftJoin('s.children', 'c')
             ->leftJoin('c.translations', 'ct')
             ->leftJoin('c.mappings', 'cm')
+            ->leftJoin('c.tags', 't')
             ->where('s.app = :appId')
             ->orderBy('s.ordering')
             ->setParameter('appId', $appId->getId());

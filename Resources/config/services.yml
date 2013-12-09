@@ -51,6 +51,7 @@ services:
 
     egazkt_system.deletable_section_listener:
         class: %flexy_system.deletable_section_listener.class%
+        arguments: [ @doctrine.orm.entity_manager ]
         tags:
           - { name: flexy_system.deletable, entity: Flexy\SystemBundle\Entity\Section }
 
