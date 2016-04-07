@@ -1,80 +1,92 @@
+var quickCreateTranslations = [];
+
 $(function(){
     var quickCreateLink = null;
     var quickCreateContainer = null;
     var quickCreateField = null;
+
+    // Fallback
+    var quickCreateLocale =  typeof quickCreateTranslations[session_locale] != 'undefined' ? session_locale : 'en';
 
     // Options for the dialog
     var quickCreateDialogOptions = {
         width: 'auto',
         height: 'auto',
         modal: true,
-        buttons: {
-            "Create": function() {
+        buttons: [
+            {
+                text: quickCreateTranslations[quickCreateLocale].createText,
 
-                formObj = quickCreateContainer.children('form');
+                click: function () {
 
-                // Post the form
-                $.ajax({
-                    type: "POST",
-                    url: formObj.attr('action'),
-                    data: formObj.serialize(),
-                    dataType: 'json',
-                    beforeSend: function(){
-                        $('#loading').show();
-                    }
-                })
+                    formObj = quickCreateContainer.children('form');
 
-                .done(function(data, textStatus, jqXHR){
-
-                    // Item created successfully
-                    if (data.createSuccess) {
-
-                        // Add the new choice in the form
-                        // Select option
-                        if (quickCreateContainer.attr('data-input-type') == 'select') {
-                            var choice = '<option value="' + data.entity.id + '" selected="selected">' + data.entity.name + '</option>';
+                    // Post the form
+                    $.ajax({
+                        type: "POST",
+                        url: formObj.attr('action'),
+                        data: formObj.serialize(),
+                        dataType: 'json',
+                        beforeSend: function () {
+                            $('#loading').show();
                         }
+                    })
 
-                        // Checkbox or radio
-                        else {
-                            choice = $('<li />');
+                    .done(function (data, textStatus, jqXHR) {
 
-                            input = $('<input />').attr({
-                                type: quickCreateContainer.attr('data-input-type'),
-                                id: quickCreateContainer.attr('data-input-id') + '_' + data.entity.id,
-                                name: quickCreateContainer.attr('data-input-name') + (quickCreateContainer.attr('data-input-type') == 'checkbox' ? '[]' : ''),
-                                value: data.entity.id,
-                                checked: 'checked'
-                            }).appendTo(choice);
+                        // Item created successfully
+                        if (data.createSuccess) {
 
-                            choice.append('&nbsp;');
+                            // Add the new choice in the form
+                            // Select option
+                            if (quickCreateContainer.attr('data-input-type') == 'select') {
+                                var choice = '<option value="' + data.entity.id + '" selected="selected">' + data.entity.name + '</option>';
+                            }
 
-                            label = $('<label />').attr({
-                                for: quickCreateContainer.attr('data-input-id') + '_' + data.entity.id
-                            }).text(data.entity.name).appendTo(choice);
+                            // Checkbox or radio
+                            else {
+                                choice = $('<li />');
+
+                                input = $('<input />').attr({
+                                    type: quickCreateContainer.attr('data-input-type'),
+                                    id: quickCreateContainer.attr('data-input-id') + '_' + data.entity.id,
+                                    name: quickCreateContainer.attr('data-input-name') + (quickCreateContainer.attr('data-input-type') == 'checkbox' ? '[]' : ''),
+                                    value: data.entity.id,
+                                    checked: 'checked'
+                                }).appendTo(choice);
+
+                                choice.append('&nbsp;');
+
+                                label = $('<label />').attr({
+                                    for: quickCreateContainer.attr('data-input-id') + '_' + data.entity.id
+                                }).text(data.entity.name).appendTo(choice);
+                            }
+
+                            quickCreateField.append(choice);
+                            quickCreateContainer.dialog("close");
+
+                        } else {
+                            quickCreateContainer.html(data.response);
                         }
+                    })
 
-                        quickCreateField.append(choice);
-                        quickCreateContainer.dialog("close");
+                    .fail(function (jqXHR, textStatus, errorThrown) {
+                        quickCreateContainer.html(textStatus + ': ' + errorThrown);
+                    })
 
-                    } else {
-                        quickCreateContainer.html(data.response);
-                    }
-                })
-
-                .fail(function(jqXHR, textStatus, errorThrown){
-                    quickCreateContainer.html(textStatus + ': ' + errorThrown);
-                })
-
-                .always(function(){
-                    $('#loading').hide();
-                });
+                    .always(function () {
+                        $('#loading').hide();
+                    });
+                }
             },
 
-            "Cancel": function() {
-                $(this).dialog("close");
-            }
-        },
+            {
+                text: quickCreateTranslations[quickCreateLocale].cancelText,
+
+                click: function() {
+                    $(this).dialog("close");
+                }
+            }],
 
         close: function() {
             quickCreateContainer.dialog("destroy"); // to take the div out of the dialog and put it back to its original place
