@@ -213,7 +213,7 @@
 {% endblock radio_widget %}
 
 {% block form_label %}
-    {% spaceless %}
+{% spaceless %}
         {% if label is not sameas(false) %}
             {% if not compound %}
                 {% set label_attr = label_attr|merge({'for': id}) %}
@@ -237,7 +237,7 @@
                 <div class="note">{{ attr.alt|trans|raw }}</div>
             {% endif %}
         {% endif %}
-    {% endspaceless %}
+{% endspaceless %}
 {% endblock form_label %}
 
 {% block advanced_file_widget %}
